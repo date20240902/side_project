@@ -111,6 +111,106 @@
   .btn-primary:active { transform: scale(0.98); }
   .btn-primary:disabled { background: var(--bg-card-2); color: var(--text-faint); cursor: not-allowed; }
 
+  /* Kakao login button */
+  .btn-kakao {
+    width: 100%; padding: 15px; border: none;
+    background: #FEE500; color: #181600;
+    border-radius: 12px; font-size: 15px; font-weight: 800;
+    cursor: pointer; transition: transform 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-kakao:active { transform: scale(0.98); }
+  .btn-kakao .ico {
+    width: 20px; height: 20px;
+    background: #181600; color: #FEE500;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 12px; font-weight: 900;
+    line-height: 1;
+  }
+  .ob-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 18px 0 14px;
+    color: var(--text-faint); font-size: 11px;
+  }
+  .ob-divider::before, .ob-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .ob-policy {
+    text-align: center; font-size: 11px;
+    color: var(--text-faint); margin-top: 14px; line-height: 1.6;
+  }
+  .ob-policy a { color: var(--text-dim); text-decoration: underline; }
+
+  /* Kakao loading overlay */
+  .kakao-loading {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+  }
+  .kakao-loading.active { display: flex; }
+  .kakao-loading-box {
+    background: white; color: #181600;
+    padding: 28px 36px; border-radius: 16px;
+    text-align: center; min-width: 240px;
+  }
+  .kakao-loading-box .ico-big {
+    width: 44px; height: 44px; margin: 0 auto 12px;
+    background: #FEE500; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 22px; font-weight: 900;
+    animation: kakaoPulse 1s ease-in-out infinite;
+  }
+  @keyframes kakaoPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .kakao-loading-box .t { font-size: 14px; font-weight: 700; }
+  .kakao-loading-box .d { font-size: 11px; color: #666; margin-top: 4px; }
+
+  /* Profile with Kakao linked */
+  .kakao-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #FEE500; color: #181600;
+    padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 800;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .kakao-badge::before {
+    content: 'K'; display: inline-grid; place-items: center;
+    width: 12px; height: 12px; background: #181600; color: #FEE500;
+    border-radius: 50%; font-size: 8px;
+  }
+
+  /* Kakao share preview in invite modal */
+  .kakao-share-preview {
+    background: white; color: #181600;
+    border-radius: 12px; overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid #ddd;
+  }
+  .ksp-img {
+    height: 130px;
+    background: linear-gradient(135deg, #ff3d57 0%, #ffb84d 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 56px;
+    position: relative;
+  }
+  .ksp-img::after {
+    content: '🍗 7마리 풀'; position: absolute; bottom: 10px; right: 12px;
+    background: rgba(0,0,0,0.5); color: white;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .ksp-body { padding: 12px 14px; }
+  .ksp-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+  .ksp-desc { font-size: 12px; color: #666; line-height: 1.4; }
+  .ksp-link {
+    border-top: 1px solid #eee;
+    padding: 8px 14px; font-size: 11px; color: #999;
+  }
+
   /* ===== Chicken Gauge ===== */
   .gauge-card {
     margin: 8px 14px 16px;
@@ -514,8 +614,24 @@
     </div>
   </div>
 
-  <input type="text" class="ob-input" id="nickname-input" placeholder="닉네임 (2~10자)" maxlength="10">
-  <button class="btn-primary" id="start-btn" disabled>시작하기</button>
+  <button class="btn-kakao" id="kakao-login">
+    <span class="ico">K</span>
+    카카오로 3초 만에 시작하기
+  </button>
+
+  <div class="ob-policy">
+    가입 시 <a href="#">이용약관</a> 및 <a href="#">개인정보 처리방침</a>에 동의하게 됩니다.<br>
+    프로필 닉네임 · 프로필 이미지만 가져옵니다.
+  </div>
+</div>
+
+<!-- ============ KAKAO LOADING OVERLAY ============ -->
+<div class="kakao-loading" id="kakao-loading">
+  <div class="kakao-loading-box">
+    <div class="ico-big">K</div>
+    <div class="t">카카오 로그인 중...</div>
+    <div class="d">잠시만 기다려주세요</div>
+  </div>
 </div>
 
 <!-- ============ MAIN ============ -->
@@ -719,7 +835,7 @@
 
   <div class="profile-card">
     <div class="profile-avatar">👤</div>
-    <div class="profile-name" id="profile-name">나</div>
+    <div class="profile-name"><span id="profile-name">나</span><span class="kakao-badge">카카오</span></div>
     <div class="profile-since">2026.05.16 가입 · 7일째 참여 중</div>
   </div>
 
@@ -894,13 +1010,27 @@
     <div class="modal-handle"></div>
     <div class="modal-title">친구 초대하기</div>
     <div class="modal-desc">친구가 가입하면 우리 모두의 상품 풀이 늘어나요.<br>500명마다 치킨 1마리 추가!</div>
-    <div style="background: var(--bg-card); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 13px; word-break: break-all; color: var(--text-dim); text-align: center;">
-      kickpick.kr/invite/<b style="color:var(--accent-2)" id="invite-code">U-XYZ7M2</b>
+
+    <div class="kakao-share-preview">
+      <div class="ksp-img">🍗⚽</div>
+      <div class="ksp-body">
+        <div class="ksp-title" id="ksp-title">나의 픽에 도전해볼래?</div>
+        <div class="ksp-desc">월드컵 매일 3미션 예측. 친구가 들어올수록 치킨이 늘어나요. 🍗</div>
+      </div>
+      <div class="ksp-link">kickpick.kr</div>
     </div>
+
     <div class="modal-actions">
-      <button class="btn-primary" id="copy-link">🔗 링크 복사하기</button>
-      <button class="btn-secondary" id="share-kakao">💬 카카오톡 공유</button>
+      <button class="btn-kakao" id="share-kakao">
+        <span class="ico">K</span>
+        카카오톡으로 공유
+      </button>
+      <button class="btn-secondary" id="copy-link">🔗 초대 링크 복사</button>
       <button class="btn-secondary" data-close>닫기</button>
+    </div>
+
+    <div style="text-align:center; font-size: 10px; color: var(--text-faint); margin-top: 12px;">
+      내 초대 코드 · <b style="color:var(--accent-2)" id="invite-code">U-XYZ7M2</b>
     </div>
   </div>
 </div>
@@ -967,8 +1097,11 @@
     </div>
 
     <div class="modal-actions">
-      <button class="btn-primary" id="share-instagram">📸 인스타 스토리</button>
-      <button class="btn-secondary" id="share-kakao-2">💬 카카오톡</button>
+      <button class="btn-kakao" id="share-kakao-2">
+        <span class="ico">K</span>
+        카카오톡으로 공유
+      </button>
+      <button class="btn-secondary" id="share-instagram">📸 인스타 스토리</button>
       <button class="btn-secondary" id="save-image">💾 이미지 저장</button>
       <button class="btn-secondary" data-close>닫기</button>
     </div>
@@ -1004,23 +1137,39 @@
   function openModal(id) { $('#' + id).classList.add('active'); }
   function closeAllModals() { $$('.modal-bg').forEach(m => m.classList.remove('active')); }
 
-  // ===== Onboarding =====
-  const nickInput = $('#nickname-input');
-  const startBtn = $('#start-btn');
-  nickInput.addEventListener('input', () => {
-    const v = nickInput.value.trim();
-    startBtn.disabled = v.length < 2;
-  });
-  startBtn.addEventListener('click', () => {
-    const v = nickInput.value.trim();
-    if (v.length < 2) return;
-    state.nickname = v;
-    $('#profile-name').textContent = v;
-    $('#my-rank-name').textContent = v;
-    $('#share-name').textContent = v;
-    $('#onboarding').classList.remove('active');
-    showView('main');
-    setTimeout(() => showToast(`환영해요, ${v}님! 🎉`), 300);
+  // ===== Onboarding: Kakao Login =====
+  // Mocked Kakao profile pool (실제 구현 시 Kakao SDK 사용)
+  const mockKakaoProfiles = [
+    { nickname: '축구러버', avatar: '⚽' },
+    { nickname: '치맥조아', avatar: '🍗' },
+    { nickname: '월드컵2026', avatar: '🏆' },
+    { nickname: '응원단장', avatar: '📣' },
+  ];
+
+  $('#kakao-login').addEventListener('click', () => {
+    // 1) Show Kakao loading overlay (실제론 Kakao OAuth 팝업/리다이렉트)
+    $('#kakao-loading').classList.add('active');
+
+    // 2) Simulate OAuth roundtrip
+    setTimeout(() => {
+      // 3) Receive user profile from Kakao API
+      const profile = mockKakaoProfiles[Math.floor(Math.random() * mockKakaoProfiles.length)];
+      state.nickname = profile.nickname;
+      state.avatar = profile.avatar;
+
+      // 4) Update UI with Kakao profile
+      $('#profile-name').textContent = profile.nickname;
+      $('#my-rank-name').textContent = profile.nickname;
+      $('#share-name').textContent = profile.nickname;
+      $('#ksp-title').textContent = `${profile.nickname}님의 픽에 도전해볼래?`;
+      document.querySelector('.profile-avatar').textContent = profile.avatar;
+
+      // 5) Hide loading and go to main
+      $('#kakao-loading').classList.remove('active');
+      $('#onboarding').classList.remove('active');
+      showView('main');
+      setTimeout(() => showToast(`환영해요, ${profile.nickname}님! 🎉`), 300);
+    }, 1200);
   });
 
   // ===== View Switching =====
@@ -1096,9 +1245,10 @@
     setTimeout(simulateGrowth, 600);
   });
   $('#share-kakao').addEventListener('click', () => {
-    showToast('카카오톡으로 공유 (목업)');
+    // 실제 구현 시: Kakao.Share.sendDefault({ objectType: 'feed', ... })
+    showToast('💬 카카오톡 공유창을 여는 중...');
     closeAllModals();
-    setTimeout(simulateGrowth, 600);
+    setTimeout(simulateGrowth, 1000);
   });
 
   function simulateGrowth() {
@@ -1126,8 +1276,8 @@
     closeAllModals();
     setTimeout(() => openModal('modal-share'), 200);
   });
-  $('#share-instagram').addEventListener('click', () => { showToast('인스타 스토리로 공유 (목업)'); closeAllModals(); });
-  $('#share-kakao-2').addEventListener('click', () => { showToast('카톡으로 공유 (목업)'); closeAllModals(); });
+  $('#share-instagram').addEventListener('click', () => { showToast('📸 인스타 스토리로 공유'); closeAllModals(); });
+  $('#share-kakao-2').addEventListener('click', () => { showToast('💬 카카오톡 공유창을 여는 중...'); closeAllModals(); });
   $('#save-image').addEventListener('click', () => { showToast('이미지로 저장 (목업)'); });
   $('#lb-share').addEventListener('click', () => { showToast('순위표 공유 (목업)'); });
 
