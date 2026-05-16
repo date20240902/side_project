@@ -320,6 +320,38 @@
   .ad-footer-t b { color: var(--accent-2); font-weight: 800; }
   .ad-footer-arrow { color: var(--accent-2); font-size: 16px; }
 
+  /* Ad inquiry form */
+  .ad-form { display: flex; flex-direction: column; gap: 12px; }
+  .ad-field { display: flex; flex-direction: column; gap: 5px; }
+  .ad-label { font-size: 12px; color: var(--text-dim); font-weight: 600; padding-left: 2px; }
+  .ad-label em { color: var(--accent); font-style: normal; }
+  .ad-field input,
+  .ad-field select,
+  .ad-field textarea {
+    width: 100%;
+    padding: 11px 12px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .ad-field input:focus,
+  .ad-field select:focus,
+  .ad-field textarea:focus { border-color: var(--accent); }
+  .ad-field textarea { resize: none; }
+  .ad-field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238b95b5' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 32px;
+  }
+  .ad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
   /* ===== Chicken Gauge ===== */
   .gauge-card {
     margin: 8px 14px 16px;
@@ -779,31 +811,6 @@
     </div>
   </div>
 
-  <!-- Hero Ad Slot -->
-  <section class="ad-slot ad-hero" data-ad="hero">
-    <span class="ad-tag">AD SLOT</span>
-    <div class="ad-hero-emoji">🍗💸</div>
-    <div class="ad-hero-title">치느님 광고 모십니다</div>
-    <div class="ad-hero-sub">
-      지금 노출 단가 <b>저점</b>입니다. 월드컵 본선 시작 전 저점매수 찬스 🔥
-    </div>
-    <div class="ad-hero-stats">
-      <div class="ad-stat">
-        <div class="ad-stat-v">1,247명</div>
-        <div class="ad-stat-l">일일 활성</div>
-      </div>
-      <div class="ad-stat">
-        <div class="ad-stat-v">68%</div>
-        <div class="ad-stat-l">공유 카드 도달</div>
-      </div>
-      <div class="ad-stat">
-        <div class="ad-stat-v">4주</div>
-        <div class="ad-stat-l">월드컵 기간</div>
-      </div>
-    </div>
-    <button class="ad-cta">📩 광고 제안하기 (5초)</button>
-  </section>
-
   <div class="section-title">
     <h2>오늘의 미션</h2>
     <span class="progress"><b id="done-count">0</b> / 3 완료</span>
@@ -884,15 +891,6 @@
     </div>
   </section>
 
-  <!-- Footer Ad Slot -->
-  <div class="ad-slot ad-footer" data-ad="footer">
-    <span class="ad-tag">AD</span>
-    <span class="ad-footer-emoji">📢</span>
-    <div class="ad-footer-t">
-      여기 광고 자리. <b>월드컵 4주 패키지</b> 협의 가능해요
-    </div>
-    <span class="ad-footer-arrow">→</span>
-  </div>
 </div>
 
 <!-- ============ LEADERBOARD ============ -->
@@ -980,16 +978,6 @@
     </div>
   </div>
 
-  <!-- Inline Ad Slot on Leaderboard -->
-  <div class="ad-slot ad-inline" style="margin: 14px;" data-ad="leaderboard">
-    <span class="ad-tag">AD</span>
-    <div class="ad-inline-emoji">🏆</div>
-    <div class="ad-inline-txt">
-      <div class="ad-inline-t">순위표 1등 시상 <span class="accent">스폰서 모집</span></div>
-      <div class="ad-inline-d">매일 1등에게 브랜드 굿즈를 쏴주세요</div>
-    </div>
-    <button class="ad-inline-btn">제안 →</button>
-  </div>
 </div>
 
 <!-- ============ MY RECORDS ============ -->
@@ -1274,51 +1262,68 @@
   </div>
 </div>
 
-<!-- ============ MODAL: Ad Inquiry ============ -->
+<!-- ============ MODAL: Ad Inquiry Form ============ -->
 <div class="modal-bg" id="modal-ad">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div style="font-size: 48px; text-align: center; margin-bottom: 4px;">📢</div>
-    <div class="modal-title">광고 제안하기</div>
-    <div class="modal-desc">치느님부터 동네 카페까지 환영합니다.<br>지금 들어오시면 <b style="color:var(--gold)">월드컵 본선 전 저점</b>이에요.</div>
+    <div class="modal-title">광고 문의</div>
+    <div class="modal-desc">간단히 남겨주시면 영업일 기준 1일 내 회신드릴게요.</div>
 
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
-      <div style="font-size: 11px; color: var(--text-faint); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 10px;">📊 현재 지표</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div>
-          <div style="font-size: 18px; font-weight: 800; color: var(--accent-2);">1,247명</div>
-          <div style="font-size: 10px; color: var(--text-dim);">DAU</div>
-        </div>
-        <div>
-          <div style="font-size: 18px; font-weight: 800; color: var(--gold);">+38% / 주</div>
-          <div style="font-size: 10px; color: var(--text-dim);">성장률</div>
-        </div>
-        <div>
-          <div style="font-size: 18px; font-weight: 800;">3.2회</div>
-          <div style="font-size: 10px; color: var(--text-dim);">1인 평균 방문</div>
-        </div>
-        <div>
-          <div style="font-size: 18px; font-weight: 800;">68%</div>
-          <div style="font-size: 10px; color: var(--text-dim);">공유 카드 도달률</div>
-        </div>
+    <form id="ad-form" class="ad-form">
+      <label class="ad-field">
+        <span class="ad-label">브랜드/회사명 <em>*</em></span>
+        <input type="text" name="brand" required placeholder="예) 또래오래" maxlength="40">
+      </label>
+
+      <label class="ad-field">
+        <span class="ad-label">담당자명 <em>*</em></span>
+        <input type="text" name="name" required placeholder="홍길동" maxlength="20">
+      </label>
+
+      <div class="ad-row">
+        <label class="ad-field">
+          <span class="ad-label">이메일 <em>*</em></span>
+          <input type="email" name="email" required placeholder="you@brand.com">
+        </label>
+        <label class="ad-field">
+          <span class="ad-label">연락처</span>
+          <input type="tel" name="phone" placeholder="010-0000-0000">
+        </label>
       </div>
-    </div>
 
-    <div style="background: rgba(255, 213, 74, 0.06); border: 1px solid rgba(255, 213, 74, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
-      <div style="font-size: 12px; font-weight: 800; color: var(--gold); margin-bottom: 8px;">🎁 추천 후원 패키지</div>
-      <div style="font-size: 12px; color: var(--text-dim); line-height: 1.7;">
-        • 메인 배너 노출 (4주)<br>
-        • 1등 시상 굿즈 협찬 (브랜드 노출)<br>
-        • 공유 카드 워터마크 (바이럴 노출)<br>
-        • <b style="color:var(--accent-2)">성과 연동형:</b> 당첨자 수 × 단가 정산
+      <label class="ad-field">
+        <span class="ad-label">관심 슬롯</span>
+        <select name="slot">
+          <option value="banner">메인 배너 (4주)</option>
+          <option value="winner">1등 시상 굿즈 협찬</option>
+          <option value="watermark">공유 카드 워터마크</option>
+          <option value="package">전체 패키지 협의</option>
+          <option value="other">기타 / 협의 필요</option>
+        </select>
+      </label>
+
+      <label class="ad-field">
+        <span class="ad-label">예상 예산</span>
+        <select name="budget">
+          <option value="">선택 안 함</option>
+          <option value="under-50">50만원 미만</option>
+          <option value="50-200">50~200만원</option>
+          <option value="200-500">200~500만원</option>
+          <option value="over-500">500만원 이상</option>
+          <option value="negotiable">협의</option>
+        </select>
+      </label>
+
+      <label class="ad-field">
+        <span class="ad-label">문의 내용</span>
+        <textarea name="message" rows="3" placeholder="원하시는 노출 형태나 일정을 자유롭게 적어주세요" maxlength="500"></textarea>
+      </label>
+
+      <div class="modal-actions" style="margin-top: 4px;">
+        <button type="submit" class="btn-primary">문의 보내기</button>
+        <button type="button" class="btn-secondary" data-close>다음에</button>
       </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-primary" id="ad-contact-kakao">💬 카카오톡으로 문의하기</button>
-      <button class="btn-secondary" id="ad-contact-email">✉️ 이메일로 제안서 보내기</button>
-      <button class="btn-secondary" data-close>다음에</button>
-    </div>
+    </form>
   </div>
 </div>
 
@@ -1508,12 +1513,12 @@
       openModal('modal-ad');
     });
   });
-  $('#ad-contact-kakao').addEventListener('click', () => {
-    showToast('💬 카카오톡 채널로 연결 (목업)');
-    closeAllModals();
-  });
-  $('#ad-contact-email').addEventListener('click', () => {
-    showToast('✉️ ad@kickpick.kr 메일 작성창 열기 (목업)');
+  $('#ad-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    if (!data.brand || !data.name || !data.email) return;
+    showToast('📨 문의가 접수됐어요. 1일 내 회신드릴게요!');
+    e.target.reset();
     closeAllModals();
   });
 
