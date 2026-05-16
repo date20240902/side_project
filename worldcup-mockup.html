@@ -1,0 +1,1169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>킥픽 — 월드컵 예측 챌린지 (목업)</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-elev: #131829;
+    --bg-card: #1a2138;
+    --bg-card-2: #222a45;
+    --border: #2a3354;
+    --border-light: #3a4570;
+    --text: #f0f3fb;
+    --text-dim: #8b95b5;
+    --text-faint: #5a6485;
+    --accent: #ff3d57;
+    --accent-2: #ffb84d;
+    --gold: #ffd54a;
+    --green: #2ecc71;
+    --purple: #b067ff;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: #06070d; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Pretendard", "Apple SD Gothic Neo", sans-serif; -webkit-font-smoothing: antialiased; }
+  body { max-width: 460px; margin: 0 auto; min-height: 100vh; background: var(--bg); position: relative; padding-bottom: 80px; }
+  button { font-family: inherit; }
+
+  /* ===== Common ===== */
+  .view { display: none; animation: fadeIn 0.2s ease; }
+  .view.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .app-header {
+    padding: 14px 18px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; cursor: pointer; }
+  .logo .dot { color: var(--accent); }
+  .profile-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-card); border: 1px solid var(--border);
+    display: grid; place-items: center; cursor: pointer;
+    font-size: 16px;
+  }
+  .back-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: transparent; border: none; color: var(--text);
+    font-size: 22px; cursor: pointer; display: grid; place-items: center;
+  }
+  .page-title {
+    font-size: 17px; font-weight: 800; flex: 1; text-align: center;
+    margin-right: 36px;
+  }
+
+  /* ===== Onboarding ===== */
+  #onboarding {
+    position: fixed; inset: 0; max-width: 460px; margin: 0 auto;
+    background: linear-gradient(180deg, #0a0e1a 0%, #1a0a14 100%);
+    display: none; flex-direction: column; padding: 40px 24px;
+    z-index: 100;
+  }
+  #onboarding.active { display: flex; }
+  .ob-logo {
+    font-size: 44px; font-weight: 900; letter-spacing: -1px;
+    margin-top: 40px; text-align: center;
+  }
+  .ob-logo .dot { color: var(--accent); }
+  .ob-sub {
+    text-align: center; color: var(--text-dim);
+    margin-top: 8px; font-size: 14px;
+  }
+  .ob-hero {
+    margin: 36px 0 28px;
+    padding: 24px; background: var(--bg-card);
+    border-radius: 16px; border: 1px solid var(--border);
+    text-align: center;
+  }
+  .ob-hero-emoji { font-size: 56px; margin-bottom: 8px; }
+  .ob-hero-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+  .ob-hero-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .ob-feat {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .ob-feat-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .ob-feat-ico { font-size: 22px; }
+  .ob-feat-txt { flex: 1; }
+  .ob-feat-t { font-size: 13px; font-weight: 700; }
+  .ob-feat-d { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .ob-input {
+    width: 100%; padding: 14px 16px;
+    background: var(--bg-card); border: 1.5px solid var(--border);
+    border-radius: 12px; color: var(--text); font-size: 15px;
+    margin-bottom: 12px; outline: none;
+  }
+  .ob-input:focus { border-color: var(--accent); }
+  .btn-primary {
+    width: 100%; padding: 15px; border: none;
+    background: var(--accent); color: white;
+    border-radius: 12px; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { background: var(--bg-card-2); color: var(--text-faint); cursor: not-allowed; }
+
+  /* ===== Chicken Gauge ===== */
+  .gauge-card {
+    margin: 8px 14px 16px;
+    padding: 18px;
+    background: linear-gradient(135deg, #2a1e0a 0%, #1a2138 100%);
+    border: 1px solid #4a3820;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+  .gauge-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .gauge-title { font-size: 13px; color: var(--text-dim); font-weight: 600; }
+  .gauge-sponsor { font-size: 11px; color: var(--text-faint); }
+  .gauge-sponsor b { color: var(--gold); font-weight: 700; }
+  .pool {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .pool-emoji { font-size: 32px; }
+  .pool-count {
+    font-size: 38px; font-weight: 900;
+    color: var(--gold); letter-spacing: -1px; line-height: 1;
+  }
+  .pool-unit { font-size: 16px; color: var(--text-dim); margin-left: -4px; align-self: flex-end; padding-bottom: 4px; }
+  .pool-plus {
+    margin-left: auto; font-size: 11px; color: var(--green);
+    background: rgba(46, 204, 113, 0.12);
+    padding: 4px 8px; border-radius: 6px; font-weight: 700;
+  }
+  .gauge-bar-wrap {
+    position: relative; height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px; overflow: hidden; margin-bottom: 10px;
+  }
+  .gauge-bar {
+    height: 100%; width: 62%;
+    background: linear-gradient(90deg, var(--accent-2) 0%, var(--gold) 100%);
+    box-shadow: 0 0 12px rgba(255, 213, 74, 0.4);
+    transition: width 0.5s;
+  }
+  .gauge-foot { display: flex; justify-content: space-between; font-size: 12px; }
+  .gauge-current { color: var(--text); }
+  .gauge-current b { color: var(--accent-2); font-weight: 800; }
+  .gauge-next { color: var(--text-dim); }
+  .gauge-next b { color: var(--text); font-weight: 700; }
+  .invite-btn {
+    margin-top: 14px; width: 100%; padding: 11px;
+    background: rgba(255, 213, 74, 0.12); color: var(--gold);
+    border: 1px solid rgba(255, 213, 74, 0.3);
+    border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .invite-btn:active { transform: scale(0.98); }
+
+  /* ===== Countdown ===== */
+  .countdown {
+    margin: 0 14px 16px; padding: 12px 16px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cd-icon {
+    width: 36px; height: 36px;
+    background: rgba(255, 61, 87, 0.12);
+    border-radius: 10px;
+    display: grid; place-items: center; font-size: 18px;
+  }
+  .cd-text { flex: 1; }
+  .cd-label { font-size: 11px; color: var(--text-dim); margin-bottom: 2px; }
+  .cd-time { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cd-time .num { color: var(--accent); }
+
+  /* ===== Section Title ===== */
+  .section-title {
+    padding: 4px 18px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-title h2 { margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
+  .section-title .progress { font-size: 12px; color: var(--text-dim); font-weight: 600; }
+  .section-title .progress b { color: var(--accent-2); }
+
+  /* ===== Mission Cards ===== */
+  .missions { padding: 0 14px; display: flex; flex-direction: column; gap: 12px; }
+  .mission {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    position: relative; overflow: hidden;
+    transition: opacity 0.3s;
+  }
+  .mission.completed { opacity: 0.55; }
+  .mission.jackpot {
+    background: linear-gradient(135deg, #2a1430 0%, #1a2138 100%);
+    border-color: #5e2675;
+  }
+  .mission.jackpot::after {
+    content: '+10정답';
+    position: absolute; top: 14px; right: 14px;
+    font-size: 10px; font-weight: 800;
+    background: linear-gradient(135deg, #ff3d57, #ff6b9d);
+    color: white; padding: 4px 8px; border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+  .m-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .m-badge { font-size: 10px; font-weight: 800; color: var(--text-faint); letter-spacing: 0.5px; }
+  .m-tag { font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 6px; }
+  .m-tag.easy { background: rgba(46, 204, 113, 0.14); color: var(--green); }
+  .m-tag.hard { background: rgba(255, 184, 77, 0.14); color: var(--accent-2); }
+  .m-tag.jackpot { background: rgba(255, 107, 157, 0.14); color: #ff6b9d; }
+
+  .m-title { font-size: 16px; font-weight: 700; margin: 2px 0 12px; line-height: 1.4; }
+  .m-meta { font-size: 12px; color: var(--text-dim); margin-bottom: 14px; }
+  .m-meta .team { color: var(--text); font-weight: 700; }
+
+  .options { display: grid; gap: 8px; }
+  .options.three { grid-template-columns: 1fr 1fr 1fr; }
+  .options.two { grid-template-columns: 1fr 1fr; }
+  .opt {
+    background: var(--bg-elev);
+    border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 12px 8px;
+    text-align: center; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt:active { transform: scale(0.96); }
+  .opt.selected {
+    background: rgba(255, 61, 87, 0.12);
+    border-color: var(--accent);
+  }
+  .opt-label { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .opt-rate { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .opt.selected .opt-rate { color: var(--accent); font-weight: 600; }
+  .mission.completed .opt { cursor: default; }
+
+  /* ===== Stats ===== */
+  .stats {
+    margin: 20px 14px 0; padding: 14px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+    cursor: pointer;
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .stat-val.streak { color: var(--accent-2); }
+  .stat-val.streak::after { content: '🔥'; font-size: 14px; margin-left: 2px; }
+  .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+  .stat-divider { width: 1px; background: var(--border); margin: 4px 0; }
+
+  /* ===== Bottom Nav ===== */
+  .nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 460px;
+    background: rgba(10, 14, 26, 0.92);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    padding: 8px 0 14px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    z-index: 50;
+  }
+  .nav-item {
+    text-align: center; padding: 6px 4px;
+    color: var(--text-faint);
+    font-size: 10px; font-weight: 600; cursor: pointer;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-ico { font-size: 18px; margin-bottom: 2px; display: block; }
+
+  /* ===== Leaderboard ===== */
+  .lb-tabs { display: flex; padding: 4px; margin: 8px 14px 16px; background: var(--bg-card); border-radius: 12px; gap: 4px; }
+  .lb-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 700; color: var(--text-dim); border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+  .lb-tab.active { background: var(--accent); color: white; }
+
+  .my-rank {
+    margin: 0 14px 14px; padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(255, 61, 87, 0.12), rgba(255, 184, 77, 0.06));
+    border: 1px solid rgba(255, 61, 87, 0.3);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .my-rank-num { font-size: 24px; font-weight: 900; color: var(--accent); min-width: 60px; }
+  .my-rank-info { flex: 1; }
+  .my-rank-name { font-size: 14px; font-weight: 700; }
+  .my-rank-stats { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .my-rank-trend { font-size: 12px; font-weight: 700; color: var(--green); }
+
+  .lb-list { padding: 0 14px; display: flex; flex-direction: column; gap: 4px; }
+  .lb-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .lb-row.top { background: linear-gradient(135deg, rgba(255, 213, 74, 0.1), var(--bg-card)); border-color: rgba(255, 213, 74, 0.3); }
+  .lb-rank { font-size: 16px; font-weight: 800; min-width: 38px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .lb-rank.gold { color: var(--gold); }
+  .lb-rank.silver { color: #c0c8dc; }
+  .lb-rank.bronze { color: #d18d5a; }
+  .lb-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-card-2); display: grid; place-items: center; font-size: 14px; }
+  .lb-name { flex: 1; font-size: 13px; font-weight: 600; }
+  .lb-correct { font-size: 13px; font-weight: 800; color: var(--accent-2); font-variant-numeric: tabular-nums; }
+  .lb-correct .lbl { font-size: 10px; color: var(--text-faint); font-weight: 600; margin-left: 2px; }
+
+  /* ===== My Records ===== */
+  .profile-card {
+    margin: 8px 14px 16px; padding: 20px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; text-align: center;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    margin: 0 auto 10px;
+    display: grid; place-items: center; font-size: 32px;
+  }
+  .profile-name { font-size: 18px; font-weight: 800; }
+  .profile-since { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .big-stats {
+    margin: 0 14px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .big-stat {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px;
+  }
+  .big-stat .v { font-size: 24px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .big-stat .v.gold { color: var(--gold); }
+  .big-stat .v.accent { color: var(--accent-2); }
+  .big-stat .l { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .history-title { padding: 4px 18px 10px; font-size: 14px; font-weight: 800; }
+  .history { padding: 0 14px; display: flex; flex-direction: column; gap: 6px; }
+  .hist-day {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hist-date { font-size: 12px; color: var(--text-dim); min-width: 56px; font-variant-numeric: tabular-nums; }
+  .hist-results { display: flex; gap: 5px; flex: 1; }
+  .hist-dot {
+    width: 22px; height: 22px; border-radius: 6px;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 800;
+  }
+  .hist-dot.win { background: rgba(46, 204, 113, 0.18); color: var(--green); }
+  .hist-dot.lose { background: rgba(255, 61, 87, 0.15); color: var(--accent); }
+  .hist-dot.jackpot { background: linear-gradient(135deg, #ff3d57, #ff6b9d); color: white; }
+  .hist-dot.pending { background: var(--bg-elev); color: var(--text-faint); }
+  .hist-sum { font-size: 12px; font-weight: 700; color: var(--text); min-width: 36px; text-align: right; }
+
+  /* ===== Prizes ===== */
+  .prize-hero {
+    margin: 8px 14px 16px; padding: 20px;
+    background: linear-gradient(135deg, #2a1e0a, #1a2138);
+    border: 1px solid #4a3820;
+    border-radius: 16px; text-align: center;
+  }
+  .prize-hero-big { font-size: 56px; }
+  .prize-hero-c { font-size: 36px; font-weight: 900; color: var(--gold); }
+  .prize-hero-l { color: var(--text-dim); font-size: 12px; margin-top: 4px; }
+  .prize-section-title { padding: 8px 18px 10px; font-size: 14px; font-weight: 800; color: var(--text-dim); }
+  .prize-list { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
+  .prize-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .prize-emoji { font-size: 32px; }
+  .prize-info { flex: 1; }
+  .prize-name { font-size: 14px; font-weight: 700; }
+  .prize-sponsor { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .prize-qty { font-size: 18px; font-weight: 900; color: var(--gold); }
+  .prize-qty .x { font-size: 12px; color: var(--text-dim); }
+
+  /* ===== Modal ===== */
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+    display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-bg.active { display: flex; animation: fadeIn 0.2s; }
+  .modal {
+    width: 100%; max-width: 460px;
+    background: var(--bg-elev);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 28px;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .modal-handle { width: 36px; height: 4px; background: var(--border-light); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 8px; }
+  .modal-desc { font-size: 13px; color: var(--text-dim); text-align: center; margin-bottom: 18px; line-height: 1.5; }
+  .modal-actions { display: flex; flex-direction: column; gap: 8px; }
+  .btn-secondary {
+    width: 100%; padding: 13px; border: 1px solid var(--border);
+    background: transparent; color: var(--text);
+    border-radius: 10px; font-size: 14px; font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-secondary:active { transform: scale(0.98); }
+
+  /* ===== Share Card ===== */
+  .share-card-wrap { margin-bottom: 18px; }
+  .share-card {
+    background: linear-gradient(135deg, #1a0e22 0%, #2a1e0a 100%);
+    border: 1.5px solid var(--gold);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative; overflow: hidden;
+  }
+  .sc-brand { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .sc-logo { font-size: 14px; font-weight: 900; }
+  .sc-logo .dot { color: var(--accent); }
+  .sc-spon { font-size: 9px; color: var(--text-faint); }
+  .sc-spon b { color: var(--gold); }
+  .sc-hero { font-size: 14px; font-weight: 700; color: var(--text-dim); margin-bottom: 4px; }
+  .sc-name { font-size: 22px; font-weight: 900; margin-bottom: 14px; }
+  .sc-stats { display: flex; gap: 16px; margin-bottom: 16px; }
+  .sc-stat-v { font-size: 24px; font-weight: 900; line-height: 1; }
+  .sc-stat-v.gold { color: var(--gold); }
+  .sc-stat-v.accent { color: var(--accent-2); }
+  .sc-stat-l { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+  .sc-picks { display: flex; gap: 6px; margin-bottom: 6px; }
+  .sc-pick {
+    flex: 1; padding: 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px; text-align: center;
+  }
+  .sc-pick-t { font-size: 9px; color: var(--text-faint); margin-bottom: 3px; }
+  .sc-pick-v { font-size: 12px; font-weight: 700; }
+  .sc-foot { font-size: 9px; color: var(--text-faint); text-align: center; margin-top: 14px; }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 100px; z-index: 300;
+    background: var(--bg-card-2); color: var(--text);
+    padding: 12px 18px; border-radius: 10px;
+    border: 1px solid var(--border-light);
+    font-size: 13px; font-weight: 600;
+    box-shadow: var(--shadow);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  /* ===== Action button (for mission submit) ===== */
+  .floating-cta {
+    position: sticky; bottom: 80px;
+    margin: 16px 14px 0;
+    padding: 14px;
+    background: var(--accent); color: white;
+    border: none; border-radius: 12px;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer; width: calc(100% - 28px);
+    display: block;
+    box-shadow: 0 4px 24px rgba(255, 61, 87, 0.35);
+  }
+  .floating-cta:disabled { background: var(--bg-card-2); color: var(--text-faint); box-shadow: none; cursor: not-allowed; }
+  .floating-cta:active:not(:disabled) { transform: scale(0.99); }
+
+</style>
+</head>
+<body>
+
+<!-- ============ ONBOARDING ============ -->
+<div id="onboarding" class="active">
+  <div class="ob-logo">킥픽<span class="dot">.</span></div>
+  <div class="ob-sub">월드컵, 보는 것만으론 아쉽잖아</div>
+
+  <div class="ob-hero">
+    <div class="ob-hero-emoji">🍗⚽</div>
+    <div class="ob-hero-title">매일 3번, 30초 예측</div>
+    <div class="ob-hero-desc">정답을 맞히면 누적 정답이 쌓이고,<br>참여자가 모일수록 상품도 늘어나요</div>
+  </div>
+
+  <div class="ob-feat">
+    <div class="ob-feat-item">
+      <div class="ob-feat-ico">🎯</div>
+      <div class="ob-feat-txt">
+        <div class="ob-feat-t">기본 + 특수 + 잭팟 미션</div>
+        <div class="ob-feat-d">관중 난입 같은 잭팟은 한 방에 +10정답</div>
+      </div>
+    </div>
+    <div class="ob-feat-item">
+      <div class="ob-feat-ico">🔥</div>
+      <div class="ob-feat-txt">
+        <div class="ob-feat-t">연속 정답 챌린지</div>
+        <div class="ob-feat-d">매일 자정에 새로운 미션 오픈</div>
+      </div>
+    </div>
+    <div class="ob-feat-item">
+      <div class="ob-feat-ico">🍗</div>
+      <div class="ob-feat-txt">
+        <div class="ob-feat-t">참여자 모일수록 상품 ↑</div>
+        <div class="ob-feat-d">500명당 치킨 1마리씩 추가</div>
+      </div>
+    </div>
+  </div>
+
+  <input type="text" class="ob-input" id="nickname-input" placeholder="닉네임 (2~10자)" maxlength="10">
+  <button class="btn-primary" id="start-btn" disabled>시작하기</button>
+</div>
+
+<!-- ============ MAIN ============ -->
+<div id="view-main" class="view">
+  <header class="app-header">
+    <div class="logo">킥픽<span class="dot">.</span></div>
+    <div class="profile-btn" data-nav="records">👤</div>
+  </header>
+
+  <section class="gauge-card" data-nav="prizes">
+    <div class="gauge-head">
+      <span class="gauge-title">🍗 오늘의 상품 풀</span>
+      <span class="gauge-sponsor">후원 <b>또래오래</b></span>
+    </div>
+    <div class="pool">
+      <span class="pool-emoji">🍗</span>
+      <span class="pool-count" id="chicken-count">7</span>
+      <span class="pool-unit">마리</span>
+      <span class="pool-plus">+2 ↑</span>
+    </div>
+    <div class="gauge-bar-wrap">
+      <div class="gauge-bar" id="gauge-bar"></div>
+    </div>
+    <div class="gauge-foot">
+      <span class="gauge-current">현재 <b id="participant-count">1,247명</b> 참여 중</span>
+      <span class="gauge-next">다음 치킨까지 <b id="next-count">253명</b></span>
+    </div>
+    <button class="invite-btn" id="invite-btn">친구 초대하고 치킨 늘리기 →</button>
+  </section>
+
+  <div class="countdown">
+    <div class="cd-icon">⏰</div>
+    <div class="cd-text">
+      <div class="cd-label">투표 마감까지</div>
+      <div class="cd-time"><span class="num">02</span>시간 <span class="num">14</span>분 <span class="num">37</span>초</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>오늘의 미션</h2>
+    <span class="progress"><b id="done-count">0</b> / 3 완료</span>
+  </div>
+
+  <section class="missions" id="missions">
+    <!-- Mission 1 -->
+    <article class="mission" data-mission="1">
+      <div class="m-head">
+        <span class="m-badge">MISSION 1</span>
+        <span class="m-tag easy">기본 · +1정답</span>
+      </div>
+      <div class="m-title">한국 vs 우루과이, 결과는?</div>
+      <div class="m-meta">오늘 22:00 · <span class="team">🇰🇷 한국</span> vs <span class="team">🇺🇾 우루과이</span></div>
+      <div class="options three">
+        <div class="opt"><div class="opt-label">한국 승</div><div class="opt-rate">42%</div></div>
+        <div class="opt"><div class="opt-label">무승부</div><div class="opt-rate">28%</div></div>
+        <div class="opt"><div class="opt-label">우루과이 승</div><div class="opt-rate">30%</div></div>
+      </div>
+    </article>
+
+    <!-- Mission 2 -->
+    <article class="mission" data-mission="2">
+      <div class="m-head">
+        <span class="m-badge">MISSION 2</span>
+        <span class="m-tag hard">특수 · +3정답</span>
+      </div>
+      <div class="m-title">오늘 경기 중 PK가 선언될까요?</div>
+      <div class="m-meta">한국 vs 우루과이 경기 한정 · VAR 포함</div>
+      <div class="options two">
+        <div class="opt"><div class="opt-label">선언된다</div><div class="opt-rate">37%</div></div>
+        <div class="opt"><div class="opt-label">없다</div><div class="opt-rate">63%</div></div>
+      </div>
+    </article>
+
+    <!-- Mission 3: Jackpot -->
+    <article class="mission jackpot" data-mission="3">
+      <div class="m-head">
+        <span class="m-badge">JACKPOT MISSION</span>
+        <span class="m-tag jackpot">🎰 초대박</span>
+      </div>
+      <div class="m-title">오늘 경기 중<br>관중 난입이 발생할까요?</div>
+      <div class="m-meta">전 세계 모든 경기 중 1건 이상 · 적중 확률 약 2%</div>
+      <div class="options two">
+        <div class="opt"><div class="opt-label">발생한다</div><div class="opt-rate">11%</div></div>
+        <div class="opt"><div class="opt-label">없다</div><div class="opt-rate">89%</div></div>
+      </div>
+    </article>
+  </section>
+
+  <button class="floating-cta" id="submit-btn" disabled>3개 모두 선택해주세요</button>
+
+  <section class="stats" data-nav="records">
+    <div class="stat">
+      <div class="stat-val streak">5</div>
+      <div class="stat-label">연속 정답</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val">23</div>
+      <div class="stat-label">누적 정답</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val">#142</div>
+      <div class="stat-label">전체 순위</div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ LEADERBOARD ============ -->
+<div id="view-leaderboard" class="view">
+  <header class="app-header">
+    <div class="page-title">🏆 순위표</div>
+    <button class="back-btn" id="lb-share">📤</button>
+  </header>
+
+  <div class="lb-tabs">
+    <div class="lb-tab active" data-period="day">일간</div>
+    <div class="lb-tab" data-period="week">주간</div>
+    <div class="lb-tab" data-period="total">통합</div>
+  </div>
+
+  <div class="my-rank">
+    <div class="my-rank-num">#142</div>
+    <div class="my-rank-info">
+      <div class="my-rank-name" id="my-rank-name">나</div>
+      <div class="my-rank-stats">누적 23정답 · 승률 67%</div>
+    </div>
+    <div class="my-rank-trend">▲ 8</div>
+  </div>
+
+  <div class="lb-list">
+    <div class="lb-row top">
+      <div class="lb-rank gold">🥇</div>
+      <div class="lb-avatar">⚽</div>
+      <div class="lb-name">박지성팬1985</div>
+      <div class="lb-correct">47<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row top">
+      <div class="lb-rank silver">🥈</div>
+      <div class="lb-avatar">🏆</div>
+      <div class="lb-name">치맥대장</div>
+      <div class="lb-correct">45<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row top">
+      <div class="lb-rank bronze">🥉</div>
+      <div class="lb-avatar">🔥</div>
+      <div class="lb-name">손흥민가즈아</div>
+      <div class="lb-correct">43<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">4</div>
+      <div class="lb-avatar">⚡</div>
+      <div class="lb-name">난입맞춘자</div>
+      <div class="lb-correct">42<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">5</div>
+      <div class="lb-avatar">🎯</div>
+      <div class="lb-name">예측의신</div>
+      <div class="lb-correct">40<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">6</div>
+      <div class="lb-avatar">⚽</div>
+      <div class="lb-name">붉은악마23</div>
+      <div class="lb-correct">38<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">7</div>
+      <div class="lb-avatar">🎲</div>
+      <div class="lb-name">행운의손가락</div>
+      <div class="lb-correct">36<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">8</div>
+      <div class="lb-avatar">⭐</div>
+      <div class="lb-name">월드컵매니아</div>
+      <div class="lb-correct">35<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">9</div>
+      <div class="lb-avatar">🔥</div>
+      <div class="lb-name">PK예언가</div>
+      <div class="lb-correct">34<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">10</div>
+      <div class="lb-avatar">⚽</div>
+      <div class="lb-name">스트라이커</div>
+      <div class="lb-correct">33<span class="lbl">정답</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MY RECORDS ============ -->
+<div id="view-records" class="view">
+  <header class="app-header">
+    <div class="page-title">📊 내 기록</div>
+    <button class="back-btn">⚙️</button>
+  </header>
+
+  <div class="profile-card">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-name" id="profile-name">나</div>
+    <div class="profile-since">2026.05.16 가입 · 7일째 참여 중</div>
+  </div>
+
+  <div class="big-stats">
+    <div class="big-stat">
+      <div class="v gold">23</div>
+      <div class="l">누적 정답</div>
+    </div>
+    <div class="big-stat">
+      <div class="v accent">5🔥</div>
+      <div class="l">현재 연속 정답</div>
+    </div>
+    <div class="big-stat">
+      <div class="v">67%</div>
+      <div class="l">정답률</div>
+    </div>
+    <div class="big-stat">
+      <div class="v">#142</div>
+      <div class="l">전체 순위</div>
+    </div>
+  </div>
+
+  <div class="history-title">최근 7일 기록</div>
+  <div class="history">
+    <div class="hist-day">
+      <div class="hist-date">오늘</div>
+      <div class="hist-results">
+        <div class="hist-dot pending">?</div>
+        <div class="hist-dot pending">?</div>
+        <div class="hist-dot pending">?</div>
+      </div>
+      <div class="hist-sum">대기중</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.15</div>
+      <div class="hist-results">
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot lose">X</div>
+      </div>
+      <div class="hist-sum">+4</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.14</div>
+      <div class="hist-results">
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot lose">X</div>
+        <div class="hist-dot lose">X</div>
+      </div>
+      <div class="hist-sum">+1</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.13</div>
+      <div class="hist-results">
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot jackpot">🎰</div>
+      </div>
+      <div class="hist-sum">+14</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.12</div>
+      <div class="hist-results">
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot lose">X</div>
+      </div>
+      <div class="hist-sum">+4</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.11</div>
+      <div class="hist-results">
+        <div class="hist-dot lose">X</div>
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot lose">X</div>
+      </div>
+      <div class="hist-sum">+1</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.10</div>
+      <div class="hist-results">
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot win">O</div>
+        <div class="hist-dot lose">X</div>
+      </div>
+      <div class="hist-sum">+4</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PRIZES ============ -->
+<div id="view-prizes" class="view">
+  <header class="app-header">
+    <div class="page-title">🍗 오늘의 상품</div>
+    <button class="back-btn">ℹ️</button>
+  </header>
+
+  <div class="prize-hero">
+    <div class="prize-hero-big">🍗</div>
+    <div class="prize-hero-c">총 7마리</div>
+    <div class="prize-hero-l">현재 1,247명 참여 / 500명당 1마리 추가</div>
+  </div>
+
+  <div class="prize-section-title">💎 주요 후원사</div>
+  <div class="prize-list">
+    <div class="prize-item">
+      <div class="prize-emoji">🍗</div>
+      <div class="prize-info">
+        <div class="prize-name">또래오래 후라이드</div>
+        <div class="prize-sponsor">또래오래 · 일간 1등</div>
+      </div>
+      <div class="prize-qty">7<span class="x">마리</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">🥤</div>
+      <div class="prize-info">
+        <div class="prize-name">콜라 1.25L</div>
+        <div class="prize-sponsor">코카콜라 · 추첨 10명</div>
+      </div>
+      <div class="prize-qty">10<span class="x">병</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">🧦</div>
+      <div class="prize-info">
+        <div class="prize-name">응원 양말 세트</div>
+        <div class="prize-sponsor">킥앤킥스 · 주간 TOP 5</div>
+      </div>
+      <div class="prize-qty">5<span class="x">세트</span></div>
+    </div>
+  </div>
+
+  <div class="prize-section-title" style="margin-top: 8px;">🎰 잭팟 보너스</div>
+  <div class="prize-list">
+    <div class="prize-item">
+      <div class="prize-emoji">🏆</div>
+      <div class="prize-info">
+        <div class="prize-name">대회 통합 1등</div>
+        <div class="prize-sponsor">월드컵 종료 시 · 치킨 30마리 쿠폰</div>
+      </div>
+      <div class="prize-qty">1<span class="x">명</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">🎲</div>
+      <div class="prize-info">
+        <div class="prize-name">잭팟 적중자 추첨</div>
+        <div class="prize-sponsor">대회 종료 시 · 5만원 기프티콘</div>
+      </div>
+      <div class="prize-qty">3<span class="x">명</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="nav-item active" data-nav="main">
+    <span class="nav-ico">⚽</span>오늘의 픽
+  </div>
+  <div class="nav-item" data-nav="leaderboard">
+    <span class="nav-ico">🏆</span>순위표
+  </div>
+  <div class="nav-item" data-nav="records">
+    <span class="nav-ico">📊</span>내 기록
+  </div>
+  <div class="nav-item" data-nav="prizes">
+    <span class="nav-ico">🍗</span>상품
+  </div>
+</nav>
+
+<!-- ============ MODAL: Invite ============ -->
+<div class="modal-bg" id="modal-invite">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">친구 초대하기</div>
+    <div class="modal-desc">친구가 가입하면 우리 모두의 상품 풀이 늘어나요.<br>500명마다 치킨 1마리 추가!</div>
+    <div style="background: var(--bg-card); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 13px; word-break: break-all; color: var(--text-dim); text-align: center;">
+      kickpick.kr/invite/<b style="color:var(--accent-2)" id="invite-code">U-XYZ7M2</b>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="copy-link">🔗 링크 복사하기</button>
+      <button class="btn-secondary" id="share-kakao">💬 카카오톡 공유</button>
+      <button class="btn-secondary" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Submit Success ============ -->
+<div class="modal-bg" id="modal-submit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="font-size: 56px; text-align: center; margin-bottom: 8px;">✅</div>
+    <div class="modal-title">오늘의 픽 완료!</div>
+    <div class="modal-desc">결과는 마지막 경기 종료 후 자동 정산돼요.<br>친구들에게도 자랑해볼까요?</div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="open-share">📤 결과 공유하기</button>
+      <button class="btn-secondary" data-close>확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Share Card ============ -->
+<div class="modal-bg" id="modal-share">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">내 픽 공유</div>
+    <div class="modal-desc">이미지로 저장하거나 친구들에게 공유하세요</div>
+
+    <div class="share-card-wrap">
+      <div class="share-card">
+        <div class="sc-brand">
+          <div class="sc-logo">킥픽<span class="dot">.</span></div>
+          <div class="sc-spon">후원 <b>또래오래</b></div>
+        </div>
+        <div class="sc-hero">오늘의 픽</div>
+        <div class="sc-name" id="share-name">나의 픽</div>
+        <div class="sc-stats">
+          <div>
+            <div class="sc-stat-v gold">23</div>
+            <div class="sc-stat-l">누적 정답</div>
+          </div>
+          <div>
+            <div class="sc-stat-v accent">5🔥</div>
+            <div class="sc-stat-l">연속 정답</div>
+          </div>
+          <div>
+            <div class="sc-stat-v">#142</div>
+            <div class="sc-stat-l">전체 순위</div>
+          </div>
+        </div>
+        <div class="sc-picks">
+          <div class="sc-pick">
+            <div class="sc-pick-t">결과</div>
+            <div class="sc-pick-v">🇰🇷 한국 승</div>
+          </div>
+          <div class="sc-pick">
+            <div class="sc-pick-t">PK</div>
+            <div class="sc-pick-v">없다</div>
+          </div>
+          <div class="sc-pick">
+            <div class="sc-pick-t">🎰 난입</div>
+            <div class="sc-pick-v">발생한다</div>
+          </div>
+        </div>
+        <div class="sc-foot">kickpick.kr · 1,247명 참여 중 · 🍗 7마리 풀</div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="share-instagram">📸 인스타 스토리</button>
+      <button class="btn-secondary" id="share-kakao-2">💬 카카오톡</button>
+      <button class="btn-secondary" id="save-image">💾 이미지 저장</button>
+      <button class="btn-secondary" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Toast ============ -->
+<div class="toast" id="toast">완료</div>
+
+<script>
+(() => {
+  // ===== State =====
+  const state = {
+    nickname: '나',
+    selections: { 1: null, 2: null, 3: null },
+    submitted: false,
+    participants: 1247,
+    chickens: 7,
+  };
+
+  // ===== Helpers =====
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+
+  function showToast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  function openModal(id) { $('#' + id).classList.add('active'); }
+  function closeAllModals() { $$('.modal-bg').forEach(m => m.classList.remove('active')); }
+
+  // ===== Onboarding =====
+  const nickInput = $('#nickname-input');
+  const startBtn = $('#start-btn');
+  nickInput.addEventListener('input', () => {
+    const v = nickInput.value.trim();
+    startBtn.disabled = v.length < 2;
+  });
+  startBtn.addEventListener('click', () => {
+    const v = nickInput.value.trim();
+    if (v.length < 2) return;
+    state.nickname = v;
+    $('#profile-name').textContent = v;
+    $('#my-rank-name').textContent = v;
+    $('#share-name').textContent = v;
+    $('#onboarding').classList.remove('active');
+    showView('main');
+    setTimeout(() => showToast(`환영해요, ${v}님! 🎉`), 300);
+  });
+
+  // ===== View Switching =====
+  function showView(name) {
+    $$('.view').forEach(v => v.classList.remove('active'));
+    $('#view-' + name).classList.add('active');
+    $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === name));
+    window.scrollTo(0, 0);
+  }
+
+  $$('[data-nav]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showView(el.dataset.nav);
+    });
+  });
+
+  $('.logo').addEventListener('click', () => showView('main'));
+
+  // ===== Mission Selection =====
+  $$('.mission').forEach(mission => {
+    const mid = mission.dataset.mission;
+    const opts = mission.querySelectorAll('.opt');
+    opts.forEach((opt, idx) => {
+      opt.addEventListener('click', () => {
+        if (state.submitted) return;
+        opts.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        state.selections[mid] = idx;
+        updateMissionProgress();
+      });
+    });
+  });
+
+  function updateMissionProgress() {
+    const done = Object.values(state.selections).filter(v => v !== null).length;
+    $('#done-count').textContent = done;
+    const btn = $('#submit-btn');
+    if (state.submitted) {
+      btn.disabled = true;
+      btn.textContent = '✓ 투표 완료 — 결과 정산 대기 중';
+    } else if (done === 3) {
+      btn.disabled = false;
+      btn.textContent = '✊ 오늘의 픽 제출하기';
+    } else {
+      btn.disabled = true;
+      btn.textContent = `${3 - done}개 더 선택해주세요`;
+    }
+  }
+
+  // ===== Submit =====
+  $('#submit-btn').addEventListener('click', () => {
+    if (state.submitted) return;
+    state.submitted = true;
+    $$('.mission').forEach(m => m.classList.add('completed'));
+    updateMissionProgress();
+    openModal('modal-submit');
+  });
+
+  // ===== Invite =====
+  $('#invite-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    openModal('modal-invite');
+  });
+  $('#copy-link').addEventListener('click', () => {
+    const link = `kickpick.kr/invite/${$('#invite-code').textContent}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(link).catch(() => {});
+    }
+    showToast('초대 링크가 복사됐어요 ✓');
+    closeAllModals();
+    // simulate growth
+    setTimeout(simulateGrowth, 600);
+  });
+  $('#share-kakao').addEventListener('click', () => {
+    showToast('카카오톡으로 공유 (목업)');
+    closeAllModals();
+    setTimeout(simulateGrowth, 600);
+  });
+
+  function simulateGrowth() {
+    state.participants += Math.floor(Math.random() * 120) + 40;
+    const remainder = state.participants % 500;
+    const nextNeeded = 500 - remainder;
+    const newChickens = Math.floor(state.participants / 500) + 5; // base 5 + bonus
+    const gained = newChickens - state.chickens;
+
+    state.chickens = newChickens;
+    $('#participant-count').textContent = state.participants.toLocaleString() + '명';
+    $('#chicken-count').textContent = newChickens;
+    $('#next-count').textContent = nextNeeded + '명';
+    $('#gauge-bar').style.width = ((500 - nextNeeded) / 500 * 100) + '%';
+
+    if (gained > 0) {
+      showToast(`🎉 친구가 가입했어요! 치킨 +${gained}마리`);
+    } else {
+      showToast(`👥 참여자가 늘었어요`);
+    }
+  }
+
+  // ===== Share Flow =====
+  $('#open-share').addEventListener('click', () => {
+    closeAllModals();
+    setTimeout(() => openModal('modal-share'), 200);
+  });
+  $('#share-instagram').addEventListener('click', () => { showToast('인스타 스토리로 공유 (목업)'); closeAllModals(); });
+  $('#share-kakao-2').addEventListener('click', () => { showToast('카톡으로 공유 (목업)'); closeAllModals(); });
+  $('#save-image').addEventListener('click', () => { showToast('이미지로 저장 (목업)'); });
+  $('#lb-share').addEventListener('click', () => { showToast('순위표 공유 (목업)'); });
+
+  // ===== Modal Close =====
+  $$('[data-close]').forEach(b => b.addEventListener('click', closeAllModals));
+  $$('.modal-bg').forEach(bg => bg.addEventListener('click', (e) => {
+    if (e.target === bg) closeAllModals();
+  }));
+
+  // ===== Leaderboard Tabs =====
+  $$('.lb-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $$('.lb-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      showToast(`${tab.textContent} 순위 (목업)`);
+    });
+  });
+
+  // ===== Countdown =====
+  let h = 2, m = 14, s = 37;
+  const numEls = $$('.cd-time .num');
+  setInterval(() => {
+    s--;
+    if (s < 0) { s = 59; m--; }
+    if (m < 0) { m = 59; h--; }
+    if (h < 0) { h = 0; m = 0; s = 0; }
+    numEls[0].textContent = String(h).padStart(2, '0');
+    numEls[1].textContent = String(m).padStart(2, '0');
+    numEls[2].textContent = String(s).padStart(2, '0');
+  }, 1000);
+
+  // ===== Init =====
+  updateMissionProgress();
+
+})();
+</script>
+
+</body>
+</html>
