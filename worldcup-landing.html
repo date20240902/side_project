@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>월승치못 — 월드컵 승부 예측에 치킨? 이건 못 참지</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-elev: #131829;
+    --bg-card: #1a2138;
+    --bg-card-2: #222a45;
+    --border: #2a3354;
+    --border-light: #3a4570;
+    --text: #f0f3fb;
+    --text-dim: #8b95b5;
+    --text-faint: #5a6485;
+    --accent: #ff3d57;
+    --accent-2: #ffb84d;
+    --gold: #ffd54a;
+    --green: #2ecc71;
+    --purple: #b067ff;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: #06070d; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Pretendard", "Apple SD Gothic Neo", sans-serif; -webkit-font-smoothing: antialiased; }
+  body { max-width: 460px; margin: 0 auto; min-height: 100vh; background: var(--bg); position: relative; }
+  button { font-family: inherit; }
+
+  /* ===== Hero ===== */
+  .hero {
+    padding: 36px 20px 28px;
+    background:
+      radial-gradient(ellipse at top right, rgba(255, 61, 87, 0.15), transparent 60%),
+      radial-gradient(ellipse at bottom left, rgba(255, 213, 74, 0.12), transparent 60%),
+      linear-gradient(180deg, #1a0a14 0%, var(--bg) 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-logo {
+    font-size: 32px; font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+  .hero-logo .dot { color: var(--accent); }
+  .hero-tag {
+    font-size: 13px; color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+  .hero-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 4px 16px rgba(255, 213, 74, 0.3));
+  }
+  .hero-title {
+    font-size: 28px; font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: -0.6px;
+    margin-bottom: 10px;
+  }
+  .hero-title .br { color: var(--accent-2); }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .countdown-box {
+    display: inline-flex;
+    align-items: baseline; gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255, 61, 87, 0.1);
+    border: 1px solid rgba(255, 61, 87, 0.3);
+    border-radius: 12px;
+    margin-bottom: 28px;
+  }
+  .cb-label { font-size: 11px; color: var(--text-dim); }
+  .cb-time {
+    font-size: 22px; font-weight: 900;
+    color: var(--accent); letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .btn-kakao-big {
+    width: 100%; padding: 18px;
+    background: #FEE500; color: #181600;
+    border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 900;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(255, 229, 0, 0.25);
+    transition: transform 0.15s;
+  }
+  .btn-kakao-big:active { transform: scale(0.98); }
+  .btn-kakao-big .ico {
+    width: 22px; height: 22px;
+    background: #181600; color: #FEE500;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 900;
+    line-height: 1;
+  }
+  .hero-note {
+    font-size: 11px; color: var(--text-faint);
+    margin-top: 12px;
+  }
+
+  /* ===== Section ===== */
+  .section { padding: 36px 20px 20px; }
+  .section-label {
+    font-size: 11px; font-weight: 800;
+    color: var(--accent-2);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 22px; font-weight: 900;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .section-desc {
+    font-size: 13px; color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  /* ===== Live Stats Card ===== */
+  .live-stats {
+    margin: 0 20px 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #2a1e0a 0%, #1a2138 100%);
+    border: 1px solid rgba(255, 213, 74, 0.3);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .ls-head {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 14px;
+  }
+  .ls-pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+  }
+  .ls-label {
+    font-size: 11px; color: var(--text-dim);
+    font-weight: 600;
+  }
+  .ls-row { display: flex; gap: 16px; margin-bottom: 14px; }
+  .ls-cell { flex: 1; text-align: left; }
+  .ls-val {
+    font-size: 32px; font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .ls-val.gold { color: var(--gold); }
+  .ls-val.accent { color: var(--accent-2); }
+  .ls-unit { font-size: 14px; color: var(--text-dim); margin-left: 2px; }
+  .ls-cap { font-size: 11px; color: var(--text-faint); margin-top: 5px; }
+  .ls-bar-wrap {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px; overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .ls-bar {
+    height: 100%; width: 62%;
+    background: linear-gradient(90deg, var(--accent-2), var(--gold));
+    box-shadow: 0 0 12px rgba(255, 213, 74, 0.4);
+  }
+  .ls-next {
+    font-size: 11px; color: var(--text-dim);
+    text-align: center;
+  }
+  .ls-next b { color: var(--text); font-weight: 700; }
+
+  /* ===== Step Cards ===== */
+  .steps { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+  .step {
+    display: flex; gap: 14px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .step-num {
+    width: 32px; height: 32px;
+    background: rgba(255, 61, 87, 0.15);
+    color: var(--accent);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 14px; font-weight: 900;
+    flex-shrink: 0;
+  }
+  .step-body { flex: 1; }
+  .step-t { font-size: 15px; font-weight: 800; margin-bottom: 3px; }
+  .step-d { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .step-emoji { font-size: 28px; align-self: center; opacity: 0.85; }
+
+  /* ===== Preview Cards ===== */
+  .preview-scroll {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .preview-scroll::-webkit-scrollbar { display: none; }
+  .preview-card {
+    flex: 0 0 260px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+  .pc-head {
+    padding: 12px 14px;
+    background: var(--bg-elev);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 700;
+    color: var(--text-dim);
+    display: flex; justify-content: space-between;
+  }
+  .pc-head .tag { color: var(--accent-2); }
+  .pc-body { padding: 14px; }
+
+  /* mini preview elements (lighter than actual app) */
+  .pc-mini {
+    padding: 10px 12px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pc-mini-t { flex: 1; font-size: 12px; font-weight: 700; }
+  .pc-mini-opts { display: flex; gap: 4px; }
+  .pc-mini-opt {
+    background: var(--bg-card-2);
+    padding: 4px 7px;
+    border-radius: 5px;
+    font-size: 10px; font-weight: 700;
+  }
+  .pc-mini-opt.on {
+    background: rgba(255,61,87,0.15);
+    color: var(--accent);
+  }
+  .pc-mini-opt.on2 {
+    background: rgba(46, 204, 113, 0.18);
+    color: var(--green);
+    position: relative;
+  }
+  .pc-gauge {
+    padding: 12px;
+    background: linear-gradient(135deg, #2a1e0a 0%, #1a2138 100%);
+    border: 1px solid #4a3820;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .pc-gauge-t {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .pc-gauge-c {
+    display: flex; align-items: baseline; gap: 6px;
+    margin-bottom: 8px;
+  }
+  .pc-gauge-c .big { font-size: 26px; font-weight: 900; color: var(--gold); letter-spacing: -0.5px; }
+  .pc-gauge-c .small { font-size: 11px; color: var(--text-dim); }
+  .pc-gauge-bar {
+    height: 4px; background: rgba(255,255,255,0.08);
+    border-radius: 2px; overflow: hidden;
+  }
+  .pc-gauge-bar > span {
+    display: block; width: 62%; height: 100%;
+    background: linear-gradient(90deg, var(--accent-2), var(--gold));
+  }
+  .pc-rank-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    background: var(--bg-elev);
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+  .pc-rank-num { font-size: 12px; font-weight: 800; min-width: 22px; }
+  .pc-rank-num.gold { color: var(--gold); }
+  .pc-rank-name { flex: 1; font-size: 11px; }
+  .pc-rank-score { font-size: 11px; font-weight: 700; color: var(--accent-2); }
+
+  /* ===== Bonus benefits ===== */
+  .bonus-list {
+    margin: 0 20px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(255, 61, 87, 0.08), rgba(255, 213, 74, 0.06));
+    border: 1px solid rgba(255, 213, 74, 0.25);
+    border-radius: 14px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .bl-item { display: flex; gap: 10px; align-items: flex-start; }
+  .bl-ico { font-size: 18px; flex-shrink: 0; line-height: 1.4; }
+  .bl-txt { font-size: 13px; line-height: 1.5; color: var(--text); }
+  .bl-txt .em { color: var(--accent-2); font-weight: 800; }
+
+  /* ===== Sample Push ===== */
+  .push-wrap {
+    margin: 0 20px;
+    perspective: 800px;
+  }
+  .push-card {
+    background: linear-gradient(135deg, #2a2f45 0%, #1a2138 100%);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    transform: rotateX(2deg);
+  }
+  .push-head {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px;
+  }
+  .push-app-ico {
+    width: 22px; height: 22px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-size: 13px;
+  }
+  .push-app-name { font-size: 12px; font-weight: 800; }
+  .push-time { font-size: 10px; color: var(--text-faint); margin-left: auto; }
+  .push-title {
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .push-body { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .push-body b { color: var(--gold); font-weight: 800; }
+  .push-cta {
+    font-size: 11px; color: var(--accent-2);
+    font-weight: 700; margin-top: 6px;
+  }
+  .push-caption {
+    text-align: center;
+    font-size: 11px; color: var(--text-faint);
+    margin-top: 10px;
+  }
+
+  /* ===== Sponsor Slots ===== */
+  .sponsor-list {
+    margin: 0 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .sp-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .sp-item.empty {
+    border-style: dashed;
+    border-color: rgba(255, 184, 77, 0.3);
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 184, 77, 0.03),
+        rgba(255, 184, 77, 0.03) 8px,
+        rgba(255, 213, 74, 0.04) 8px,
+        rgba(255, 213, 74, 0.04) 16px
+      ),
+      var(--bg-card);
+    cursor: pointer;
+  }
+  .sp-emoji { font-size: 28px; }
+  .sp-info { flex: 1; }
+  .sp-name { font-size: 14px; font-weight: 800; }
+  .sp-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .sp-badge {
+    background: rgba(255, 213, 74, 0.14);
+    color: var(--gold);
+    padding: 4px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 800;
+  }
+  .sp-badge.empty {
+    background: rgba(255, 184, 77, 0.12);
+    color: var(--accent-2);
+  }
+
+  /* ===== FAQ ===== */
+  .faq { margin: 0 20px; display: flex; flex-direction: column; gap: 8px; }
+  .faq-item {
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .faq-q {
+    font-size: 13px; font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .faq-q::before {
+    content: 'Q. '; color: var(--accent-2);
+  }
+  .faq-a {
+    font-size: 12px; color: var(--text-dim);
+    line-height: 1.55;
+  }
+  .faq-a::before {
+    content: 'A. '; color: var(--green); font-weight: 700;
+  }
+
+  /* ===== Final CTA ===== */
+  .final-cta {
+    margin: 40px 20px 20px;
+    padding: 32px 20px;
+    background: linear-gradient(135deg, rgba(255, 61, 87, 0.1), rgba(255, 213, 74, 0.08));
+    border: 1px solid rgba(255, 61, 87, 0.3);
+    border-radius: 18px;
+    text-align: center;
+  }
+  .fc-title {
+    font-size: 20px; font-weight: 900;
+    line-height: 1.4; margin-bottom: 10px;
+  }
+  .fc-sub {
+    font-size: 13px; color: var(--text-dim);
+    margin-bottom: 22px;
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    padding: 24px 20px 36px;
+    text-align: center;
+    font-size: 11px; color: var(--text-faint);
+    line-height: 1.7;
+  }
+  .footer a { color: var(--text-dim); text-decoration: underline; }
+  .footer .logo-mini {
+    font-size: 14px; font-weight: 900; color: var(--text);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .footer .logo-mini .dot { color: var(--accent); }
+
+  /* ===== Modal ===== */
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+    display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-bg.active { display: flex; animation: fadeIn 0.2s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    width: 100%; max-width: 460px;
+    background: var(--bg-elev);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 28px;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); } to { transform: none; } }
+  .modal-handle { width: 36px; height: 4px; background: var(--border-light); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 8px; }
+  .modal-desc { font-size: 13px; color: var(--text-dim); text-align: center; margin-bottom: 18px; line-height: 1.5; }
+
+  /* Kakao loading */
+  .kakao-loading {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+  }
+  .kakao-loading.active { display: flex; }
+  .kakao-loading-box {
+    background: white; color: #181600;
+    padding: 28px 36px; border-radius: 16px;
+    text-align: center; min-width: 240px;
+  }
+  .kakao-loading-box .ico-big {
+    width: 44px; height: 44px; margin: 0 auto 12px;
+    background: #FEE500; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 22px; font-weight: 900;
+    animation: kakaoPulse 1s ease-in-out infinite;
+  }
+  @keyframes kakaoPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .kakao-loading-box .t { font-size: 14px; font-weight: 700; }
+  .kakao-loading-box .d { font-size: 11px; color: #666; margin-top: 4px; }
+
+  /* Success state after signup */
+  .success-card {
+    text-align: center;
+  }
+  .success-emoji {
+    font-size: 64px; margin-bottom: 8px;
+  }
+  .success-code {
+    margin: 14px 0 16px;
+    padding: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px; color: var(--text-dim);
+    word-break: break-all; text-align: center;
+  }
+  .success-code b { color: var(--accent-2); }
+
+  .btn-secondary {
+    width: 100%; padding: 13px; border: 1px solid var(--border);
+    background: transparent; color: var(--text);
+    border-radius: 10px; font-size: 14px; font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .modal-actions { display: flex; flex-direction: column; gap: 8px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 30px; z-index: 300;
+    background: var(--bg-card-2); color: var(--text);
+    padding: 12px 18px; border-radius: 10px;
+    border: 1px solid var(--border-light);
+    font-size: 13px; font-weight: 600;
+    box-shadow: var(--shadow);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  /* Sticky bottom CTA after scroll */
+  .sticky-cta {
+    position: fixed;
+    bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
+    width: 100%; max-width: 460px;
+    padding: 14px 16px 22px;
+    background: rgba(10, 14, 26, 0.95);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    transition: transform 0.3s ease;
+    z-index: 90;
+  }
+  .sticky-cta.show { transform: translateX(-50%) translateY(0); }
+  .sticky-cta .btn-kakao-big { padding: 14px; font-size: 14px; box-shadow: none; }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-logo">월승치못<span class="dot">!</span></div>
+  <div class="hero-tag">월드컵 승부 예측에 치킨? 이건 못 참지</div>
+
+  <div class="hero-icon">🍗⚽</div>
+
+  <h1 class="hero-title">
+    매일 5문제 맞히고<br><span class="br">치킨 받자</span>
+  </h1>
+  <p class="hero-sub">
+    본격 오픈 전, 사전 예약하고 미리 참여하세요.<br>
+    참여자가 모일수록 치킨도 같이 늘어나요 🍗
+  </p>
+
+  <div class="countdown-box">
+    <span class="cb-label">본선 시작까지</span>
+    <span class="cb-time" id="countdown">D-43</span>
+  </div>
+
+  <div>
+    <button class="btn-kakao-big" id="signup-kakao">
+      <span class="ico">K</span>
+      카카오로 1초 사전 예약
+    </button>
+    <div class="hero-note">닉네임 · 프로필 이미지만 가져옵니다</div>
+  </div>
+</section>
+
+<!-- ============ LIVE STATS ============ -->
+<section style="padding-top: 28px;">
+  <div class="section" style="padding: 0 20px 14px;">
+    <div class="section-label">🔴 LIVE</div>
+    <h2 class="section-title">이미 모인 사람들</h2>
+    <p class="section-desc">사전 예약자 1명당 치킨이 조금씩 쌓이고 있어요.</p>
+  </div>
+
+  <div class="live-stats">
+    <div class="ls-head">
+      <span class="ls-pulse"></span>
+      <span class="ls-label">실시간 업데이트 중</span>
+    </div>
+    <div class="ls-row">
+      <div class="ls-cell">
+        <div class="ls-val accent" id="live-people">3,247</div>
+        <div class="ls-cap">명 사전 예약</div>
+      </div>
+      <div class="ls-cell" style="text-align: right;">
+        <div class="ls-val gold"><span id="live-chickens">18</span><span class="ls-unit">마리</span></div>
+        <div class="ls-cap">이미 적립된 치킨</div>
+      </div>
+    </div>
+    <div class="ls-bar-wrap">
+      <div class="ls-bar" id="live-bar"></div>
+    </div>
+    <div class="ls-next">
+      다음 치킨까지 <b id="live-next">253</b>명 · 500명마다 +1마리 🍗
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section">
+  <div class="section-label">HOW IT WORKS</div>
+  <h2 class="section-title">어떻게 받나요?</h2>
+  <p class="section-desc">매일 30초, 5문제. 다 맞히면 추첨에 들어가요.</p>
+</section>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-t">매일 5문제 예측 (30초)</div>
+      <div class="step-d">한국 결과 · PK 선언 · 관중 난입까지, 가벼운 픽 5개</div>
+    </div>
+    <div class="step-emoji">🎯</div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-t">다 맞히면 치킨 추첨 🍗</div>
+      <div class="step-d">5/5 정답자 중 추첨 1명 매일 · 주간 누적 1위에게도 추가</div>
+    </div>
+    <div class="step-emoji">🏆</div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-t">친구 초대하면 더블 픽</div>
+      <div class="step-d">카톡 공유 1번에 한 문제 답 2개 고르기 (일 최대 3번)</div>
+    </div>
+    <div class="step-emoji">🎰</div>
+  </div>
+</div>
+
+<!-- ============ PREVIEW ============ -->
+<section class="section">
+  <div class="section-label">PREVIEW</div>
+  <h2 class="section-title">이런 모습이에요</h2>
+  <p class="section-desc">← 옆으로 밀어서 미리보기 →</p>
+</section>
+
+<div class="preview-scroll">
+  <div class="preview-card">
+    <div class="pc-head">
+      <span>메인 화면</span>
+      <span class="tag">치킨 게이지</span>
+    </div>
+    <div class="pc-body">
+      <div class="pc-gauge">
+        <div class="pc-gauge-t">
+          <span>🍗 오늘의 치킨 풀</span>
+          <span style="color: var(--gold);">+2↑</span>
+        </div>
+        <div class="pc-gauge-c">
+          <span class="big">7</span>
+          <span class="small">마리</span>
+        </div>
+        <div class="pc-gauge-bar"><span></span></div>
+      </div>
+      <div class="pc-mini">
+        <div class="pc-mini-t">한국 vs 우루과이 22:00</div>
+        <div class="pc-mini-opts">
+          <div class="pc-mini-opt on">승</div>
+          <div class="pc-mini-opt">무</div>
+          <div class="pc-mini-opt">패</div>
+        </div>
+      </div>
+      <div class="pc-mini">
+        <div class="pc-mini-t">손흥민 공격포인트?</div>
+        <div class="pc-mini-opts">
+          <div class="pc-mini-opt on">YES</div>
+          <div class="pc-mini-opt">NO</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-card">
+    <div class="pc-head">
+      <span>더블 픽</span>
+      <span class="tag" style="color: var(--green);">친구 공유 보상</span>
+    </div>
+    <div class="pc-body">
+      <div style="padding: 10px; background: rgba(46, 204, 113, 0.08); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 8px; margin-bottom: 10px; font-size: 11px; color: var(--green); text-align: center;">
+        🎯 더블 픽 1장 사용 가능
+      </div>
+      <div class="pc-mini" style="border-color: var(--green);">
+        <div class="pc-mini-t">한국 vs 우루과이</div>
+        <div class="pc-mini-opts">
+          <div class="pc-mini-opt on">승</div>
+          <div class="pc-mini-opt on2">무</div>
+          <div class="pc-mini-opt">패</div>
+        </div>
+      </div>
+      <div style="font-size: 10px; color: var(--text-faint); padding: 0 4px;">
+        승과 무 둘 다 베팅 · 어느 쪽이든 정답!
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-card">
+    <div class="pc-head">
+      <span>주간 순위표</span>
+      <span class="tag">매주 일요일 리셋</span>
+    </div>
+    <div class="pc-body">
+      <div class="pc-rank-row">
+        <div class="pc-rank-num gold">🥇</div>
+        <div class="pc-rank-name">박지성팬1985</div>
+        <div class="pc-rank-score">47정답</div>
+      </div>
+      <div class="pc-rank-row">
+        <div class="pc-rank-num" style="color:#c0c8dc;">🥈</div>
+        <div class="pc-rank-name">치맥대장</div>
+        <div class="pc-rank-score">45정답</div>
+      </div>
+      <div class="pc-rank-row">
+        <div class="pc-rank-num" style="color:#d18d5a;">🥉</div>
+        <div class="pc-rank-name">손흥민가즈아</div>
+        <div class="pc-rank-score">43정답</div>
+      </div>
+      <div class="pc-rank-row" style="background: rgba(255, 61, 87, 0.08); border: 1px solid rgba(255, 61, 87, 0.2);">
+        <div class="pc-rank-num" style="color: var(--accent);">#142</div>
+        <div class="pc-rank-name">나</div>
+        <div class="pc-rank-score">23정답</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SIGNUP BONUS ============ -->
+<section class="section">
+  <div class="section-label">PRE-SIGNUP BONUS</div>
+  <h2 class="section-title">사전 예약자 한정 혜택</h2>
+  <p class="section-desc">먼저 신청한 사람한테는 작은 부스트를 드려요.</p>
+</section>
+
+<div class="bonus-list">
+  <div class="bl-item">
+    <span class="bl-ico">✨</span>
+    <div class="bl-txt">오픈 첫날 <span class="em">더블 픽 3장 자동 지급</span> — 손도 안 대고 시작부터 유리하게</div>
+  </div>
+  <div class="bl-item">
+    <span class="bl-ico">🔔</span>
+    <div class="bl-txt">본선 시작 1시간 전 <span class="em">카톡 알림</span> — 늦지 않게 첫날 픽</div>
+  </div>
+  <div class="bl-item">
+    <span class="bl-ico">📈</span>
+    <div class="bl-txt">사전 예약자 증가 / 치킨 적립 현황 <span class="em">주 1회 안내</span></div>
+  </div>
+  <div class="bl-item">
+    <span class="bl-ico">🎁</span>
+    <div class="bl-txt">친구 1명 추가 가입 시 <span class="em">더블 픽 추가 +1장</span></div>
+  </div>
+</div>
+
+<!-- ============ SAMPLE PUSH ============ -->
+<section class="section">
+  <div class="section-label">REGULAR UPDATES</div>
+  <h2 class="section-title">이런 알림을 받게 돼요</h2>
+  <p class="section-desc">사전 예약 진행 상황을 한눈에. 친구 모으는 동기도 자연스럽게.</p>
+</section>
+
+<div class="push-wrap">
+  <div class="push-card">
+    <div class="push-head">
+      <div class="push-app-ico">🍗</div>
+      <div class="push-app-name">월승치못</div>
+      <div class="push-time">3시간 전</div>
+    </div>
+    <div class="push-title">치킨이 또 1마리 늘었어요 🎉</div>
+    <div class="push-body">
+      사전 예약자 <b>4,127명</b> 돌파!<br>
+      이제 치킨이 <b>23마리</b>가 됐어요. 더 추천하고 치킨 늘려보세요.
+    </div>
+    <div class="push-cta">더 추천하기 →</div>
+  </div>
+  <div class="push-caption">주 1~2회, 마일스톤 도달 시 발송</div>
+</div>
+
+<div class="push-wrap" style="margin-top: 12px;">
+  <div class="push-card">
+    <div class="push-head">
+      <div class="push-app-ico">🍗</div>
+      <div class="push-app-name">월승치못</div>
+      <div class="push-time">1시간 후 예정</div>
+    </div>
+    <div class="push-title">오늘 첫 경기 시작 1시간 전!</div>
+    <div class="push-body">
+      <b>오늘의 5문제</b>가 올라왔어요.<br>
+      마감 전에 픽하고 추첨 줄에 서세요 🎯
+    </div>
+    <div class="push-cta">오늘의 픽 보러가기 →</div>
+  </div>
+  <div class="push-caption">본선 시작 후 매일 발송 (수신 동의 시)</div>
+</div>
+
+<!-- ============ SPONSORS ============ -->
+<section class="section">
+  <div class="section-label">SPONSORS</div>
+  <h2 class="section-title">함께 만드는 분들</h2>
+  <p class="section-desc">사전 예약 단계에서도 후원 상담 환영해요.</p>
+</section>
+
+<div class="sponsor-list">
+  <div class="sp-item">
+    <div class="sp-emoji">🍗</div>
+    <div class="sp-info">
+      <div class="sp-name">또래오래</div>
+      <div class="sp-role">공식 치킨 후원사</div>
+    </div>
+    <div class="sp-badge">CONFIRMED</div>
+  </div>
+  <div class="sp-item empty" id="sp-empty-pizza">
+    <div class="sp-emoji">🍕</div>
+    <div class="sp-info">
+      <div class="sp-name">피자 카테고리 모집 중</div>
+      <div class="sp-role">"피느님, 치킨 광고만 두실 거에요?"</div>
+    </div>
+    <div class="sp-badge empty">OPEN</div>
+  </div>
+  <div class="sp-item empty" id="sp-empty-drink">
+    <div class="sp-emoji">🥤</div>
+    <div class="sp-info">
+      <div class="sp-name">음료 카테고리 모집 중</div>
+      <div class="sp-role">치맥엔 콜라 · 사이다 · 맥주까지</div>
+    </div>
+    <div class="sp-badge empty">OPEN</div>
+  </div>
+</div>
+
+<!-- ============ FAQ ============ -->
+<section class="section">
+  <div class="section-label">FAQ</div>
+  <h2 class="section-title">자주 묻는 질문</h2>
+</section>
+
+<div class="faq">
+  <div class="faq-item">
+    <div class="faq-q">진짜 치킨 받나요?</div>
+    <div class="faq-a">네. 후원사 협찬 + 일일 추첨으로 매일 1마리씩 보내드려요. 당첨자에겐 카카오톡 기프티콘으로 발송.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">사전 예약하면 비용이 드나요?</div>
+    <div class="faq-a">완전 무료예요. 카카오 닉네임만 받고 광고/판매 메시지 안 보냅니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">개인정보 어디까지 받나요?</div>
+    <div class="faq-a">카카오 닉네임 + 프로필 이미지만. 이메일·전화번호 등은 받지 않습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">오픈은 언제예요?</div>
+    <div class="faq-a">월드컵 본선 1주일 전. 사전 예약자 분들께 카톡 알림 보내드릴게요.</div>
+  </div>
+</div>
+
+<!-- ============ FINAL CTA ============ -->
+<section>
+  <div class="final-cta">
+    <div class="fc-title">먼저 신청한 사람이<br>치킨 받을 확률도 높아요 🍗</div>
+    <div class="fc-sub">더블 픽 보너스 3장이 자동 지급돼요</div>
+    <button class="btn-kakao-big" id="signup-kakao-2">
+      <span class="ico">K</span>
+      카카오로 1초 사전 예약
+    </button>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="logo-mini">월승치못<span class="dot">!</span></div>
+  월드컵 승부 예측에 치킨? 이건 못 참지<br><br>
+  <a href="#">광고 / 후원 문의</a> · <a href="#">이용약관</a> · <a href="#">개인정보 처리방침</a><br><br>
+  © 2026 월승치못 · wsmot.kr
+</footer>
+
+<!-- ============ Sticky CTA after scroll ============ -->
+<div class="sticky-cta" id="sticky-cta">
+  <button class="btn-kakao-big" id="signup-kakao-3">
+    <span class="ico">K</span>
+    카카오로 1초 사전 예약
+  </button>
+</div>
+
+<!-- ============ Modal: Signup Success ============ -->
+<div class="modal-bg" id="modal-success">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="success-card">
+      <div class="success-emoji">🎉</div>
+      <div class="modal-title">사전 예약 완료!</div>
+      <div class="modal-desc"><b style="color: var(--accent-2);" id="success-name">홍길동</b>님 환영해요.<br>본선 시작 1주일 전, 알림으로 깨워드릴게요.</div>
+    </div>
+
+    <div style="background: rgba(46, 204, 113, 0.06); border: 1px solid rgba(46, 204, 113, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 14px; text-align: center;">
+      <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 4px;">🎯 자동 적립된 보너스</div>
+      <div style="font-size: 16px; font-weight: 800; color: var(--green);">더블 픽 3장 · 오픈 시 자동 지급</div>
+    </div>
+
+    <div class="success-code">
+      내 추천 코드 · <b id="success-code">U-K3F9A</b><br>
+      <span style="font-size: 11px;">친구가 이 코드로 가입하면 더블 픽 +1장</span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-kakao-big" id="share-friends">
+        <span class="ico">K</span>
+        친구한테 자랑하기
+      </button>
+      <button class="btn-secondary" data-close>나중에</button>
+    </div>
+  </div>
+</div>
+
+<!-- Kakao loading overlay -->
+<div class="kakao-loading" id="kakao-loading">
+  <div class="kakao-loading-box">
+    <div class="ico-big">K</div>
+    <div class="t">카카오 로그인 중...</div>
+    <div class="d">잠시만 기다려주세요</div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">완료</div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+
+  function showToast(msg, dur=1800) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('show'), dur);
+  }
+
+  // ===== Countdown =====
+  function updateCountdown() {
+    // mock fixed countdown for demo
+    $('#countdown').textContent = 'D-43';
+  }
+  updateCountdown();
+
+  // ===== Live stats simulate =====
+  let people = 3247;
+  let chickens = 18;
+  function updateLive() {
+    $('#live-people').textContent = people.toLocaleString();
+    $('#live-chickens').textContent = chickens;
+    const rem = 500 - (people % 500);
+    $('#live-next').textContent = rem;
+    $('#live-bar').style.width = ((500 - rem) / 500 * 100) + '%';
+  }
+  // periodic small bump
+  setInterval(() => {
+    if (Math.random() < 0.7) {
+      people += Math.floor(Math.random() * 3) + 1;
+      if (people % 500 < 3) chickens += 1;
+      updateLive();
+    }
+  }, 3500);
+  updateLive();
+
+  // ===== Sticky CTA on scroll =====
+  const sticky = $('#sticky-cta');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) sticky.classList.add('show');
+    else sticky.classList.remove('show');
+  });
+
+  // ===== Kakao signup =====
+  const mockProfiles = [
+    { nickname: '축구러버', code: 'U-K3F9A' },
+    { nickname: '치맥조아', code: 'U-MN2B7' },
+    { nickname: '월드컵2026', code: 'U-X8R4Q' },
+    { nickname: '응원단장', code: 'U-T1V6P' },
+  ];
+
+  function startKakaoSignup() {
+    $('#kakao-loading').classList.add('active');
+    setTimeout(() => {
+      const profile = mockProfiles[Math.floor(Math.random() * mockProfiles.length)];
+      $('#success-name').textContent = profile.nickname;
+      $('#success-code').textContent = profile.code;
+      $('#kakao-loading').classList.remove('active');
+      $('#modal-success').classList.add('active');
+
+      // bump live count
+      people += 1;
+      updateLive();
+    }, 1200);
+  }
+  $('#signup-kakao').addEventListener('click', startKakaoSignup);
+  $('#signup-kakao-2').addEventListener('click', startKakaoSignup);
+  $('#signup-kakao-3').addEventListener('click', startKakaoSignup);
+
+  // ===== Modal close =====
+  $$('[data-close]').forEach(b => b.addEventListener('click', () => {
+    $$('.modal-bg').forEach(m => m.classList.remove('active'));
+  }));
+  $$('.modal-bg').forEach(bg => bg.addEventListener('click', (e) => {
+    if (e.target === bg) bg.classList.remove('active');
+  }));
+
+  // ===== Share to friends =====
+  $('#share-friends').addEventListener('click', () => {
+    showToast('💬 카카오톡으로 추천 코드 공유 (목업)');
+    $$('.modal-bg').forEach(m => m.classList.remove('active'));
+    setTimeout(() => {
+      people += Math.floor(Math.random() * 4) + 2;
+      updateLive();
+      showToast('🎉 친구가 가입했어요! 더블 픽 +1장 예약');
+    }, 1200);
+  });
+
+  // ===== Sponsor inquiry =====
+  $$('.sp-item.empty').forEach(el => {
+    el.addEventListener('click', () => {
+      showToast('📩 광고 / 후원 문의는 ad@wsmot.kr');
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
