@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>오늘의 픽 — 월드컵 예측 챌린지</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-elev: #131829;
+    --bg-card: #1a2138;
+    --border: #2a3354;
+    --text: #f0f3fb;
+    --text-dim: #8b95b5;
+    --text-faint: #5a6485;
+    --accent: #ff3d57;
+    --accent-2: #ffb84d;
+    --gold: #ffd54a;
+    --green: #2ecc71;
+    --grass: #1d8348;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Pretendard", "Apple SD Gothic Neo", sans-serif; -webkit-font-smoothing: antialiased; }
+  body { max-width: 460px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; }
+
+  /* Header */
+  .app-header {
+    padding: 14px 18px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+  .logo .dot { color: var(--accent); }
+  .profile-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-card); border: 1px solid var(--border);
+    display: grid; place-items: center; cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* Chicken Gauge */
+  .gauge-card {
+    margin: 8px 14px 16px;
+    padding: 18px 18px 16px;
+    background: linear-gradient(135deg, #2a1e0a 0%, #1a2138 100%);
+    border: 1px solid #4a3820;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .gauge-card::before {
+    content: '';
+    position: absolute; top: -30px; right: -20px;
+    font-size: 140px; opacity: 0.08;
+    transform: rotate(-15deg);
+  }
+  .gauge-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .gauge-title {
+    font-size: 13px; color: var(--text-dim);
+    font-weight: 600; letter-spacing: 0.2px;
+  }
+  .gauge-sponsor {
+    font-size: 11px; color: var(--text-faint);
+  }
+  .gauge-sponsor b { color: var(--gold); font-weight: 700; }
+  .pool {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .pool-emoji { font-size: 32px; }
+  .pool-count {
+    font-size: 38px; font-weight: 900;
+    color: var(--gold); letter-spacing: -1px;
+    line-height: 1;
+  }
+  .pool-unit {
+    font-size: 16px; color: var(--text-dim);
+    margin-left: -4px;
+    align-self: flex-end; padding-bottom: 4px;
+  }
+  .pool-plus {
+    margin-left: auto;
+    font-size: 11px; color: var(--green);
+    background: rgba(46, 204, 113, 0.12);
+    padding: 4px 8px; border-radius: 6px;
+    font-weight: 700;
+  }
+
+  .gauge-bar-wrap {
+    position: relative;
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .gauge-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-2) 0%, var(--gold) 100%);
+    border-radius: 4px;
+    width: 62%;
+    box-shadow: 0 0 12px rgba(255, 213, 74, 0.4);
+  }
+  .gauge-foot {
+    display: flex; justify-content: space-between;
+    font-size: 12px;
+  }
+  .gauge-current { color: var(--text); }
+  .gauge-current b { color: var(--accent-2); font-weight: 800; }
+  .gauge-next { color: var(--text-dim); }
+  .gauge-next b { color: var(--text); font-weight: 700; }
+
+  .invite-btn {
+    margin-top: 14px;
+    width: 100%; padding: 11px;
+    background: rgba(255, 213, 74, 0.12);
+    color: var(--gold);
+    border: 1px solid rgba(255, 213, 74, 0.3);
+    border-radius: 10px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+  }
+  .invite-btn:active { transform: scale(0.98); }
+
+  /* Countdown */
+  .countdown {
+    margin: 0 14px 16px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cd-icon {
+    width: 36px; height: 36px;
+    background: rgba(255, 61, 87, 0.12);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 18px;
+  }
+  .cd-text { flex: 1; }
+  .cd-label {
+    font-size: 11px; color: var(--text-dim);
+    margin-bottom: 2px;
+  }
+  .cd-time {
+    font-size: 15px; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .cd-time .num { color: var(--accent); }
+
+  /* Section Title */
+  .section-title {
+    padding: 4px 18px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-title h2 {
+    margin: 0; font-size: 17px; font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .section-title .progress {
+    font-size: 12px; color: var(--text-dim);
+    font-weight: 600;
+  }
+  .section-title .progress b { color: var(--accent-2); }
+
+  /* Mission Cards */
+  .missions { padding: 0 14px; display: flex; flex-direction: column; gap: 12px; }
+  .mission {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mission.completed {
+    opacity: 0.55;
+  }
+  .mission.jackpot {
+    background: linear-gradient(135deg, #2a1430 0%, #1a2138 100%);
+    border-color: #5e2675;
+  }
+  .mission.jackpot::after {
+    content: '+10승';
+    position: absolute; top: 14px; right: 14px;
+    font-size: 10px; font-weight: 800;
+    background: linear-gradient(135deg, #ff3d57, #ff6b9d);
+    color: white;
+    padding: 4px 8px; border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .m-head {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+  }
+  .m-badge {
+    font-size: 10px; font-weight: 800;
+    color: var(--text-faint);
+    letter-spacing: 0.5px;
+  }
+  .m-tag {
+    font-size: 10px; font-weight: 700;
+    padding: 3px 7px; border-radius: 6px;
+  }
+  .m-tag.easy { background: rgba(46, 204, 113, 0.14); color: var(--green); }
+  .m-tag.hard { background: rgba(255, 184, 77, 0.14); color: var(--accent-2); }
+  .m-tag.jackpot { background: rgba(255, 107, 157, 0.14); color: #ff6b9d; }
+
+  .m-title {
+    font-size: 16px; font-weight: 700;
+    margin: 2px 0 12px;
+    line-height: 1.4;
+  }
+  .m-meta {
+    font-size: 12px; color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+  .m-meta .team { color: var(--text); font-weight: 700; }
+
+  .options { display: grid; gap: 8px; }
+  .options.three { grid-template-columns: 1fr 1fr 1fr; }
+  .options.two { grid-template-columns: 1fr 1fr; }
+  .opt {
+    background: var(--bg-elev);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt:active { transform: scale(0.96); }
+  .opt.selected {
+    background: rgba(255, 61, 87, 0.12);
+    border-color: var(--accent);
+  }
+  .opt-label {
+    font-size: 14px; font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .opt-rate {
+    font-size: 11px; color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .opt.selected .opt-rate { color: var(--accent); font-weight: 600; }
+
+  /* Stats Bar */
+  .stats {
+    margin: 20px 14px 0;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+  .stat { text-align: center; }
+  .stat-val {
+    font-size: 20px; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .stat-val.streak { color: var(--accent-2); }
+  .stat-val.streak::after { content: '🔥'; font-size: 14px; margin-left: 2px; }
+  .stat-label {
+    font-size: 11px; color: var(--text-dim);
+    margin-top: 3px;
+  }
+  .stat-divider {
+    width: 1px; background: var(--border); margin: 4px 0;
+  }
+
+  /* Bottom Nav */
+  .nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 460px;
+    background: rgba(10, 14, 26, 0.92);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    padding: 8px 0 14px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .nav-item {
+    text-align: center; padding: 6px 4px;
+    color: var(--text-faint);
+    font-size: 10px; font-weight: 600;
+    cursor: pointer;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-ico { font-size: 18px; margin-bottom: 2px; display: block; }
+
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo">킥픽<span class="dot">.</span></div>
+  <div class="profile-btn">👤</div>
+</header>
+
+<!-- Chicken Gauge -->
+<section class="gauge-card">
+  <div class="gauge-head">
+    <span class="gauge-title">🍗 오늘의 상품 풀</span>
+    <span class="gauge-sponsor">후원 <b>또래오래</b></span>
+  </div>
+  <div class="pool">
+    <span class="pool-emoji">🍗</span>
+    <span class="pool-count">7</span>
+    <span class="pool-unit">마리</span>
+    <span class="pool-plus">+2 ↑</span>
+  </div>
+  <div class="gauge-bar-wrap">
+    <div class="gauge-bar"></div>
+  </div>
+  <div class="gauge-foot">
+    <span class="gauge-current">현재 <b>1,247명</b> 참여 중</span>
+    <span class="gauge-next">다음 치킨까지 <b>253명</b></span>
+  </div>
+  <button class="invite-btn">친구 초대하고 치킨 늘리기 →</button>
+</section>
+
+<!-- Countdown -->
+<div class="countdown">
+  <div class="cd-icon">⏰</div>
+  <div class="cd-text">
+    <div class="cd-label">투표 마감까지</div>
+    <div class="cd-time"><span class="num">02</span>시간 <span class="num">14</span>분 <span class="num">37</span>초</div>
+  </div>
+</div>
+
+<!-- Section Title -->
+<div class="section-title">
+  <h2>오늘의 미션</h2>
+  <span class="progress"><b>1</b> / 3 완료</span>
+</div>
+
+<!-- Missions -->
+<section class="missions">
+
+  <!-- Mission 1: 승무패 (완료) -->
+  <article class="mission completed">
+    <div class="m-head">
+      <span class="m-badge">MISSION 1</span>
+      <span class="m-tag easy">기본 · +1승</span>
+    </div>
+    <div class="m-title">한국 vs 우루과이, 결과는?</div>
+    <div class="m-meta">오늘 22:00 · <span class="team">🇰🇷 한국</span> vs <span class="team">🇺🇾 우루과이</span></div>
+    <div class="options three">
+      <div class="opt selected">
+        <div class="opt-label">한국 승</div>
+        <div class="opt-rate">42%</div>
+      </div>
+      <div class="opt">
+        <div class="opt-label">무승부</div>
+        <div class="opt-rate">28%</div>
+      </div>
+      <div class="opt">
+        <div class="opt-label">우루과이 승</div>
+        <div class="opt-rate">30%</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Mission 2: 특이요소 -->
+  <article class="mission">
+    <div class="m-head">
+      <span class="m-badge">MISSION 2</span>
+      <span class="m-tag hard">특수 · +3승</span>
+    </div>
+    <div class="m-title">오늘 경기 중 PK가 선언될까요?</div>
+    <div class="m-meta">한국 vs 우루과이 경기 한정 · VAR 포함</div>
+    <div class="options two">
+      <div class="opt">
+        <div class="opt-label">선언된다</div>
+        <div class="opt-rate">37%</div>
+      </div>
+      <div class="opt">
+        <div class="opt-label">없다</div>
+        <div class="opt-rate">63%</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Mission 3: 잭팟 -->
+  <article class="mission jackpot">
+    <div class="m-head">
+      <span class="m-badge">JACKPOT MISSION</span>
+      <span class="m-tag jackpot">🎰 초대박</span>
+    </div>
+    <div class="m-title">오늘 경기 중<br>관중 난입이 발생할까요?</div>
+    <div class="m-meta">전 세계 모든 경기 중 1건 이상 · 적중 확률 약 2%</div>
+    <div class="options two">
+      <div class="opt">
+        <div class="opt-label">발생한다</div>
+        <div class="opt-rate">11%</div>
+      </div>
+      <div class="opt">
+        <div class="opt-label">없다</div>
+        <div class="opt-rate">89%</div>
+      </div>
+    </div>
+  </article>
+
+</section>
+
+<!-- My Stats -->
+<section class="stats">
+  <div class="stat">
+    <div class="stat-val streak">5</div>
+    <div class="stat-label">연승</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <div class="stat-val">23</div>
+    <div class="stat-label">누적 승수</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <div class="stat-val">#142</div>
+    <div class="stat-label">전체 순위</div>
+  </div>
+</section>
+
+<!-- Bottom Nav -->
+<nav class="nav">
+  <div class="nav-item active">
+    <span class="nav-ico">⚽</span>
+    오늘의 픽
+  </div>
+  <div class="nav-item">
+    <span class="nav-ico">🏆</span>
+    순위표
+  </div>
+  <div class="nav-item">
+    <span class="nav-ico">📊</span>
+    내 기록
+  </div>
+  <div class="nav-item">
+    <span class="nav-ico">🍗</span>
+    상품
+  </div>
+</nav>
+
+<script>
+  // Option selection
+  document.querySelectorAll('.mission:not(.completed)').forEach(mission => {
+    const opts = mission.querySelectorAll('.opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        opts.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+      });
+    });
+  });
+
+  // Countdown (decorative)
+  const numEls = document.querySelectorAll('.cd-time .num');
+  let h = 2, m = 14, s = 37;
+  setInterval(() => {
+    s--;
+    if (s < 0) { s = 59; m--; }
+    if (m < 0) { m = 59; h--; }
+    if (h < 0) { h = 0; m = 0; s = 0; }
+    numEls[0].textContent = String(h).padStart(2, '0');
+    numEls[1].textContent = String(m).padStart(2, '0');
+    numEls[2].textContent = String(s).padStart(2, '0');
+  }, 1000);
+</script>
+
+</body>
+</html>
