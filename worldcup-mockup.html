@@ -352,6 +352,80 @@
   }
   .ad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
+  /* ===== Tagline Strip ===== */
+  .tagline {
+    margin: 0 14px 16px;
+    padding: 12px 14px;
+    background: rgba(255, 213, 74, 0.06);
+    border: 1px solid rgba(255, 213, 74, 0.15);
+    border-radius: 12px;
+    font-size: 12px; color: var(--text-dim);
+    line-height: 1.55;
+    text-align: center;
+  }
+  .tagline b { color: var(--accent-2); font-weight: 700; }
+  .tagline .em { color: var(--text); font-weight: 700; }
+
+  /* ===== Mission group header ===== */
+  .mission-group-head {
+    padding: 12px 18px 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mgh-title { font-size: 13px; font-weight: 800; color: var(--text); }
+  .mgh-meta { font-size: 11px; color: var(--text-faint); margin-left: auto; }
+  .mgh-tag {
+    font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 5px;
+    letter-spacing: 0.3px;
+  }
+  .mgh-tag.easy { background: rgba(46, 204, 113, 0.14); color: var(--green); }
+  .mgh-tag.hard { background: rgba(255, 184, 77, 0.14); color: var(--accent-2); }
+  .mgh-tag.jackpot { background: rgba(255, 107, 157, 0.14); color: #ff6b9d; }
+
+  /* ===== Mini Mission Card (for 기본 미션) ===== */
+  .mission-mini {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    transition: opacity 0.3s;
+  }
+  .mission-mini.completed { opacity: 0.5; }
+  .mm-info { flex: 1; min-width: 0; }
+  .mm-title { font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .mm-meta { font-size: 10px; color: var(--text-faint); margin-top: 2px; }
+  .mm-opts { display: flex; gap: 4px; flex-shrink: 0; }
+  .mm-opt {
+    background: var(--bg-elev);
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 9px;
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; min-width: 30px; text-align: center;
+    transition: all 0.15s;
+  }
+  .mm-opt:active { transform: scale(0.95); }
+  .mm-opt.selected {
+    background: rgba(255, 61, 87, 0.14);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .mission-mini.completed .mm-opt { cursor: default; }
+
+  /* ===== Daily Prize Banner (above missions) ===== */
+  .prize-rule {
+    margin: 0 14px 16px;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(255, 213, 74, 0.08), rgba(255, 61, 87, 0.06));
+    border: 1px solid rgba(255, 213, 74, 0.25);
+    border-radius: 12px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .pr-emoji { font-size: 28px; }
+  .pr-txt { flex: 1; font-size: 12px; line-height: 1.5; color: var(--text-dim); }
+  .pr-txt b { color: var(--gold); font-weight: 800; }
+  .pr-txt .accent { color: var(--accent-2); font-weight: 700; }
+
   /* ===== Chicken Gauge ===== */
   .gauge-card {
     margin: 8px 14px 16px;
@@ -595,15 +669,15 @@
   .hist-date { font-size: 12px; color: var(--text-dim); min-width: 56px; font-variant-numeric: tabular-nums; }
   .hist-results { display: flex; gap: 5px; flex: 1; }
   .hist-dot {
-    width: 22px; height: 22px; border-radius: 6px;
-    display: grid; place-items: center;
-    font-size: 11px; font-weight: 800;
+    width: 13px; height: 13px; border-radius: 3px;
+    flex-shrink: 0;
   }
-  .hist-dot.win { background: rgba(46, 204, 113, 0.18); color: var(--green); }
-  .hist-dot.lose { background: rgba(255, 61, 87, 0.15); color: var(--accent); }
-  .hist-dot.jackpot { background: linear-gradient(135deg, #ff3d57, #ff6b9d); color: white; }
-  .hist-dot.pending { background: var(--bg-elev); color: var(--text-faint); }
-  .hist-sum { font-size: 12px; font-weight: 700; color: var(--text); min-width: 36px; text-align: right; }
+  .hist-dot.win { background: var(--green); }
+  .hist-dot.lose { background: var(--accent); opacity: 0.7; }
+  .hist-dot.jackpot { background: linear-gradient(135deg, #ff3d57, #ff6b9d); box-shadow: 0 0 6px rgba(255, 61, 87, 0.5); }
+  .hist-dot.pending { background: var(--bg-elev); border: 1px solid var(--border); }
+  .hist-score { font-size: 12px; font-weight: 800; color: var(--accent-2); min-width: 36px; text-align: center; font-variant-numeric: tabular-nums; }
+  .hist-sum { font-size: 11px; font-weight: 700; color: var(--text); min-width: 32px; text-align: right; }
 
   /* ===== Prizes ===== */
   .prize-hero {
@@ -727,27 +801,27 @@
 
   <div class="ob-hero">
     <div class="ob-hero-emoji">🍗⚽</div>
-    <div class="ob-hero-title">매일 3번, 30초 예측</div>
-    <div class="ob-hero-desc">정답을 맞히면 누적 정답이 쌓이고,<br>참여자가 모일수록 상품도 늘어나요</div>
+    <div class="ob-hero-title">매일 10문제, 다 맞히면 치킨!</div>
+    <div class="ob-hero-desc">제가 판은 깔아드렸어요.<br>사람들만 모아주세요 — <b style="color:var(--accent-2)">사람이 모이면 치킨도 모입니다</b> 🍗</div>
   </div>
 
   <div class="ob-feat">
     <div class="ob-feat-item">
       <div class="ob-feat-ico">🎯</div>
       <div class="ob-feat-txt">
-        <div class="ob-feat-t">기본 + 특수 + 잭팟 미션</div>
+        <div class="ob-feat-t">매일 10미션 (기본 7 + 특수 2 + 잭팟 1)</div>
         <div class="ob-feat-d">관중 난입 같은 잭팟은 한 방에 +10정답</div>
       </div>
     </div>
     <div class="ob-feat-item">
-      <div class="ob-feat-ico">🔥</div>
+      <div class="ob-feat-ico">🍗</div>
       <div class="ob-feat-txt">
-        <div class="ob-feat-t">연속 정답 챌린지</div>
-        <div class="ob-feat-d">매일 자정에 새로운 미션 오픈</div>
+        <div class="ob-feat-t">매일 치킨 1마리 · 주간 치킨 1마리</div>
+        <div class="ob-feat-d">10문제 다 맞힌 사람 중 추첨 + 주간 누적 1위</div>
       </div>
     </div>
     <div class="ob-feat-item">
-      <div class="ob-feat-ico">🍗</div>
+      <div class="ob-feat-ico">📈</div>
       <div class="ob-feat-txt">
         <div class="ob-feat-t">참여자 모일수록 상품 ↑</div>
         <div class="ob-feat-d">500명당 치킨 1마리씩 추가</div>
@@ -811,31 +885,124 @@
     </div>
   </div>
 
-  <div class="section-title">
-    <h2>오늘의 미션</h2>
-    <span class="progress"><b id="done-count">0</b> / 3 완료</span>
+  <!-- Tagline -->
+  <div class="tagline">
+    <span class="em">판은 저희가 깔아드렸어요.</span> 사람들만 모아주세요 —<br>
+    사람이 모이면 <b>치킨도 모입니다</b> 🍗
   </div>
 
-  <section class="missions" id="missions">
-    <!-- Mission 1 -->
-    <article class="mission" data-mission="1">
-      <div class="m-head">
-        <span class="m-badge">MISSION 1</span>
-        <span class="m-tag easy">기본 · +1정답</span>
-      </div>
-      <div class="m-title">한국 vs 우루과이, 결과는?</div>
-      <div class="m-meta">오늘 22:00 · <span class="team">🇰🇷 한국</span> vs <span class="team">🇺🇾 우루과이</span></div>
-      <div class="options three">
-        <div class="opt"><div class="opt-label">한국 승</div><div class="opt-rate">42%</div></div>
-        <div class="opt"><div class="opt-label">무승부</div><div class="opt-rate">28%</div></div>
-        <div class="opt"><div class="opt-label">우루과이 승</div><div class="opt-rate">30%</div></div>
-      </div>
-    </article>
+  <!-- Prize Rule -->
+  <div class="prize-rule">
+    <div class="pr-emoji">🏆</div>
+    <div class="pr-txt">
+      오늘 <b>10문제 모두 정답</b>이면 <span class="accent">치킨 1마리 추첨</span><br>
+      <span style="font-size: 11px;">아무도 다 못 맞히면 9문제 정답자 중 추첨 · 매주 일요일엔 누적 1위에게도 1마리</span>
+    </div>
+  </div>
 
-    <!-- Mission 2 -->
-    <article class="mission" data-mission="2">
+  <div class="section-title">
+    <h2>오늘의 미션</h2>
+    <span class="progress"><b id="done-count">0</b> / 10 완료</span>
+  </div>
+
+  <!-- Group: 기본 미션 -->
+  <div class="mission-group-head">
+    <span class="mgh-title">기본 미션</span>
+    <span class="mgh-tag easy">+1정답씩</span>
+    <span class="mgh-meta">7문제</span>
+  </div>
+  <section class="missions" id="missions" style="gap: 8px;">
+    <div class="mission-mini" data-mission="1">
+      <div class="mm-info">
+        <div class="mm-title">한국 vs 우루과이</div>
+        <div class="mm-meta">22:00 · 결과는?</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">승</div>
+        <div class="mm-opt">무</div>
+        <div class="mm-opt">패</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="2">
+      <div class="mm-info">
+        <div class="mm-title">브라질 vs 스위스</div>
+        <div class="mm-meta">04:00 · 결과는?</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">승</div>
+        <div class="mm-opt">무</div>
+        <div class="mm-opt">패</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="3">
+      <div class="mm-info">
+        <div class="mm-title">일본 vs 코스타리카</div>
+        <div class="mm-meta">19:00 · 결과는?</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">승</div>
+        <div class="mm-opt">무</div>
+        <div class="mm-opt">패</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="4">
+      <div class="mm-info">
+        <div class="mm-title">한국 vs 우루과이 — 양 팀 모두 득점?</div>
+        <div class="mm-meta">한 팀이라도 0골이면 NO</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="5">
+      <div class="mm-info">
+        <div class="mm-title">오늘 첫 골은 언제?</div>
+        <div class="mm-meta">전 세계 모든 경기 기준</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">전반</div>
+        <div class="mm-opt">후반</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="6">
+      <div class="mm-info">
+        <div class="mm-title">오늘 옐로카드 5장 이상 나올까?</div>
+        <div class="mm-meta">한국 vs 우루과이 경기 기준</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="7">
+      <div class="mm-info">
+        <div class="mm-title">손흥민, 공격 포인트 기록할까?</div>
+        <div class="mm-meta">득점 또는 도움 1개 이상</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Group: 특수 미션 -->
+  <div class="mission-group-head">
+    <span class="mgh-title">특수 미션</span>
+    <span class="mgh-tag hard">+3정답씩</span>
+    <span class="mgh-meta">2문제</span>
+  </div>
+  <section class="missions">
+    <article class="mission" data-mission="8">
       <div class="m-head">
-        <span class="m-badge">MISSION 2</span>
+        <span class="m-badge">MISSION 8</span>
         <span class="m-tag hard">특수 · +3정답</span>
       </div>
       <div class="m-title">오늘 경기 중 PK가 선언될까요?</div>
@@ -857,8 +1024,28 @@
       <button class="ad-inline-btn">제안 →</button>
     </div>
 
-    <!-- Mission 3: Jackpot -->
-    <article class="mission jackpot" data-mission="3">
+    <article class="mission" data-mission="9">
+      <div class="m-head">
+        <span class="m-badge">MISSION 9</span>
+        <span class="m-tag hard">특수 · +3정답</span>
+      </div>
+      <div class="m-title">오늘 경기 중 퇴장 카드가 나올까요?</div>
+      <div class="m-meta">전 세계 모든 경기 중 1건 이상</div>
+      <div class="options two">
+        <div class="opt"><div class="opt-label">나온다</div><div class="opt-rate">44%</div></div>
+        <div class="opt"><div class="opt-label">없다</div><div class="opt-rate">56%</div></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- Group: 잭팟 미션 -->
+  <div class="mission-group-head">
+    <span class="mgh-title">잭팟 미션</span>
+    <span class="mgh-tag jackpot">+10정답</span>
+    <span class="mgh-meta">1문제</span>
+  </div>
+  <section class="missions">
+    <article class="mission jackpot" data-mission="10">
       <div class="m-head">
         <span class="m-badge">JACKPOT MISSION</span>
         <span class="m-tag jackpot">🎰 초대박</span>
@@ -872,7 +1059,7 @@
     </article>
   </section>
 
-  <button class="floating-cta" id="submit-btn" disabled>3개 모두 선택해주세요</button>
+  <button class="floating-cta" id="submit-btn" disabled>10개 모두 선택해주세요</button>
 
   <section class="stats" data-nav="records">
     <div class="stat">
@@ -1012,70 +1199,63 @@
     </div>
   </div>
 
-  <div class="history-title">최근 7일 기록</div>
+  <div class="history-title">최근 7일 기록 (10미션 / 일)</div>
   <div class="history">
     <div class="hist-day">
       <div class="hist-date">오늘</div>
       <div class="hist-results">
-        <div class="hist-dot pending">?</div>
-        <div class="hist-dot pending">?</div>
-        <div class="hist-dot pending">?</div>
+        <div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div>
       </div>
+      <div class="hist-score">-</div>
       <div class="hist-sum">대기중</div>
     </div>
     <div class="hist-day">
       <div class="hist-date">05.15</div>
       <div class="hist-results">
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot lose">X</div>
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot lose"></div>
       </div>
-      <div class="hist-sum">+4</div>
+      <div class="hist-score">6/10</div>
+      <div class="hist-sum">+9</div>
     </div>
     <div class="hist-day">
       <div class="hist-date">05.14</div>
       <div class="hist-results">
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot lose">X</div>
-        <div class="hist-dot lose">X</div>
+        <div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div>
       </div>
-      <div class="hist-sum">+1</div>
+      <div class="hist-score">6/10</div>
+      <div class="hist-sum">+8</div>
     </div>
     <div class="hist-day">
       <div class="hist-date">05.13</div>
       <div class="hist-results">
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot jackpot">🎰</div>
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot jackpot"></div>
       </div>
-      <div class="hist-sum">+14</div>
+      <div class="hist-score">🏆 10/10</div>
+      <div class="hist-sum">+22</div>
     </div>
     <div class="hist-day">
       <div class="hist-date">05.12</div>
       <div class="hist-results">
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot lose">X</div>
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot lose"></div>
       </div>
-      <div class="hist-sum">+4</div>
+      <div class="hist-score">6/10</div>
+      <div class="hist-sum">+6</div>
     </div>
     <div class="hist-day">
       <div class="hist-date">05.11</div>
       <div class="hist-results">
-        <div class="hist-dot lose">X</div>
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot lose">X</div>
+        <div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div>
       </div>
-      <div class="hist-sum">+1</div>
+      <div class="hist-score">5/10</div>
+      <div class="hist-sum">+5</div>
     </div>
     <div class="hist-day">
       <div class="hist-date">05.10</div>
       <div class="hist-results">
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot win">O</div>
-        <div class="hist-dot lose">X</div>
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div>
       </div>
-      <div class="hist-sum">+4</div>
+      <div class="hist-score">8/10</div>
+      <div class="hist-sum">+12</div>
     </div>
   </div>
 </div>
@@ -1093,35 +1273,52 @@
     <div class="prize-hero-l">현재 1,247명 참여 / 500명당 1마리 추가</div>
   </div>
 
-  <div class="prize-section-title">💎 주요 후원사</div>
+  <div class="tagline" style="margin: 0 14px 16px;">
+    <span class="em">판은 저희가 깔아드렸어요.</span> 사람들만 모아주세요 —<br>
+    사람이 모이면 <b>치킨도 모입니다</b> 🍗
+  </div>
+
+  <div class="prize-section-title">🏆 어떻게 받나요?</div>
+  <div class="prize-list">
+    <div class="prize-item">
+      <div class="prize-emoji">🍗</div>
+      <div class="prize-info">
+        <div class="prize-name">매일 치킨 1마리</div>
+        <div class="prize-sponsor">10문제 모두 정답자 중 추첨 1명<br>없으면 9정답자 → 8정답자 순으로</div>
+      </div>
+      <div class="prize-qty">1<span class="x">/일</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">📅</div>
+      <div class="prize-info">
+        <div class="prize-name">주간 누적 1위 치킨</div>
+        <div class="prize-sponsor">매주 일요일 자정 기준<br>일주일 누적 정답 1위에게</div>
+      </div>
+      <div class="prize-qty">1<span class="x">/주</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">📈</div>
+      <div class="prize-info">
+        <div class="prize-name">참여자 보너스 치킨</div>
+        <div class="prize-sponsor">참여자 500명당 +1마리<br>오늘의 추첨에 합쳐서 지급</div>
+      </div>
+      <div class="prize-qty">+N<span class="x">마리</span></div>
+    </div>
+  </div>
+
+  <div class="prize-section-title" style="margin-top: 8px;">💎 후원사</div>
   <div class="prize-list">
     <div class="prize-item">
       <div class="prize-emoji">🍗</div>
       <div class="prize-info">
         <div class="prize-name">또래오래 후라이드</div>
-        <div class="prize-sponsor">또래오래 · 일간 1등</div>
+        <div class="prize-sponsor">메인 치킨 후원</div>
       </div>
-      <div class="prize-qty">7<span class="x">마리</span></div>
-    </div>
-    <div class="prize-item">
-      <div class="prize-emoji">🥤</div>
-      <div class="prize-info">
-        <div class="prize-name">콜라 1.25L</div>
-        <div class="prize-sponsor">코카콜라 · 추첨 10명</div>
-      </div>
-      <div class="prize-qty">10<span class="x">병</span></div>
-    </div>
-    <div class="prize-item">
-      <div class="prize-emoji">🧦</div>
-      <div class="prize-info">
-        <div class="prize-name">응원 양말 세트</div>
-        <div class="prize-sponsor">킥앤킥스 · 주간 TOP 5</div>
-      </div>
-      <div class="prize-qty">5<span class="x">세트</span></div>
+      <div class="prize-qty">공식</div>
     </div>
   </div>
 
-  <div class="prize-section-title" style="margin-top: 8px;">🎰 잭팟 보너스</div>
+  <div class="prize-section-title" style="margin-top: 8px;">🎰 시즌 끝 보너스</div>
   <div class="prize-list">
     <div class="prize-item">
       <div class="prize-emoji">🏆</div>
@@ -1135,7 +1332,7 @@
       <div class="prize-emoji">🎲</div>
       <div class="prize-info">
         <div class="prize-name">잭팟 적중자 추첨</div>
-        <div class="prize-sponsor">대회 종료 시 · 5만원 기프티콘</div>
+        <div class="prize-sponsor">관중 난입 적중자 중 · 5만원 기프티콘</div>
       </div>
       <div class="prize-qty">3<span class="x">명</span></div>
     </div>
@@ -1163,7 +1360,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">친구 초대하기</div>
-    <div class="modal-desc">친구가 가입하면 우리 모두의 상품 풀이 늘어나요.<br>500명마다 치킨 1마리 추가!</div>
+    <div class="modal-desc">판은 저희가 깔아드렸어요. 사람들만 모아주세요 🍗<br><b style="color: var(--accent-2);">500명 모이면 치킨 1마리 추가</b></div>
 
     <div class="kakao-share-preview">
       <div class="ksp-img">🍗⚽</div>
@@ -1234,19 +1431,15 @@
         </div>
         <div class="sc-picks">
           <div class="sc-pick">
-            <div class="sc-pick-t">결과</div>
-            <div class="sc-pick-v">🇰🇷 한국 승</div>
+            <div class="sc-pick-t">오늘의 픽</div>
+            <div class="sc-pick-v">10/10 도전 🔥</div>
           </div>
           <div class="sc-pick">
-            <div class="sc-pick-t">PK</div>
-            <div class="sc-pick-v">없다</div>
-          </div>
-          <div class="sc-pick">
-            <div class="sc-pick-t">🎰 난입</div>
-            <div class="sc-pick-v">발생한다</div>
+            <div class="sc-pick-t">🎰 잭팟</div>
+            <div class="sc-pick-v">관중 난입 GO</div>
           </div>
         </div>
-        <div class="sc-foot">wsmot.kr · 1,247명 참여 중 · 🍗 7마리 풀</div>
+        <div class="sc-foot">wsmot.kr · 1,247명 참여 중 · 🍗 7마리 풀 · 너도 들어와</div>
       </div>
     </div>
 
@@ -1335,11 +1528,12 @@
   // ===== State =====
   const state = {
     nickname: '나',
-    selections: { 1: null, 2: null, 3: null },
+    selections: { 1:null, 2:null, 3:null, 4:null, 5:null, 6:null, 7:null, 8:null, 9:null, 10:null },
     submitted: false,
     participants: 1247,
     chickens: 7,
   };
+  const TOTAL_MISSIONS = 10;
 
   // ===== Helpers =====
   const $ = (s) => document.querySelector(s);
@@ -1408,10 +1602,25 @@
 
   $('.logo').addEventListener('click', () => showView('main'));
 
-  // ===== Mission Selection =====
+  // ===== Mission Selection (full cards) =====
   $$('.mission').forEach(mission => {
     const mid = mission.dataset.mission;
     const opts = mission.querySelectorAll('.opt');
+    opts.forEach((opt, idx) => {
+      opt.addEventListener('click', () => {
+        if (state.submitted) return;
+        opts.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        state.selections[mid] = idx;
+        updateMissionProgress();
+      });
+    });
+  });
+
+  // ===== Mission Selection (mini cards) =====
+  $$('.mission-mini').forEach(mission => {
+    const mid = mission.dataset.mission;
+    const opts = mission.querySelectorAll('.mm-opt');
     opts.forEach((opt, idx) => {
       opt.addEventListener('click', () => {
         if (state.submitted) return;
@@ -1430,12 +1639,12 @@
     if (state.submitted) {
       btn.disabled = true;
       btn.textContent = '✓ 투표 완료 — 결과 정산 대기 중';
-    } else if (done === 3) {
+    } else if (done === TOTAL_MISSIONS) {
       btn.disabled = false;
       btn.textContent = '✊ 오늘의 픽 제출하기';
     } else {
       btn.disabled = true;
-      btn.textContent = `${3 - done}개 더 선택해주세요`;
+      btn.textContent = `${TOTAL_MISSIONS - done}개 더 선택해주세요`;
     }
   }
 
@@ -1443,7 +1652,7 @@
   $('#submit-btn').addEventListener('click', () => {
     if (state.submitted) return;
     state.submitted = true;
-    $$('.mission').forEach(m => m.classList.add('completed'));
+    $$('.mission, .mission-mini').forEach(m => m.classList.add('completed'));
     updateMissionProgress();
     openModal('modal-submit');
   });
