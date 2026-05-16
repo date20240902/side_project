@@ -211,6 +211,115 @@
     padding: 8px 14px; font-size: 11px; color: #999;
   }
 
+  /* ===== Ad Slot ===== */
+  .ad-slot {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .ad-tag {
+    position: absolute; top: 8px; right: 10px;
+    font-size: 9px; font-weight: 700;
+    color: var(--text-faint);
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px; border-radius: 4px;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+
+  /* Hero ad slot - large */
+  .ad-hero {
+    margin: 0 14px 16px;
+    padding: 18px;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 184, 77, 0.04),
+        rgba(255, 184, 77, 0.04) 8px,
+        rgba(255, 213, 74, 0.06) 8px,
+        rgba(255, 213, 74, 0.06) 16px
+      ),
+      var(--bg-card);
+    border: 1.5px dashed rgba(255, 213, 74, 0.4);
+    border-radius: 16px;
+  }
+  .ad-hero-emoji {
+    font-size: 36px; text-align: center; margin-bottom: 8px;
+    filter: grayscale(0.2);
+  }
+  .ad-hero-title {
+    font-size: 16px; font-weight: 800;
+    text-align: center;
+    margin-bottom: 4px;
+    color: var(--gold);
+  }
+  .ad-hero-sub {
+    font-size: 12px; color: var(--text-dim);
+    text-align: center; line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .ad-hero-sub b { color: var(--accent-2); }
+  .ad-hero-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .ad-stat { text-align: center; }
+  .ad-stat-v { font-size: 14px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+  .ad-stat-l { font-size: 9px; color: var(--text-faint); margin-top: 2px; }
+  .ad-cta {
+    width: 100%; padding: 10px;
+    background: rgba(255, 213, 74, 0.14);
+    color: var(--gold);
+    border: 1px solid rgba(255, 213, 74, 0.4);
+    border-radius: 10px;
+    font-size: 12px; font-weight: 800;
+    cursor: pointer;
+  }
+  .ad-cta:active { transform: scale(0.98); }
+
+  /* Inline ad slot - mid-content */
+  .ad-inline {
+    margin: 0;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-light);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ad-inline-emoji { font-size: 28px; }
+  .ad-inline-txt { flex: 1; }
+  .ad-inline-t { font-size: 13px; font-weight: 700; color: var(--text); }
+  .ad-inline-t .accent { color: var(--accent-2); }
+  .ad-inline-d { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .ad-inline-btn {
+    background: rgba(255, 184, 77, 0.14);
+    color: var(--accent-2);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 11px; font-weight: 800;
+    cursor: pointer; white-space: nowrap;
+  }
+
+  /* Footer ad - horizontal banner */
+  .ad-footer {
+    margin: 16px 14px 0;
+    padding: 14px 16px;
+    background: linear-gradient(90deg, rgba(255, 61, 87, 0.08) 0%, rgba(255, 213, 74, 0.08) 100%);
+    border: 1px dashed rgba(255, 184, 77, 0.3);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+  }
+  .ad-footer-emoji { font-size: 24px; }
+  .ad-footer-t { flex: 1; font-size: 12px; line-height: 1.4; color: var(--text-dim); }
+  .ad-footer-t b { color: var(--accent-2); font-weight: 800; }
+  .ad-footer-arrow { color: var(--accent-2); font-size: 16px; }
+
   /* ===== Chicken Gauge ===== */
   .gauge-card {
     margin: 8px 14px 16px;
@@ -670,6 +779,31 @@
     </div>
   </div>
 
+  <!-- Hero Ad Slot -->
+  <section class="ad-slot ad-hero" data-ad="hero">
+    <span class="ad-tag">AD SLOT</span>
+    <div class="ad-hero-emoji">🍗💸</div>
+    <div class="ad-hero-title">치느님 광고 모십니다</div>
+    <div class="ad-hero-sub">
+      지금 노출 단가 <b>저점</b>입니다. 월드컵 본선 시작 전 저점매수 찬스 🔥
+    </div>
+    <div class="ad-hero-stats">
+      <div class="ad-stat">
+        <div class="ad-stat-v">1,247명</div>
+        <div class="ad-stat-l">일일 활성</div>
+      </div>
+      <div class="ad-stat">
+        <div class="ad-stat-v">68%</div>
+        <div class="ad-stat-l">공유 카드 도달</div>
+      </div>
+      <div class="ad-stat">
+        <div class="ad-stat-v">4주</div>
+        <div class="ad-stat-l">월드컵 기간</div>
+      </div>
+    </div>
+    <button class="ad-cta">📩 광고 제안하기 (5초)</button>
+  </section>
+
   <div class="section-title">
     <h2>오늘의 미션</h2>
     <span class="progress"><b id="done-count">0</b> / 3 완료</span>
@@ -705,6 +839,17 @@
       </div>
     </article>
 
+    <!-- Inline Ad Slot -->
+    <div class="ad-slot ad-inline" data-ad="inline">
+      <span class="ad-tag">AD</span>
+      <div class="ad-inline-emoji">🥤</div>
+      <div class="ad-inline-txt">
+        <div class="ad-inline-t">음료 브랜드 <span class="accent">선착순 모집</span></div>
+        <div class="ad-inline-d">미션과 미션 사이, 가장 노출 좋은 자리예요</div>
+      </div>
+      <button class="ad-inline-btn">제안 →</button>
+    </div>
+
     <!-- Mission 3: Jackpot -->
     <article class="mission jackpot" data-mission="3">
       <div class="m-head">
@@ -738,6 +883,16 @@
       <div class="stat-label">전체 순위</div>
     </div>
   </section>
+
+  <!-- Footer Ad Slot -->
+  <div class="ad-slot ad-footer" data-ad="footer">
+    <span class="ad-tag">AD</span>
+    <span class="ad-footer-emoji">📢</span>
+    <div class="ad-footer-t">
+      여기 광고 자리. <b>월드컵 4주 패키지</b> 협의 가능해요
+    </div>
+    <span class="ad-footer-arrow">→</span>
+  </div>
 </div>
 
 <!-- ============ LEADERBOARD ============ -->
@@ -823,6 +978,17 @@
       <div class="lb-name">스트라이커</div>
       <div class="lb-correct">33<span class="lbl">정답</span></div>
     </div>
+  </div>
+
+  <!-- Inline Ad Slot on Leaderboard -->
+  <div class="ad-slot ad-inline" style="margin: 14px;" data-ad="leaderboard">
+    <span class="ad-tag">AD</span>
+    <div class="ad-inline-emoji">🏆</div>
+    <div class="ad-inline-txt">
+      <div class="ad-inline-t">순위표 1등 시상 <span class="accent">스폰서 모집</span></div>
+      <div class="ad-inline-d">매일 1등에게 브랜드 굿즈를 쏴주세요</div>
+    </div>
+    <button class="ad-inline-btn">제안 →</button>
   </div>
 </div>
 
@@ -1108,6 +1274,54 @@
   </div>
 </div>
 
+<!-- ============ MODAL: Ad Inquiry ============ -->
+<div class="modal-bg" id="modal-ad">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="font-size: 48px; text-align: center; margin-bottom: 4px;">📢</div>
+    <div class="modal-title">광고 제안하기</div>
+    <div class="modal-desc">치느님부터 동네 카페까지 환영합니다.<br>지금 들어오시면 <b style="color:var(--gold)">월드컵 본선 전 저점</b>이에요.</div>
+
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+      <div style="font-size: 11px; color: var(--text-faint); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 10px;">📊 현재 지표</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div>
+          <div style="font-size: 18px; font-weight: 800; color: var(--accent-2);">1,247명</div>
+          <div style="font-size: 10px; color: var(--text-dim);">DAU</div>
+        </div>
+        <div>
+          <div style="font-size: 18px; font-weight: 800; color: var(--gold);">+38% / 주</div>
+          <div style="font-size: 10px; color: var(--text-dim);">성장률</div>
+        </div>
+        <div>
+          <div style="font-size: 18px; font-weight: 800;">3.2회</div>
+          <div style="font-size: 10px; color: var(--text-dim);">1인 평균 방문</div>
+        </div>
+        <div>
+          <div style="font-size: 18px; font-weight: 800;">68%</div>
+          <div style="font-size: 10px; color: var(--text-dim);">공유 카드 도달률</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: rgba(255, 213, 74, 0.06); border: 1px solid rgba(255, 213, 74, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+      <div style="font-size: 12px; font-weight: 800; color: var(--gold); margin-bottom: 8px;">🎁 추천 후원 패키지</div>
+      <div style="font-size: 12px; color: var(--text-dim); line-height: 1.7;">
+        • 메인 배너 노출 (4주)<br>
+        • 1등 시상 굿즈 협찬 (브랜드 노출)<br>
+        • 공유 카드 워터마크 (바이럴 노출)<br>
+        • <b style="color:var(--accent-2)">성과 연동형:</b> 당첨자 수 × 단가 정산
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="ad-contact-kakao">💬 카카오톡으로 문의하기</button>
+      <button class="btn-secondary" id="ad-contact-email">✉️ 이메일로 제안서 보내기</button>
+      <button class="btn-secondary" data-close>다음에</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ Toast ============ -->
 <div class="toast" id="toast">완료</div>
 
@@ -1286,6 +1500,22 @@
   $$('.modal-bg').forEach(bg => bg.addEventListener('click', (e) => {
     if (e.target === bg) closeAllModals();
   }));
+
+  // ===== Ad Slot Click =====
+  $$('.ad-slot').forEach(slot => {
+    slot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModal('modal-ad');
+    });
+  });
+  $('#ad-contact-kakao').addEventListener('click', () => {
+    showToast('💬 카카오톡 채널로 연결 (목업)');
+    closeAllModals();
+  });
+  $('#ad-contact-email').addEventListener('click', () => {
+    showToast('✉️ ad@kickpick.kr 메일 작성창 열기 (목업)');
+    closeAllModals();
+  });
 
   // ===== Leaderboard Tabs =====
   $$('.lb-tab').forEach(tab => {
