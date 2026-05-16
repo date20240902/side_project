@@ -211,6 +211,74 @@
     padding: 8px 14px; font-size: 11px; color: #999;
   }
 
+  /* Bonus explanation rows in invite modal */
+  .bonus-explain {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .be-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-dim); }
+  .be-ico { font-size: 14px; }
+  .be-txt b { color: var(--text); font-weight: 700; }
+
+  .kakao-bonus-badge {
+    margin-left: 4px;
+    background: #181600; color: #FEE500;
+    font-size: 10px; font-weight: 800;
+    padding: 3px 7px; border-radius: 10px;
+    letter-spacing: 0.2px;
+  }
+
+  /* Double-pick banner (shown when user has bonus picks available) */
+  .doublepick-banner {
+    margin: 16px 14px 0;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(255, 213, 74, 0.06));
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    border-radius: 12px;
+    align-items: center; gap: 10px;
+    display: none;
+  }
+  .doublepick-banner.show { display: flex; }
+  .dp-ico { font-size: 22px; }
+  .dp-text { flex: 1; font-size: 12px; line-height: 1.5; color: var(--text-dim); }
+  .dp-text b { color: var(--green); font-weight: 800; }
+  .dp-count {
+    background: var(--green); color: #0a0e1a;
+    padding: 4px 10px; border-radius: 14px;
+    font-size: 12px; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Mission-mini with second (bonus) pick */
+  .mission-mini { position: relative; }
+  .mm-opt.bonus {
+    background: rgba(46, 204, 113, 0.15);
+    border-color: var(--green);
+    color: var(--text);
+    position: relative;
+  }
+  .mm-opt.bonus::before {
+    content: '+';
+    position: absolute; top: -4px; right: -3px;
+    width: 13px; height: 13px;
+    background: var(--green); color: #0a0e1a;
+    border-radius: 50%;
+    font-size: 9px; font-weight: 900;
+    display: grid; place-items: center;
+    line-height: 1;
+  }
+  .mission-mini.doubled::after {
+    content: '🎯 더블 픽';
+    position: absolute; top: 8px; right: 10px;
+    font-size: 9px; font-weight: 800; color: var(--green);
+    background: rgba(46, 204, 113, 0.15);
+    padding: 2px 6px; border-radius: 6px;
+  }
+
   /* ===== Ad Slot ===== */
   .ad-slot {
     position: relative;
@@ -894,6 +962,15 @@
     </div>
   </div>
 
+  <!-- Double-pick available banner -->
+  <div class="doublepick-banner" id="dp-banner">
+    <div class="dp-ico">🎯</div>
+    <div class="dp-text">
+      <b>더블 픽</b> 사용 가능! 한 문제에 답을 2개 고르세요
+    </div>
+    <div class="dp-count"><span id="dp-available">0</span>장</div>
+  </div>
+
   <div class="section-title">
     <h2>오늘의 예측</h2>
     <span class="progress"><b id="done-count">0</b> / 5 완료</span>
@@ -1267,22 +1344,38 @@
 <div class="modal-bg" id="modal-invite">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">친구 초대하기</div>
-    <div class="modal-desc">친구가 들어올수록 치킨도 늘어요 🍗<br><b style="color: var(--accent-2);">500명마다 치킨 1마리 추가</b></div>
+    <div class="modal-title">친구한테 기회도 주고, 치킨도 늘리고 🍗</div>
+    <div class="modal-desc">친구가 들어오면 <b style="color: var(--accent-2);">치킨이 늘고</b>,<br>나에겐 <b style="color: var(--green);">더블 픽 기회</b>가 생겨요</div>
 
     <div class="kakao-share-preview">
       <div class="ksp-img">🍗⚽</div>
       <div class="ksp-body">
         <div class="ksp-title" id="ksp-title">나의 픽에 도전해볼래?</div>
-        <div class="ksp-desc">월드컵 매일 3미션 예측. 친구가 들어올수록 치킨이 늘어나요. 🍗</div>
+        <div class="ksp-desc">월드컵 매일 5문제 예측. 친구가 들어올수록 치킨이 늘어나요. 🍗</div>
       </div>
       <div class="ksp-link">wsmot.kr</div>
+    </div>
+
+    <div class="bonus-explain">
+      <div class="be-row">
+        <span class="be-ico">🎯</span>
+        <span class="be-txt">공유 1회당 <b>더블 픽 +1</b> · 한 문제에 답을 2개 고를 수 있어요</span>
+      </div>
+      <div class="be-row">
+        <span class="be-ico">🍗</span>
+        <span class="be-txt">친구 가입 시 <b>치킨 풀 +1</b> (500명마다)</span>
+      </div>
+      <div class="be-row" style="color: var(--text-faint); font-size: 11px;">
+        <span class="be-ico" style="font-size: 12px;">⓵</span>
+        <span class="be-txt">일일 최대 3장</span>
+      </div>
     </div>
 
     <div class="modal-actions">
       <button class="btn-kakao" id="share-kakao">
         <span class="ico">K</span>
         카카오톡으로 공유
+        <span class="kakao-bonus-badge">+1 더블 픽</span>
       </button>
       <button class="btn-secondary" id="copy-link">🔗 초대 링크 복사</button>
       <button class="btn-secondary" data-close>닫기</button>
@@ -1436,10 +1529,14 @@
   // ===== State =====
   const state = {
     nickname: '나',
-    selections: { 1:null, 2:null, 3:null, 4:null, 5:null },
+    // selections: each mission can have 1 or 2 picks (set of option indices)
+    selections: { 1:[], 2:[], 3:[], 4:[], 5:[] },
     submitted: false,
     participants: 1247,
     chickens: 7,
+    doublePickAvailable: 0,
+    doublePickMaxPerDay: 3,
+    doublePickUsedToday: 0,
   };
   const TOTAL_MISSIONS = 5;
 
@@ -1510,38 +1607,70 @@
 
   $('.logo').addEventListener('click', () => showView('main'));
 
-  // ===== Mission Selection (full cards) =====
-  $$('.mission').forEach(mission => {
+  // ===== Mission Selection =====
+  // Rules:
+  // - Each mission has 1 pick by default
+  // - If user has double-pick credits, clicking a second (different) option adds it
+  // - Each mission can hold up to 2 picks (uses 1 double-pick credit)
+  // - Clicking an already-picked option deselects it (returns credit if it was a 2nd pick)
+  function bindMissionOptions(mission, optsSelector) {
     const mid = mission.dataset.mission;
-    const opts = mission.querySelectorAll('.opt');
+    const opts = mission.querySelectorAll(optsSelector);
     opts.forEach((opt, idx) => {
       opt.addEventListener('click', () => {
         if (state.submitted) return;
-        opts.forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        state.selections[mid] = idx;
-        updateMissionProgress();
-      });
-    });
-  });
+        const picks = state.selections[mid];
+        const has = picks.includes(idx);
 
-  // ===== Mission Selection (mini cards) =====
-  $$('.mission-mini').forEach(mission => {
-    const mid = mission.dataset.mission;
-    const opts = mission.querySelectorAll('.mm-opt');
-    opts.forEach((opt, idx) => {
-      opt.addEventListener('click', () => {
-        if (state.submitted) return;
-        opts.forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        state.selections[mid] = idx;
+        if (has) {
+          // Deselect — if this was the 2nd pick, return double-pick credit
+          if (picks.length === 2) {
+            state.doublePickAvailable += 1;
+          }
+          state.selections[mid] = picks.filter(p => p !== idx);
+        } else {
+          if (picks.length === 0) {
+            state.selections[mid] = [idx];
+          } else if (picks.length === 1) {
+            // Want to add a 2nd pick → requires available double-pick
+            if (state.doublePickAvailable > 0) {
+              state.selections[mid] = [...picks, idx];
+              state.doublePickAvailable -= 1;
+            } else {
+              // No bonus — replace existing pick
+              state.selections[mid] = [idx];
+            }
+          } else {
+            // Already 2 picks; replace by removing the older one
+            state.selections[mid] = [picks[1], idx];
+          }
+        }
+
+        renderMission(mission);
         updateMissionProgress();
+        updateDoublePickUI();
       });
     });
-  });
+  }
+
+  function renderMission(mission) {
+    const mid = mission.dataset.mission;
+    const picks = state.selections[mid];
+    const isMini = mission.classList.contains('mission-mini');
+    const opts = mission.querySelectorAll(isMini ? '.mm-opt' : '.opt');
+    opts.forEach((opt, idx) => {
+      opt.classList.remove('selected', 'bonus');
+      if (picks[0] === idx) opt.classList.add('selected');
+      if (picks[1] === idx) opt.classList.add('selected', 'bonus');
+    });
+    mission.classList.toggle('doubled', picks.length === 2);
+  }
+
+  $$('.mission').forEach(m => bindMissionOptions(m, '.opt'));
+  $$('.mission-mini').forEach(m => bindMissionOptions(m, '.mm-opt'));
 
   function updateMissionProgress() {
-    const done = Object.values(state.selections).filter(v => v !== null).length;
+    const done = Object.values(state.selections).filter(v => v.length > 0).length;
     $('#done-count').textContent = done;
     const btn = $('#submit-btn');
     if (state.submitted) {
@@ -1553,6 +1682,16 @@
     } else {
       btn.disabled = true;
       btn.textContent = `${TOTAL_MISSIONS - done}개 더 선택해주세요`;
+    }
+  }
+
+  function updateDoublePickUI() {
+    const banner = $('#dp-banner');
+    $('#dp-available').textContent = state.doublePickAvailable;
+    if (state.doublePickAvailable > 0) {
+      banner.classList.add('show');
+    } else {
+      banner.classList.remove('show');
     }
   }
 
@@ -1582,9 +1721,19 @@
   });
   $('#share-kakao').addEventListener('click', () => {
     // 실제 구현 시: Kakao.Share.sendDefault({ objectType: 'feed', ... })
-    showToast('💬 카카오톡 공유창을 여는 중...');
     closeAllModals();
-    setTimeout(simulateGrowth, 1000);
+    setTimeout(() => {
+      // Award double-pick (capped at daily max)
+      if (state.doublePickUsedToday < state.doublePickMaxPerDay) {
+        state.doublePickAvailable += 1;
+        state.doublePickUsedToday += 1;
+        updateDoublePickUI();
+        showToast(`🎯 더블 픽 +1! 한 문제에 답 2개 고를 수 있어요 (${state.doublePickUsedToday}/${state.doublePickMaxPerDay})`);
+      } else {
+        showToast('💬 공유 완료! 오늘의 더블 픽 한도 도달');
+      }
+      setTimeout(simulateGrowth, 800);
+    }, 200);
   });
 
   function simulateGrowth() {
@@ -1613,7 +1762,19 @@
     setTimeout(() => openModal('modal-share'), 200);
   });
   $('#share-instagram').addEventListener('click', () => { showToast('📸 인스타 스토리로 공유'); closeAllModals(); });
-  $('#share-kakao-2').addEventListener('click', () => { showToast('💬 카카오톡 공유창을 여는 중...'); closeAllModals(); });
+  $('#share-kakao-2').addEventListener('click', () => {
+    closeAllModals();
+    setTimeout(() => {
+      if (state.doublePickUsedToday < state.doublePickMaxPerDay) {
+        state.doublePickAvailable += 1;
+        state.doublePickUsedToday += 1;
+        updateDoublePickUI();
+        showToast(`🎯 더블 픽 +1! (${state.doublePickUsedToday}/${state.doublePickMaxPerDay})`);
+      } else {
+        showToast('💬 공유 완료! 오늘의 더블 픽 한도 도달');
+      }
+    }, 200);
+  });
   $('#save-image').addEventListener('click', () => { showToast('이미지로 저장 (목업)'); });
   $('#lb-share').addEventListener('click', () => { showToast('순위표 공유 (목업)'); });
 
