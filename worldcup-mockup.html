@@ -809,8 +809,8 @@
     <div class="ob-feat-item">
       <div class="ob-feat-ico">🎯</div>
       <div class="ob-feat-txt">
-        <div class="ob-feat-t">매일 10미션 (기본 7 + 특수 2 + 잭팟 1)</div>
-        <div class="ob-feat-d">관중 난입 같은 잭팟은 한 방에 +10정답</div>
+        <div class="ob-feat-t">매일 10문제, 한 번에 예측</div>
+        <div class="ob-feat-d">결과 · PK · 퇴장 · 관중 난입까지</div>
       </div>
     </div>
     <div class="ob-feat-item">
@@ -823,8 +823,8 @@
     <div class="ob-feat-item">
       <div class="ob-feat-ico">📈</div>
       <div class="ob-feat-txt">
-        <div class="ob-feat-t">참여자 모일수록 상품 ↑</div>
-        <div class="ob-feat-d">500명당 치킨 1마리씩 추가</div>
+        <div class="ob-feat-t">참여자 모일수록 치킨도 늘어요</div>
+        <div class="ob-feat-d">500명마다 치킨 1마리씩 추가</div>
       </div>
     </div>
   </div>
@@ -858,7 +858,7 @@
 
   <section class="gauge-card" data-nav="prizes">
     <div class="gauge-head">
-      <span class="gauge-title">🍗 오늘의 상품 풀</span>
+      <span class="gauge-title">🍗 오늘의 치킨 풀 <span style="color:var(--text-faint); font-weight: 500;">· 사람 늘수록 ↑</span></span>
       <span class="gauge-sponsor">후원 <b>또래오래</b></span>
     </div>
     <div class="pool">
@@ -885,32 +885,20 @@
     </div>
   </div>
 
-  <!-- Tagline -->
-  <div class="tagline">
-    <span class="em">판은 저희가 깔아드렸어요.</span> 사람들만 모아주세요 —<br>
-    사람이 모이면 <b>치킨도 모입니다</b> 🍗
-  </div>
-
   <!-- Prize Rule -->
   <div class="prize-rule">
     <div class="pr-emoji">🏆</div>
     <div class="pr-txt">
       오늘 <b>10문제 모두 정답</b>이면 <span class="accent">치킨 1마리 추첨</span><br>
-      <span style="font-size: 11px;">아무도 다 못 맞히면 9문제 정답자 중 추첨 · 매주 일요일엔 누적 1위에게도 1마리</span>
+      <span style="font-size: 11px;">아무도 다 못 맞히면 9정답자 → 8정답자 순으로 · 일요일엔 주간 누적 1위에게도</span>
     </div>
   </div>
 
   <div class="section-title">
-    <h2>오늘의 미션</h2>
+    <h2>오늘의 예측</h2>
     <span class="progress"><b id="done-count">0</b> / 10 완료</span>
   </div>
 
-  <!-- Group: 기본 미션 -->
-  <div class="mission-group-head">
-    <span class="mgh-title">기본 미션</span>
-    <span class="mgh-tag easy">+1정답씩</span>
-    <span class="mgh-meta">7문제</span>
-  </div>
   <section class="missions" id="missions" style="gap: 8px;">
     <div class="mission-mini" data-mission="1">
       <div class="mm-info">
@@ -961,7 +949,7 @@
 
     <div class="mission-mini" data-mission="5">
       <div class="mm-info">
-        <div class="mm-title">오늘 첫 골은 언제?</div>
+        <div class="mm-title">오늘 첫 골은 언제 터질까?</div>
         <div class="mm-meta">전 세계 모든 경기 기준</div>
       </div>
       <div class="mm-opts">
@@ -972,8 +960,8 @@
 
     <div class="mission-mini" data-mission="6">
       <div class="mm-info">
-        <div class="mm-title">오늘 옐로카드 5장 이상 나올까?</div>
-        <div class="mm-meta">한국 vs 우루과이 경기 기준</div>
+        <div class="mm-title">손흥민, 공격 포인트 기록할까?</div>
+        <div class="mm-meta">득점 또는 도움 1개 이상</div>
       </div>
       <div class="mm-opts">
         <div class="mm-opt">YES</div>
@@ -983,35 +971,14 @@
 
     <div class="mission-mini" data-mission="7">
       <div class="mm-info">
-        <div class="mm-title">손흥민, 공격 포인트 기록할까?</div>
-        <div class="mm-meta">득점 또는 도움 1개 이상</div>
+        <div class="mm-title">한국 vs 우루과이 — 옐로카드 5장 이상?</div>
+        <div class="mm-meta">양 팀 합산</div>
       </div>
       <div class="mm-opts">
         <div class="mm-opt">YES</div>
         <div class="mm-opt">NO</div>
       </div>
     </div>
-  </section>
-
-  <!-- Group: 특수 미션 -->
-  <div class="mission-group-head">
-    <span class="mgh-title">특수 미션</span>
-    <span class="mgh-tag hard">+3정답씩</span>
-    <span class="mgh-meta">2문제</span>
-  </div>
-  <section class="missions">
-    <article class="mission" data-mission="8">
-      <div class="m-head">
-        <span class="m-badge">MISSION 8</span>
-        <span class="m-tag hard">특수 · +3정답</span>
-      </div>
-      <div class="m-title">오늘 경기 중 PK가 선언될까요?</div>
-      <div class="m-meta">한국 vs 우루과이 경기 한정 · VAR 포함</div>
-      <div class="options two">
-        <div class="opt"><div class="opt-label">선언된다</div><div class="opt-rate">37%</div></div>
-        <div class="opt"><div class="opt-label">없다</div><div class="opt-rate">63%</div></div>
-      </div>
-    </article>
 
     <!-- Inline Ad Slot -->
     <div class="ad-slot ad-inline" data-ad="inline">
@@ -1024,57 +991,56 @@
       <button class="ad-inline-btn">제안 →</button>
     </div>
 
-    <article class="mission" data-mission="9">
-      <div class="m-head">
-        <span class="m-badge">MISSION 9</span>
-        <span class="m-tag hard">특수 · +3정답</span>
+    <div class="mission-mini" data-mission="8">
+      <div class="mm-info">
+        <div class="mm-title">오늘 경기 중 PK가 선언될까?</div>
+        <div class="mm-meta">한국 vs 우루과이 · VAR 포함</div>
       </div>
-      <div class="m-title">오늘 경기 중 퇴장 카드가 나올까요?</div>
-      <div class="m-meta">전 세계 모든 경기 중 1건 이상</div>
-      <div class="options two">
-        <div class="opt"><div class="opt-label">나온다</div><div class="opt-rate">44%</div></div>
-        <div class="opt"><div class="opt-label">없다</div><div class="opt-rate">56%</div></div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
       </div>
-    </article>
-  </section>
+    </div>
 
-  <!-- Group: 잭팟 미션 -->
-  <div class="mission-group-head">
-    <span class="mgh-title">잭팟 미션</span>
-    <span class="mgh-tag jackpot">+10정답</span>
-    <span class="mgh-meta">1문제</span>
-  </div>
-  <section class="missions">
-    <article class="mission jackpot" data-mission="10">
-      <div class="m-head">
-        <span class="m-badge">JACKPOT MISSION</span>
-        <span class="m-tag jackpot">🎰 초대박</span>
+    <div class="mission-mini" data-mission="9">
+      <div class="mm-info">
+        <div class="mm-title">오늘 경기 중 퇴장 카드가 나올까?</div>
+        <div class="mm-meta">전 세계 모든 경기 중 1건 이상</div>
       </div>
-      <div class="m-title">오늘 경기 중<br>관중 난입이 발생할까요?</div>
-      <div class="m-meta">전 세계 모든 경기 중 1건 이상 · 적중 확률 약 2%</div>
-      <div class="options two">
-        <div class="opt"><div class="opt-label">발생한다</div><div class="opt-rate">11%</div></div>
-        <div class="opt"><div class="opt-label">없다</div><div class="opt-rate">89%</div></div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
       </div>
-    </article>
+    </div>
+
+    <div class="mission-mini" data-mission="10">
+      <div class="mm-info">
+        <div class="mm-title">관중 난입이 발생할까? 🎰</div>
+        <div class="mm-meta">전 세계 모든 경기 · 적중 약 2%</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
+      </div>
+    </div>
   </section>
 
   <button class="floating-cta" id="submit-btn" disabled>10개 모두 선택해주세요</button>
 
   <section class="stats" data-nav="records">
     <div class="stat">
-      <div class="stat-val streak">5</div>
-      <div class="stat-label">연속 정답</div>
+      <div class="stat-val">23</div>
+      <div class="stat-label">이번 주 정답</div>
     </div>
     <div class="stat-divider"></div>
     <div class="stat">
-      <div class="stat-val">23</div>
-      <div class="stat-label">누적 정답</div>
+      <div class="stat-val">67%</div>
+      <div class="stat-label">정답률</div>
     </div>
     <div class="stat-divider"></div>
     <div class="stat">
       <div class="stat-val">#142</div>
-      <div class="stat-label">전체 순위</div>
+      <div class="stat-label">주간 순위</div>
     </div>
   </section>
 
@@ -1088,16 +1054,16 @@
   </header>
 
   <div class="lb-tabs">
-    <div class="lb-tab active" data-period="day">일간</div>
-    <div class="lb-tab" data-period="week">주간</div>
-    <div class="lb-tab" data-period="total">통합</div>
+    <div class="lb-tab active" data-period="week">이번 주</div>
+    <div class="lb-tab" data-period="day">오늘</div>
+    <div class="lb-tab" data-period="season">시즌 통합</div>
   </div>
 
   <div class="my-rank">
     <div class="my-rank-num">#142</div>
     <div class="my-rank-info">
       <div class="my-rank-name" id="my-rank-name">나</div>
-      <div class="my-rank-stats">누적 23정답 · 승률 67%</div>
+      <div class="my-rank-stats">이번 주 23정답 · 정답률 67%</div>
     </div>
     <div class="my-rank-trend">▲ 8</div>
   </div>
@@ -1183,20 +1149,24 @@
   <div class="big-stats">
     <div class="big-stat">
       <div class="v gold">23</div>
-      <div class="l">누적 정답</div>
+      <div class="l">이번 주 누적 정답</div>
     </div>
     <div class="big-stat">
-      <div class="v accent">5🔥</div>
-      <div class="l">현재 연속 정답</div>
+      <div class="v accent">#142</div>
+      <div class="l">주간 순위</div>
     </div>
     <div class="big-stat">
       <div class="v">67%</div>
       <div class="l">정답률</div>
     </div>
     <div class="big-stat">
-      <div class="v">#142</div>
-      <div class="l">전체 순위</div>
+      <div class="v">47</div>
+      <div class="l">시즌 누적 정답</div>
     </div>
+  </div>
+
+  <div style="margin: 0 14px 16px; padding: 10px 14px; background: rgba(46, 204, 113, 0.06); border: 1px solid rgba(46, 204, 113, 0.2); border-radius: 10px; font-size: 11px; color: var(--text-dim); text-align: center;">
+    📅 주간 누적은 매주 <b style="color: var(--green);">일요일 자정</b>에 리셋됩니다 · 이번 주 종료까지 <b style="color: var(--text);">2일</b>
   </div>
 
   <div class="history-title">최근 7일 기록 (10미션 / 일)</div>
@@ -1271,11 +1241,6 @@
     <div class="prize-hero-big">🍗</div>
     <div class="prize-hero-c">총 7마리</div>
     <div class="prize-hero-l">현재 1,247명 참여 / 500명당 1마리 추가</div>
-  </div>
-
-  <div class="tagline" style="margin: 0 14px 16px;">
-    <span class="em">판은 저희가 깔아드렸어요.</span> 사람들만 모아주세요 —<br>
-    사람이 모이면 <b>치킨도 모입니다</b> 🍗
   </div>
 
   <div class="prize-section-title">🏆 어떻게 받나요?</div>
@@ -1360,7 +1325,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">친구 초대하기</div>
-    <div class="modal-desc">판은 저희가 깔아드렸어요. 사람들만 모아주세요 🍗<br><b style="color: var(--accent-2);">500명 모이면 치킨 1마리 추가</b></div>
+    <div class="modal-desc">친구가 들어올수록 치킨도 늘어요 🍗<br><b style="color: var(--accent-2);">500명마다 치킨 1마리 추가</b></div>
 
     <div class="kakao-share-preview">
       <div class="ksp-img">🍗⚽</div>
@@ -1418,15 +1383,15 @@
         <div class="sc-stats">
           <div>
             <div class="sc-stat-v gold">23</div>
-            <div class="sc-stat-l">누적 정답</div>
+            <div class="sc-stat-l">이번 주 정답</div>
           </div>
           <div>
-            <div class="sc-stat-v accent">5🔥</div>
-            <div class="sc-stat-l">연속 정답</div>
+            <div class="sc-stat-v accent">67%</div>
+            <div class="sc-stat-l">정답률</div>
           </div>
           <div>
             <div class="sc-stat-v">#142</div>
-            <div class="sc-stat-l">전체 순위</div>
+            <div class="sc-stat-l">주간 순위</div>
           </div>
         </div>
         <div class="sc-picks">
