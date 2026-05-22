@@ -942,10 +942,16 @@
 <!-- Toast -->
 <div class="toast" id="toast">완료</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => document.querySelectorAll(s);
+
+  // ===== Supabase =====
+  const SUPABASE_URL = 'https://mgmaibrwapphvgafzdon.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_5EusOBrKORHh3NpUkRcXNA_ZAlyHg4k';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function showToast(msg, dur=1800) {
     const t = $('#toast');
@@ -956,31 +962,25 @@
   }
 
   // ===== Countdown =====
-  function updateCountdown() {
-    // mock fixed countdown for demo
-    $('#countdown').textContent = 'D-43';
-  }
-  updateCountdown();
+  $('#countdown').textContent = 'D-43';
 
-  // ===== Live stats simulate =====
-  let people = 3247;
-  let chickens = 18;
-  function updateLive() {
+  // ===== Live stats (real count from Supabase) =====
+  let people = 0;
+  function renderLive() {
+    const chickens = Math.floor(people / 500);
     $('#live-people').textContent = people.toLocaleString();
     $('#live-chickens').textContent = chickens;
-    const rem = 500 - (people % 500);
-    $('#live-next').textContent = rem;
-    $('#live-bar').style.width = ((500 - rem) / 500 * 100) + '%';
+    const inCycle = people % 500;
+    $('#live-next').textContent = 500 - inCycle;
+    $('#live-bar').style.width = (inCycle / 500 * 100) + '%';
   }
-  // periodic small bump
-  setInterval(() => {
-    if (Math.random() < 0.7) {
-      people += Math.floor(Math.random() * 3) + 1;
-      if (people % 500 < 3) chickens += 1;
-      updateLive();
-    }
-  }, 3500);
-  updateLive();
+  async function refreshCount() {
+    const { data, error } = await sb.rpc('signup_count');
+    if (!error && data != null) { people = Number(data); renderLive(); }
+  }
+  renderLive();
+  refreshCount();
+  setInterval(refreshCount, 20000);
 
   // ===== Sticky CTA on scroll =====
   const sticky = $('#sticky-cta');
@@ -989,31 +989,56 @@
     else sticky.classList.remove('show');
   });
 
-  // ===== Kakao signup =====
-  const mockProfiles = [
-    { nickname: '축구러버', code: 'U-K3F9A' },
-    { nickname: '치맥조아', code: 'U-MN2B7' },
-    { nickname: '월드컵2026', code: 'U-X8R4Q' },
-    { nickname: '응원단장', code: 'U-T1V6P' },
-  ];
+  // ===== Kakao signup via Supabase Auth =====
+  function nicknameOf(user) {
+    const m = (user && user.user_metadata) || {};
+    return m.name || m.full_name || m.user_name || m.nickname || m.preferred_username || '치킨러버';
+  }
+  function refCode(user) {
+    return 'U-' + String((user && user.id) || '').replace(/-/g, '').slice(0, 5).toUpperCase();
+  }
 
-  function startKakaoSignup() {
+  async function startKakaoSignup() {
+    sessionStorage.setItem('wsmot_signup', '1');
     $('#kakao-loading').classList.add('active');
-    setTimeout(() => {
-      const profile = mockProfiles[Math.floor(Math.random() * mockProfiles.length)];
-      $('#success-name').textContent = profile.nickname;
-      $('#success-code').textContent = profile.code;
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: { redirectTo: window.location.origin + window.location.pathname },
+    });
+    if (error) {
       $('#kakao-loading').classList.remove('active');
-      $('#modal-success').classList.add('active');
-
-      // bump live count
-      people += 1;
-      updateLive();
-    }, 1200);
+      sessionStorage.removeItem('wsmot_signup');
+      showToast('로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.');
+    }
   }
   $('#signup-kakao').addEventListener('click', startKakaoSignup);
   $('#signup-kakao-2').addEventListener('click', startKakaoSignup);
   $('#signup-kakao-3').addEventListener('click', startKakaoSignup);
+
+  function markRegistered() {
+    $$('.btn-kakao-big').forEach(b => {
+      if (b.id && b.id.indexOf('signup-kakao') === 0) {
+        b.innerHTML = '✅ 사전 예약 완료';
+        b.disabled = true;
+        b.style.opacity = '0.7';
+        b.style.cursor = 'default';
+      }
+    });
+  }
+
+  // ===== React to login state (fires on load and after Kakao redirect) =====
+  sb.auth.onAuthStateChange((_event, session) => {
+    if (!session) return;
+    $('#kakao-loading').classList.remove('active');
+    markRegistered();
+    refreshCount();
+    if (sessionStorage.getItem('wsmot_signup')) {
+      sessionStorage.removeItem('wsmot_signup');
+      $('#success-name').textContent = nicknameOf(session.user);
+      $('#success-code').textContent = refCode(session.user);
+      $('#modal-success').classList.add('active');
+    }
+  });
 
   // ===== Modal close =====
   $$('[data-close]').forEach(b => b.addEventListener('click', () => {
@@ -1024,14 +1049,17 @@
   }));
 
   // ===== Share to friends =====
-  $('#share-friends').addEventListener('click', () => {
-    showToast('💬 카카오톡으로 추천 코드 공유 (목업)');
-    $$('.modal-bg').forEach(m => m.classList.remove('active'));
-    setTimeout(() => {
-      people += Math.floor(Math.random() * 4) + 2;
-      updateLive();
-      showToast('🎉 친구가 가입했어요! 더블 픽 +1장 예약');
-    }, 1200);
+  $('#share-friends').addEventListener('click', async () => {
+    const url = window.location.origin;
+    const text = '월드컵 예측하고 치킨 받자! 🍗 월승치못 사전예약 →';
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: '월승치못', text, url });
+      } else {
+        await navigator.clipboard.writeText(text + ' ' + url);
+        showToast('🔗 링크를 복사했어요! 친구에게 붙여넣기 하세요');
+      }
+    } catch (e) { /* user cancelled share */ }
   });
 
   // ===== Sponsor inquiry =====
