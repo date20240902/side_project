@@ -179,6 +179,18 @@
     text-align: center;
   }
   .ls-next b { color: var(--text); font-weight: 700; }
+  .ls-formula {
+    text-align: center;
+    font-size: 14px; font-weight: 800;
+    color: var(--gold);
+    background: rgba(255, 213, 74, 0.1);
+    border: 1px solid rgba(255, 213, 74, 0.3);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 12px;
+    letter-spacing: -0.3px;
+  }
+  .ls-formula b { color: #fff; }
 
   /* ===== Step Cards ===== */
   .steps { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
@@ -563,7 +575,7 @@
   <div class="hero-icon">🍗⚽</div>
 
   <h1 class="hero-title">
-    매일 5문제 맞히고<br><span class="br">치킨 받자</span>
+    매일 5문제 예측하고<br><span class="br">치킨 받자</span>
   </h1>
   <p class="hero-sub">
     본격 오픈 전, 사전 예약하고 미리 참여하세요.<br>
@@ -580,7 +592,7 @@
       <span class="ico">K</span>
       카카오로 1초 사전 예약
     </button>
-    <div class="hero-note">닉네임 · 프로필 이미지만 가져옵니다</div>
+    <div class="hero-note">꼭 필요한 정보만 받아요 · 30초면 끝</div>
   </div>
 </section>
 
@@ -589,7 +601,7 @@
   <div class="section" style="padding: 0 20px 14px;">
     <div class="section-label">🔴 LIVE</div>
     <h2 class="section-title">이미 모인 사람들</h2>
-    <p class="section-desc">사전 예약자 1명당 치킨이 조금씩 쌓이고 있어요.</p>
+    <p class="section-desc">사전 예약자가 <b style="color: var(--gold);">500명</b> 모일 때마다 치킨이 <b style="color: var(--gold);">1마리</b>씩 늘어나요 🍗</p>
   </div>
 
   <div class="live-stats">
@@ -607,11 +619,12 @@
         <div class="ls-cap">이미 적립된 치킨</div>
       </div>
     </div>
+    <div class="ls-formula">사전 예약 <b>500명</b> 모이면 → 🍗 <b>치킨 +1마리</b></div>
     <div class="ls-bar-wrap">
       <div class="ls-bar" id="live-bar"></div>
     </div>
     <div class="ls-next">
-      다음 치킨까지 <b id="live-next">253</b>명 · 500명마다 +1마리 🍗
+      다음 치킨까지 <b id="live-next">253</b>명 🍗
     </div>
   </div>
 </section>
@@ -620,7 +633,7 @@
 <section class="section">
   <div class="section-label">HOW IT WORKS</div>
   <h2 class="section-title">어떻게 받나요?</h2>
-  <p class="section-desc">매일 30초, 5문제. 다 맞히면 추첨에 들어가요.</p>
+  <p class="section-desc">매일 30초, 5문제 예측. 많이 맞힐수록 치킨에 가까워져요.</p>
 </section>
 
 <div class="steps">
@@ -628,23 +641,23 @@
     <div class="step-num">1</div>
     <div class="step-body">
       <div class="step-t">매일 5문제 예측 (30초)</div>
-      <div class="step-d">한국 결과 · PK 선언 · 관중 난입까지, 가벼운 픽 5개</div>
+      <div class="step-d">경기 결과부터 첫 골 시간, PK 선언, 관중 난입까지 — 뻔하지 않은 예측 5개</div>
     </div>
     <div class="step-emoji">🎯</div>
   </div>
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-body">
-      <div class="step-t">다 맞히면 치킨 추첨 🍗</div>
-      <div class="step-d">5/5 정답자 중 추첨 1명 매일 · 주간 누적 1위에게도 추가</div>
+      <div class="step-t">가장 많이 맞힌 사람이 치킨 🍗</div>
+      <div class="step-d">그날 최다 정답자에게 매일 1마리 — 동점이면 추첨으로! 주간 누적 1위에게도 추가</div>
     </div>
     <div class="step-emoji">🏆</div>
   </div>
   <div class="step">
     <div class="step-num">3</div>
     <div class="step-body">
-      <div class="step-t">친구 초대하면 더블 픽</div>
-      <div class="step-d">카톡 공유 1번에 한 문제 답 2개 고르기 (일 최대 3번)</div>
+      <div class="step-t">카톡 공유하면 더블 픽</div>
+      <div class="step-d">공유 1번에 한 문제는 답을 2개 고를 수 있어요 (하루 최대 3번)</div>
     </div>
     <div class="step-emoji">🎰</div>
   </div>
@@ -688,6 +701,20 @@
         <div class="pc-mini-opts">
           <div class="pc-mini-opt on">YES</div>
           <div class="pc-mini-opt">NO</div>
+        </div>
+      </div>
+      <div class="pc-mini">
+        <div class="pc-mini-t">첫 골은 언제? ⏱️</div>
+        <div class="pc-mini-opts">
+          <div class="pc-mini-opt on">전반</div>
+          <div class="pc-mini-opt">후반</div>
+        </div>
+      </div>
+      <div class="pc-mini">
+        <div class="pc-mini-t">관중 난입 발생? 🎰</div>
+        <div class="pc-mini-opts">
+          <div class="pc-mini-opt">YES</div>
+          <div class="pc-mini-opt on">NO</div>
         </div>
       </div>
     </div>
@@ -768,7 +795,7 @@
   </div>
   <div class="bl-item">
     <span class="bl-ico">🎁</span>
-    <div class="bl-txt">친구 1명 추가 가입 시 <span class="em">더블 픽 추가 +1장</span></div>
+    <div class="bl-txt">친구에게 <span class="em">카톡으로 공유할 때마다</span> 더블 픽 +1장 (오픈 후)</div>
   </div>
 </div>
 
@@ -788,8 +815,8 @@
     </div>
     <div class="push-title">치킨이 또 1마리 늘었어요 🎉</div>
     <div class="push-body">
-      사전 예약자 <b>4,127명</b> 돌파!<br>
-      이제 치킨이 <b>23마리</b>가 됐어요. 더 추천하고 치킨 늘려보세요.
+      사전 예약자 <b>4,000명</b> 돌파!<br>
+      이제 치킨이 <b>8마리</b>가 됐어요. 더 공유하고 치킨 늘려보세요.
     </div>
     <div class="push-cta">더 추천하기 →</div>
   </div>
@@ -856,15 +883,15 @@
 <div class="faq">
   <div class="faq-item">
     <div class="faq-q">진짜 치킨 받나요?</div>
-    <div class="faq-a">네. 후원사 협찬 + 일일 추첨으로 매일 1마리씩 보내드려요. 당첨자에겐 카카오톡 기프티콘으로 발송.</div>
+    <div class="faq-a">네. 후원사 협찬으로 매일 추첨 + 주간 누적 1위에게 보내드려요. 참여자가 늘수록 치킨 수도 늘어나요. 당첨자에겐 카카오톡 기프티콘 발송.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">사전 예약하면 비용이 드나요?</div>
-    <div class="faq-a">완전 무료예요. 카카오 닉네임만 받고 광고/판매 메시지 안 보냅니다.</div>
+    <div class="faq-a">완전 무료예요. 카카오로 간편 가입만 받고, 광고·판매 메시지는 보내지 않습니다.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">개인정보 어디까지 받나요?</div>
-    <div class="faq-a">카카오 닉네임 + 프로필 이미지만. 이메일·전화번호 등은 받지 않습니다.</div>
+    <div class="faq-a">카카오 닉네임 · 프로필 이미지 · 이메일까지만 받고, 전화번호 등 민감한 정보는 받지 않습니다.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">오픈은 언제예요?</div>
@@ -875,8 +902,8 @@
 <!-- ============ FINAL CTA ============ -->
 <section>
   <div class="final-cta">
-    <div class="fc-title">먼저 신청한 사람이<br>치킨 받을 확률도 높아요 🍗</div>
-    <div class="fc-sub">더블 픽 보너스 3장이 자동 지급돼요</div>
+    <div class="fc-title">지금 예약하면<br>더블 픽 3장으로 유리하게 🍗</div>
+    <div class="fc-sub">오픈 첫날부터 한 발 앞서 시작해요</div>
     <button class="btn-kakao-big" id="signup-kakao-2">
       <span class="ico">K</span>
       카카오로 1초 사전 예약
