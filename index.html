@@ -970,8 +970,13 @@
     t._tid = setTimeout(() => t.classList.remove('show'), dur);
   }
 
-  // ===== Countdown =====
-  $('#countdown').textContent = 'D-43';
+  // ===== Countdown to 2026 World Cup kickoff (Jun 11, 2026 KST) =====
+  const KICKOFF = new Date('2026-06-11T00:00:00+09:00');
+  function updateCountdown() {
+    const days = Math.ceil((KICKOFF - new Date()) / 86400000);
+    $('#countdown').textContent = days > 0 ? 'D-' + days : (days === 0 ? 'D-DAY' : '본선 진행 중');
+  }
+  updateCountdown();
 
   // ===== Live stats (real count from Supabase) =====
   let people = 0;
