@@ -1003,7 +1003,10 @@
     $('#kakao-loading').classList.add('active');
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'kakao',
-      options: { redirectTo: window.location.origin + window.location.pathname },
+      options: {
+        scopes: 'profile_nickname',
+        redirectTo: window.location.origin + window.location.pathname,
+      },
     });
     if (error) {
       $('#kakao-loading').classList.remove('active');
