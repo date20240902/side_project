@@ -601,7 +601,7 @@
   <div class="section" style="padding: 0 20px 14px;">
     <div class="section-label">🔴 LIVE</div>
     <h2 class="section-title">이미 모인 사람들</h2>
-    <p class="section-desc">사전 예약자가 <b style="color: var(--gold);">500명</b> 모일 때마다 치킨이 <b style="color: var(--gold);">1마리</b>씩 늘어나요 🍗</p>
+    <p class="section-desc"><b style="color: var(--gold);">치킨 1마리</b>로 시작 — 사전 예약자 <b style="color: var(--gold);">500명</b>마다 1마리씩 더 늘어나요 🍗</p>
   </div>
 
   <div class="live-stats">
@@ -619,7 +619,7 @@
         <div class="ls-cap">이미 적립된 치킨</div>
       </div>
     </div>
-    <div class="ls-formula">사전 예약 <b>500명</b> 모이면 → 🍗 <b>치킨 +1마리</b></div>
+    <div class="ls-formula">🍗 기본 <b>1마리</b>로 시작 · 500명마다 <b>+1마리</b></div>
     <div class="ls-bar-wrap">
       <div class="ls-bar" id="live-bar"></div>
     </div>
@@ -816,7 +816,7 @@
     <div class="push-title">치킨이 또 1마리 늘었어요 🎉</div>
     <div class="push-body">
       사전 예약자 <b>4,000명</b> 돌파!<br>
-      이제 치킨이 <b>8마리</b>가 됐어요. 더 공유하고 치킨 늘려보세요.
+      이제 치킨이 <b>9마리</b>가 됐어요. 더 공유하고 치킨 늘려보세요.
     </div>
     <div class="push-cta">더 추천하기 →</div>
   </div>
@@ -994,7 +994,7 @@
   // ===== Live stats (real count from Supabase) =====
   let people = 0;
   function renderLive() {
-    const chickens = Math.floor(people / 500);
+    const chickens = 1 + Math.floor(people / 500);
     $('#live-people').textContent = people.toLocaleString();
     $('#live-chickens').textContent = chickens;
     const inCycle = people % 500;
