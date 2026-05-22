@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>월승치못 — 채널 프로필</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --accent: #ff3d57;
+    --gold: #ffd54a;
+    --gold-2: #ffb84d;
+    --text: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #20242e;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 22px;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+    padding: 30px;
+  }
+
+  /* ===== 640x640 profile square ===== */
+  .profile {
+    width: 640px; height: 640px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 32%, rgba(255, 61, 87, 0.35), transparent 55%),
+      radial-gradient(circle at 50% 88%, rgba(255, 213, 74, 0.28), transparent 55%),
+      radial-gradient(circle at 50% 50%, #141a2e 0%, #080b16 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  /* subtle ring to look crisp inside circular crop */
+  .profile::after {
+    content: '';
+    position: absolute; inset: 46px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 213, 74, 0.18);
+  }
+  .profile::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(255,255,255,0.015) 0 22px,
+        transparent 22px 44px);
+  }
+
+  .stack {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center;
+    transform: translateY(-6px);
+  }
+
+  .icon {
+    font-size: 188px;
+    line-height: 1;
+    filter: drop-shadow(0 10px 30px rgba(255, 213, 74, 0.45));
+    margin-bottom: 14px;
+  }
+
+  .wordmark {
+    font-size: 104px;
+    font-weight: 900;
+    letter-spacing: -3px;
+    color: var(--text);
+    line-height: 1;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  .wordmark .dot { color: var(--accent); }
+
+  .tagline {
+    margin-top: 18px;
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--gold);
+    background: rgba(255, 213, 74, 0.12);
+    border: 1.5px solid rgba(255, 213, 74, 0.35);
+    padding: 8px 20px;
+    border-radius: 999px;
+  }
+
+  /* helper UI (not part of image) */
+  .hint {
+    color: #aab2c5; font-size: 13px; text-align: center;
+    line-height: 1.7; max-width: 640px;
+  }
+  .hint b { color: #fff; }
+</style>
+</head>
+<body>
+
+  <div class="profile" id="profile">
+    <div class="stack">
+      <div class="icon">🍗</div>
+      <div class="wordmark">월승치못<span class="dot">!</span></div>
+      <div class="tagline">월드컵 예측 · 치킨 챌린지</div>
+    </div>
+  </div>
+
+  <div class="hint">
+    위 정사각형(640×640)이 채널 프로필 이미지예요.<br>
+    <b>저장 방법:</b> 이 사각형만 <b>화면 캡처</b> 후 정사각형으로 잘라서 업로드하거나,
+    네모에 <b>마우스 오른쪽 → 이미지로 저장</b>이 안 되면 캡처를 이용하세요.
+  </div>
+
+</body>
+</html>
