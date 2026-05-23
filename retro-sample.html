@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>월승치못 · 레트로 스타일 샘플</title>
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
+<style>
+  :root {
+    --bg: #c8d3f0;
+    --grid: rgba(255,255,255,0.55);
+    --panel: #f7ecd9;
+    --panel-2: #efe0c8;
+    --ink: #3a2b25;
+    --teal: #7cc6c0;
+    --orange: #e7913f;
+    --red: #e8615f;
+    --green: #7fc96a;
+    --yellow: #f2c84b;
+    --blue: #6f8fe0;
+    --kakao: #FEE500;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0; min-height: 100%;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 26px 26px;
+    color: var(--ink);
+    font-family: 'Galmuri11', monospace;
+    -webkit-font-smoothing: none;
+  }
+  .col {
+    max-width: 440px; margin: 0 auto;
+    padding: 22px 18px 40px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+
+  /* ===== top bar ===== */
+  .topbar { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: 'Galmuri14', monospace; font-size: 26px; }
+  .logo .bang { color: var(--red); }
+  .dchip {
+    background: var(--panel); border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+    padding: 5px 10px; font-size: 12px;
+  }
+  .dchip b { color: var(--red); }
+
+  /* ===== window ===== */
+  .win {
+    background: var(--panel);
+    border: 3px solid var(--ink);
+    border-radius: 3px;
+    box-shadow: 5px 5px 0 rgba(58,43,37,0.28);
+  }
+  .win-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 8px;
+    border-bottom: 3px solid var(--ink);
+  }
+  .win-bar.teal { background: var(--teal); }
+  .win-bar.orange { background: var(--orange); }
+  .win-title { font-size: 13px; color: var(--ink); }
+  .win-ctrls { display: flex; gap: 4px; }
+  .win-ctrls i {
+    font-style: normal;
+    width: 18px; height: 18px;
+    display: grid; place-items: center;
+    background: var(--panel);
+    border: 2px solid var(--ink);
+    font-size: 11px; line-height: 1;
+  }
+  .win-body { padding: 18px 16px; }
+
+  /* ===== hero ===== */
+  .hero { text-align: center; }
+  .hero-ico { font-size: 56px; line-height: 1; margin-bottom: 10px; }
+  .hero-title { font-family: 'Galmuri14', monospace; font-size: 22px; line-height: 1.5; margin-bottom: 10px; }
+  .hero-sub { font-size: 12px; color: #6b5a4f; margin-bottom: 18px; }
+  .btn-kakao {
+    width: 100%; padding: 13px;
+    background: var(--kakao); color: var(--ink);
+    border: 3px solid var(--ink); border-radius: 3px;
+    box-shadow: 3px 3px 0 var(--ink);
+    font-family: 'Galmuri11', monospace; font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-kakao:active { transform: translate(3px,3px); box-shadow: none; }
+  .kbox {
+    width: 18px; height: 18px; background: var(--ink); color: var(--kakao);
+    display: grid; place-items: center; font-size: 11px; border-radius: 2px;
+  }
+
+  /* ===== gauge / loading bar ===== */
+  .gauge-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; margin-bottom: 10px; }
+  .gauge-num { font-family: 'Galmuri14', monospace; font-size: 20px; color: var(--orange); }
+  .loadbar {
+    height: 24px; padding: 3px;
+    background: var(--panel-2);
+    border: 3px solid var(--ink); border-radius: 2px;
+  }
+  .loadbar > span {
+    display: block; height: 100%;
+    background: repeating-linear-gradient(90deg, var(--blue) 0 11px, transparent 11px 14px);
+  }
+  .gauge-note { font-size: 11px; color: #6b5a4f; margin-top: 9px; text-align: center; }
+  .gauge-note b { color: var(--ink); }
+
+  /* ===== prediction ===== */
+  .q { font-size: 15px; margin-bottom: 14px; }
+  .opts { display: flex; gap: 8px; margin-bottom: 16px; }
+  .opt {
+    flex: 1; padding: 14px 0;
+    background: var(--panel-2); color: var(--ink);
+    border: 3px solid var(--ink); border-radius: 3px;
+    box-shadow: 2px 2px 0 var(--ink);
+    font-family: 'Galmuri11', monospace; font-size: 16px;
+    cursor: pointer;
+  }
+  .opt:active { transform: translate(2px,2px); box-shadow: none; }
+  .opt.sel { background: var(--red); color: #fff; }
+  .okwrap { text-align: center; }
+  .ok {
+    width: 100%; padding: 12px;
+    background: var(--panel-2); color: var(--ink);
+    border: 2px dashed var(--ink); border-radius: 3px;
+    font-family: 'Galmuri11', monospace; font-size: 14px;
+    cursor: pointer;
+  }
+  .ok:active { background: #e6d4b8; }
+
+  .foot { text-align: center; font-size: 11px; color: #6b5a4f; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="col">
+
+  <div class="topbar">
+    <span class="logo">월승치못<span class="bang">!</span></span>
+    <span class="dchip">본선까지 <b id="dday">D-20</b></span>
+  </div>
+
+  <!-- HERO -->
+  <div class="win">
+    <div class="win-bar teal">
+      <span class="win-title">월승치못.exe</span>
+      <span class="win-ctrls"><i>_</i><i>☐</i><i>✕</i></span>
+    </div>
+    <div class="win-body hero">
+      <div class="hero-ico">🍗</div>
+      <div class="hero-title">매일 5문제 예측하고<br>치킨 받자</div>
+      <div class="hero-sub">참여자가 모일수록 치킨도 같이 늘어나요</div>
+      <button class="btn-kakao"><span class="kbox">K</span> 카카오로 1초 사전 예약</button>
+    </div>
+  </div>
+
+  <!-- CHICKEN GAUGE -->
+  <div class="win">
+    <div class="win-bar orange">
+      <span class="win-title">오늘의 치킨 풀</span>
+      <span class="win-ctrls"><i>_</i><i>☐</i><i>✕</i></span>
+    </div>
+    <div class="win-body">
+      <div class="gauge-top"><span>🍗 적립된 치킨</span><b class="gauge-num">1마리</b></div>
+      <div class="loadbar"><span style="width:49%"></span></div>
+      <div class="gauge-note">다음 치킨까지 <b>253명</b> · 500명마다 +1마리</div>
+    </div>
+  </div>
+
+  <!-- PREDICTION -->
+  <div class="win">
+    <div class="win-bar teal">
+      <span class="win-title">오늘의 예측 &nbsp;1/5</span>
+      <span class="win-ctrls"><i>_</i><i>☐</i><i>✕</i></span>
+    </div>
+    <div class="win-body">
+      <div class="q">한국 vs 우루과이, 결과는?</div>
+      <div class="opts" id="opts">
+        <button class="opt sel">승</button>
+        <button class="opt">무</button>
+        <button class="opt">패</button>
+      </div>
+      <div class="okwrap"><button class="ok">제출하기 ▸</button></div>
+    </div>
+  </div>
+
+  <div class="foot">RETRO STYLE SAMPLE · 월승치못</div>
+</div>
+
+<script>
+  // countdown to WC2026 kickoff
+  const KICKOFF = new Date('2026-06-11T00:00:00+09:00');
+  const days = Math.ceil((KICKOFF - new Date()) / 86400000);
+  document.getElementById('dday').textContent = days > 0 ? 'D-' + days : (days === 0 ? 'D-DAY' : '진행중');
+
+  // option select demo
+  document.getElementById('opts').addEventListener('click', (e) => {
+    const b = e.target.closest('.opt');
+    if (!b) return;
+    document.querySelectorAll('#opts .opt').forEach(o => o.classList.remove('sel'));
+    b.classList.add('sel');
+  });
+</script>
+</body>
+</html>
