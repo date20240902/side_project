@@ -7,8 +7,9 @@
 이름 = **월**드컵 **승**부예측 + **치**킨 이건 **못** 참지.
 
 ## 현재 단계
-- **사전예약 랜딩 = 완성, 배포됨** → `wsmot.vercel.app` (`index.html`)
-- **게임(본 서비스) = 개발 시작 단계** (DB부터)
+- **루트(`/`) = 게임(예측) 화면** → `wsmot.vercel.app` (`index.html`). 로그아웃이면 하단에 카카오 로그인 CTA 고정, 로그인하면 사라지고 참여 가능
+- **사전예약 랜딩은 `/preview`로 보존** (`preview.html`)
+- **게임 본 서비스 = 화면 1차 완성**(예측·결과·순위), 카카오 비즈앱 심사 통과 후 로그인 동작
 
 ## 기술 스택 / 배포
 - 정적 HTML + **Supabase**(DB·Auth) + **카카오 로그인**(Supabase Auth Kakao provider)
@@ -39,9 +40,9 @@
 - 별도 어드민 UI 없음(v1). Supabase + MCP로 운영
 
 ## 파일
-- `index.html` — 랜딩(레트로/픽셀, DungGeunMo 폰트, 경기장 히어로 SVG). 실시간 참여자수(signup_count), 카카오 로그인 작동
+- `index.html` — **게임 본 화면(루트 `/`)**. 항상 예측 화면 노출 + 로그아웃 시 하단 카카오 CTA 고정("로그인해야 참여 가능", 로그인하면 사라짐). 오늘의 픽(5문제, set1+더블픽 set2) → 제출/수정 → 결과(두 세트 채점·더 잘 맞힌 세트·투표율) → 순위(오늘/주간)·내 기록. Supabase 실연동. 더블픽 잠금해제는 공유 시 localStorage 플래그(추천추적 없음). 로그아웃도 문제 미리보기·투표율·순위 열람 가능(참여=제출만 로그인 필요)
+- `preview.html` — 기존 사전예약 랜딩(레트로/픽셀, signup_count 카운터). `/preview`로 보존
 - `db/schema.sql` — 게임 DB 스키마(questions, predictions, daily/weekly leaderboard, vote_counts). **적용 완료**(마이그레이션 `game_schema_v1`, `daily_scores_security_invoker`, `grant_daily_scores_select`)
-- `game.html` — **게임 본 화면(신규)**. 카카오 로그인 게이트 → 오늘의 픽(5문제, set1+더블픽 set2) → 제출/수정 → 결과(두 세트 채점·더 잘 맞힌 세트·투표율) → 순위(오늘/주간)·내 기록. Supabase 실연동. `/game`으로 배포됨. 더블픽 잠금해제는 공유 시 localStorage 플래그(추천추적 없음)
 - `worldcup-mockup.html` — 앱 화면 목업(옛 더블픽). 디자인 참고용(게임 로직은 game.html이 최신)
 - `channel-profile.html` — 카카오 채널 프로필 이미지
 - `retro-sample.html` — 레트로 스타일 샘플(참고용)
@@ -56,8 +57,8 @@
 2. ~~**오늘의 예측 화면** (5문제 풀기·제출, 더블픽 2세트)~~ ✅ `game.html`
 3. ~~**결과 화면** (두 세트 채점 + 더 잘 맞힌 세트 표시)~~ ✅ `game.html` (채점 로직 SQL 검증 완료)
 4. ~~**순위표 / 내 기록**~~ ✅ `game.html` (오늘/주간 순위, 내 누적기록)
-5. 대회 전체 문제 일괄 생성(draft) + 운영 점검 ← 다음 차례
-6. 본선 시작일: 루트(`/`)를 게임으로 전환(랜딩은 `/preview`로) + 재배포
+5. ~~본선 시작일: 루트(`/`)를 게임으로 전환(랜딩은 `/preview`로)~~ ✅ 완료(앞당겨 적용). `index.html`=게임, `preview.html`=랜딩
+6. 대회 전체 문제 일괄 생성(draft) + 운영 점검 ← 다음 차례
 
 ### game.html 관련 메모 / 남은 검증
 - **데모 데이터**: `questions`에 오늘 날짜(2026-05-23) published 5문제 시드함(체험용). 정리하려면:
