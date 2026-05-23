@@ -45,6 +45,7 @@
     padding-bottom: 84px;
   }
   body.guest { padding-bottom: 172px; }
+  body.has-submit { padding-bottom: 150px; }
   button { font-family: inherit; cursor: pointer; }
   b { font-weight: normal; }
   .hidden { display: none !important; }
@@ -153,14 +154,14 @@
   .q-result .ok { color: var(--green); }
   .q-result .no { color: var(--accent); }
 
-  /* vote bar */
+  /* vote: single stacked bar */
   .vote { margin-top: 8px; }
-  .vote-row { display: flex; align-items: center; gap: 6px; font-size: 11px; margin: 3px 0; }
-  .vote-row .vlabel { width: 40px; color: var(--text-dim); }
-  .vote-row .vbarwrap { flex: 1; height: 12px; background: var(--bg-card-2); border: 1px solid var(--border-light); }
-  .vote-row .vbar { height: 100%; background: var(--blue); }
+  .vote-stack { display: flex; height: 22px; margin-top: 4px; border: 2px solid var(--border); background: var(--bg-card-2); overflow: hidden; }
+  .vote-stack .seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; white-space: nowrap; overflow: hidden; transition: width .4s; }
+  .vote-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; font-size: 10px; color: var(--text-dim); }
+  .vote-legend .lg { display: flex; align-items: center; gap: 4px; }
+  .vote-legend .lg i { width: 9px; height: 9px; display: inline-block; border: 1px solid var(--border); }
   .vote-empty { font-size: 10px; color: var(--text-faint); text-align: center; margin-top: 5px; }
-  .vote-row .vpct { width: 38px; text-align: right; color: var(--text-dim); }
 
   /* ===== Submit ===== */
   .submit-btn {
@@ -353,6 +354,8 @@
     graded: false,
     locked: false,      // 마감(lock_at) 지났는데 아직 채점 전
     lockAt: null,       // ms epoch, 그날 가장 이른 마감시각
+    submitted: false,   // 이미 제출함(1회 제출, 수정 불가)
+    nav: 'play',
     picks: { 1: {}, 2: {} },   // set_no -> { question_id: choice }
     dpUnlocked: false,
   };
@@ -460,6 +463,7 @@
     state.dpUnlocked = localStorage.getItem('wsmot_dp_' + active) === '1';
 
     if (state.user) await loadMyPicks();
+    state.submitted = !!(state.user && Object.keys(state.picks[1]).length);
     renderPlay();
   }
 
@@ -504,6 +508,7 @@
       오늘의 예측은 아직 공개되지 않았어요.<br>경기 시작에 맞춰 매일 5문제가 열립니다!</div>`;
     $('#result-area').innerHTML = '';
     $('#submit-btn').classList.add('hidden');
+    document.body.classList.remove('has-submit');
   }
 
   // ===== Render: play =====
@@ -517,7 +522,8 @@
     wrap.innerHTML = '';
     state.questions.forEach((q, i) => wrap.appendChild(renderQuestion(q, i)));
 
-    renderResultOrSubmit();
+    renderResultArea();
+    syncSubmitBtn();
     startCountdown();
     loadVotes();
     if (!state._voteTick) state._voteTick = setInterval(() => { if (state.questions.length) loadVotes(); }, 20000);
@@ -553,7 +559,7 @@
 
   function renderDpBanner() {
     const b = $('#dp-banner');
-    if (!state.user || state.graded || state.locked) { b.classList.add('hidden'); return; }
+    if (!state.user || state.graded || state.locked || state.submitted) { b.classList.add('hidden'); return; }
     b.classList.remove('hidden');
     if (state.dpUnlocked) {
       b.className = 'dp-banner on';
@@ -586,7 +592,7 @@
     card.className = 'q-card';
     const jackpot = /난입|잭팟|🎰/.test(q.text);
     const hasSet2 = Object.keys(state.picks[2]).length > 0;
-    const interactive = !state.graded && !state.locked;   // 마감 전 + 미채점일 때만 선택 가능
+    const interactive = !state.graded && !state.locked && !state.submitted;   // 마감 전 + 미채점 + 미제출일 때만 선택 가능
     const sets = (interactive ? (state.dpUnlocked || hasSet2) : hasSet2) ? [1, 2] : [1];
 
     let html = `<span class="q-no${jackpot ? ' jackpot' : ''}">Q${q.order_no}${jackpot ? ' 🎰' : ''}</span>
@@ -633,36 +639,36 @@
     return state.questions.length > 0 && state.questions.every(q => state.picks[1][q.id]);
   }
 
-  function renderResultOrSubmit() {
-    const btn = $('#submit-btn');
+  function renderResultArea() {
     const area = $('#result-area');
     if (state.graded) {
-      btn.classList.add('hidden');
       area.innerHTML = state.user ? renderResultSummary()
         : '<div class="empty"><div class="e-emoji">✅</div>정답이 공개됐어요.<br>로그인하고 다음 예측에 참여하세요!</div>';
       const sbtn = $('#share-result'); if (sbtn) sbtn.onclick = shareResultCard;
     } else if (state.locked) {
-      btn.classList.add('hidden');
       area.innerHTML = state.user
         ? '<div class="empty"><div class="e-emoji">🔒</div>투표가 마감됐어요.<br>경기 후 채점되면 점수·순위가 올라가요!</div>'
         : '<div class="empty"><div class="e-emoji">🔒</div>오늘 투표는 마감됐어요.<br>내일 다시 도전하세요!</div>';
-    } else if (state.user) {
-      area.innerHTML = '';
-      btn.classList.remove('hidden');
-      updateSubmit();
-      btn.onclick = submitPicks;
+    } else if (state.submitted) {
+      area.innerHTML = '<div class="empty"><div class="e-emoji">✅</div>예측을 제출했어요!<br>경기 후 채점되면 점수·순위가 올라가요. <b style="color:var(--accent)">(수정 불가)</b></div>';
     } else {
       area.innerHTML = '';
-      btn.classList.add('hidden');
     }
+  }
+
+  function syncSubmitBtn() {
+    const show = state.nav === 'play' && state.user && !state.graded && !state.locked && !state.submitted && state.questions.length > 0;
+    const btn = $('#submit-btn');
+    btn.classList.toggle('hidden', !show);
+    document.body.classList.toggle('has-submit', show);
+    if (show) { updateSubmit(); btn.onclick = submitPicks; }
   }
 
   function updateSubmit() {
     const btn = $('#submit-btn');
     const ok = set1Complete();
     btn.disabled = !ok;
-    const already = Object.keys(state.picks[1]).length === state.questions.length && state.questions.length > 0;
-    btn.textContent = ok ? (already ? '✅ 예측 수정하기' : '예측 제출하기') : '5개 모두 선택해주세요';
+    btn.textContent = ok ? '예측 제출하기' : '5개 모두 선택해주세요';
   }
 
   function score(setNo) {
@@ -731,16 +737,22 @@
     showToast('🔗 링크 복사 완료! (결과 이미지도 저장했어요)');
   }
 
+  const VOTE_COLORS = ['#e23b2e', '#6f8fe0', '#2f9e54', '#e7913f'];
   function voteBarsHtml(q, rows) {
     const total = rows.reduce((n, r) => n + Number(r.votes), 0);
-    const bars = q.options.map(o => {
+    const parts = q.options.map((o, i) => {
       const v = Number((rows.find(r => r.choice === o) || {}).votes || 0);
-      const pct = total ? Math.round(v / total * 100) : 0;
-      return `<div class="vote-row"><span class="vlabel">${escapeHtml(o)}</span>
-        <span class="vbarwrap"><span class="vbar" style="width:${pct}%"></span></span>
-        <span class="vpct">${pct}%</span></div>`;
-    }).join('');
-    return `<div class="set-label">투표율</div>${bars}` +
+      return { o, pct: total ? Math.round(v / total * 100) : 0, color: VOTE_COLORS[i % VOTE_COLORS.length] };
+    });
+    const segs = total ? parts.filter(p => p.pct > 0).map(p =>
+      `<span class="seg" style="width:${p.pct}%;background:${p.color}">${p.pct >= 14 ? escapeHtml(p.o) + ' ' + p.pct + '%' : ''}</span>`
+    ).join('') : '';
+    const legend = parts.map(p =>
+      `<span class="lg"><i style="background:${p.color}"></i>${escapeHtml(p.o)} ${p.pct}%</span>`
+    ).join('');
+    return `<div class="set-label">투표율</div>
+      <div class="vote-stack">${segs}</div>
+      <div class="vote-legend">${legend}</div>` +
       (total ? '' : `<div class="vote-empty">아직 투표 진행 전입니다</div>`);
   }
 
@@ -767,10 +779,12 @@
       if (state.picks[1][q.id]) rows.push({ user_id: state.user.id, question_id: q.id, set_no: 1, choice: state.picks[1][q.id] });
       if (state.dpUnlocked && state.picks[2][q.id]) rows.push({ user_id: state.user.id, question_id: q.id, set_no: 2, choice: state.picks[2][q.id] });
     });
-    const { error } = await sb.from('predictions').upsert(rows, { onConflict: 'user_id,question_id,set_no' });
+    // 1회 제출, 수정 불가: 중복은 무시(ON CONFLICT DO NOTHING)
+    const { error } = await sb.from('predictions').upsert(rows, { onConflict: 'user_id,question_id,set_no', ignoreDuplicates: true });
     if (error) { showToast('제출에 실패했어요. 다시 시도해주세요.'); updateSubmit(); return; }
+    state.submitted = true;
     showToast('✅ 예측이 제출됐어요! 행운을 빌어요 🍀');
-    updateSubmit();
+    renderPlay();
   }
 
   // ===== Rank =====
@@ -835,7 +849,8 @@
     const name = n.dataset.nav;
     $$('[data-nav]').forEach(x => x.classList.toggle('active', x === n));
     ['play', 'rank', 'prize', 'me'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
-    $('#submit-btn').classList.toggle('hidden', !state.user || name !== 'play' || state.graded || state.locked || !state.questions.length);
+    state.nav = name;
+    syncSubmitBtn();
     if (name === 'rank') renderRank();
     if (name === 'me') renderMe();
     if (name === 'prize') renderPrize();

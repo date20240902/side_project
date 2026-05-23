@@ -70,7 +70,8 @@
 ### 구현된 게임 규칙/공정성 (DB 강제)
 - **예측 잠금**: `questions.lock_at`(킥오프). 그날 가장 이른 lock_at이 마감시각 → 화면 실시간 카운트다운, 지나면 전체 잠금. RLS가 마감 후/미공개 문제 insert·update 차단(서버 강제)
 - **닉네임**: 카카오 scope `profile_nickname` = 별명(실명 아님). 공개화면은 `mask_nick`로 마스킹(`김민수→김**`), 본인 행만 원본(서버에서 `auth.uid()` 비교)
-- **투표율**: 문제마다 상시 실시간 표시(20초 폴링, set1 기준)
+- **예측 1회 제출, 수정 불가**: 제출하면 잠금. 서버도 `predictions` update 정책 제거(insert만) + 클라 `ignoreDuplicates`. 버튼 문구 "예측 제출하기" 고정
+- **투표율**: 문제마다 상시 실시간 표시(20초 폴링). **누적 스택 막대 1개**(옵션별 색 비율) + 범례. **set1+set2 모두 합산**
 
 ### 메모 / 남은 검증
 - **데모 데이터**: `questions`에 오늘(2026-05-23) published 5문제 + `lock_at = 시드시각+3h`; `winners`에 데모 당첨자 4명(display_name 마스킹값). 정리: `delete from public.questions where match_date=date '2026-05-23'; delete from public.winners where user_id is null;`

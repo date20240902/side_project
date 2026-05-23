@@ -53,13 +53,7 @@ create policy "own predictions insert" on public.predictions
                 where q.id = question_id and q.status = 'published'
                   and (q.lock_at is null or now() < q.lock_at)));
 
-drop policy if exists "own predictions update" on public.predictions;
-create policy "own predictions update" on public.predictions
-  for update to authenticated using (auth.uid() = user_id) with check (
-    auth.uid() = user_id
-    and exists (select 1 from public.questions q
-                where q.id = question_id and q.status = 'published'
-                  and (q.lock_at is null or now() < q.lock_at)));
+-- 예측은 1회 제출, 수정 불가 → update 정책 없음(insert만 허용)
 
 -- 3) 그날 점수 = 두 세트 중 더 잘 맞힌 세트의 정답 수 (내부 뷰)
 --    security_invoker: 직접 조회 시 RLS 적용(자기 것만), 순위표 함수 안에선 definer 권한으로 전체 집계
@@ -118,14 +112,14 @@ language sql security definer set search_path = public as $$
 $$;
 grant execute on function public.weekly_leaderboard(date, int) to anon, authenticated;
 
--- 6) 실시간 투표율 (1세트 기준 집계, 개별 예측은 노출 안 함)
+-- 6) 실시간 투표율 (모든 세트 합산, 개별 예측은 노출 안 함)
 create or replace function public.vote_counts(p_match_date date)
 returns table (question_id bigint, choice text, votes bigint)
 language sql security definer set search_path = public as $$
   select p.question_id, p.choice, count(*)::bigint
   from public.predictions p
   join public.questions q on q.id = p.question_id
-  where q.match_date = p_match_date and p.set_no = 1
+  where q.match_date = p_match_date
   group by p.question_id, p.choice
 $$;
 grant execute on function public.vote_counts(date) to anon, authenticated;
