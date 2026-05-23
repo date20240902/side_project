@@ -151,6 +151,15 @@
   .pc-picks { display: flex; gap: 4px; }
   .pc-picks span { flex: 1; text-align: center; border: 2px solid var(--border); padding: 4px 1px; font-size: 9px; color: #fff; background: var(--accent); }
   .pc-picks.g span { background: var(--green); }
+  .res-score { background: #fff3d6; border: 2px solid var(--border); padding: 10px; margin-bottom: 10px; text-align: center; }
+  .res-score-num { display: block; font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 22px; color: var(--accent); }
+  .res-score-txt { font-size: 10px; color: var(--text-dim); }
+  .res-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--bg-card-2); border: 2px solid var(--border); margin-bottom: 6px; }
+  .res-q { flex: 1; font-size: 11px; }
+  .res-pick { min-width: 36px; text-align: center; font-size: 10px; background: #fff; border: 2px solid var(--border); padding: 3px 4px; }
+  .res-mark { width: 20px; height: 20px; display: grid; place-items: center; font-size: 11px; color: #fff; border: 2px solid var(--border); flex-shrink: 0; }
+  .res-mark.ok { background: var(--green); }
+  .res-mark.no { background: var(--accent); }
 
   /* ===== Bonus ===== */
   .bonus-list { margin: 0 20px; padding: 16px; background: #fff3d6; border: 3px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
@@ -514,6 +523,24 @@
       <div style="font-size: 10px; color: var(--text-faint); padding: 4px 4px 0; text-align: center;">
         두 세트 다 제출 · 정답 기회가 두 배로!
       </div>
+    </div>
+  </div>
+
+  <div class="preview-card">
+    <div class="pc-head">
+      <span>예측 결과</span>
+      <span class="tag" style="color: var(--accent-2);">오늘의 채점</span>
+    </div>
+    <div class="pc-body">
+      <div class="res-score">
+        <span class="res-score-num">4 / 5 정답</span>
+        <span class="res-score-txt">추첨 응모 완료! 🍗 결과를 기다려요</span>
+      </div>
+      <div class="res-row"><span class="res-q">한국 vs 우루과이</span><span class="res-pick">승</span><span class="res-mark ok">O</span></div>
+      <div class="res-row"><span class="res-q">손흥민 공격P</span><span class="res-pick">YES</span><span class="res-mark ok">O</span></div>
+      <div class="res-row"><span class="res-q">첫 골 시점</span><span class="res-pick">전반</span><span class="res-mark no">X</span></div>
+      <div class="res-row"><span class="res-q">PK 선언</span><span class="res-pick">NO</span><span class="res-mark ok">O</span></div>
+      <div class="res-row"><span class="res-q">관중 난입</span><span class="res-pick">NO</span><span class="res-mark ok">O</span></div>
     </div>
   </div>
 
