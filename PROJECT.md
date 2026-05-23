@@ -40,7 +40,7 @@
 
 ## 파일
 - `index.html` — 랜딩(레트로/픽셀, DungGeunMo 폰트, 경기장 히어로 SVG). 실시간 참여자수(signup_count), 카카오 로그인 작동
-- `db/schema.sql` — 게임 DB 스키마(questions, predictions, daily/weekly leaderboard, vote_counts). **아직 미적용 → MCP로 적용 필요**
+- `db/schema.sql` — 게임 DB 스키마(questions, predictions, daily/weekly leaderboard, vote_counts). **적용 완료**(마이그레이션 `game_schema_v1`, `daily_scores_security_invoker`)
 - `worldcup-mockup.html` — 앱 화면 목업(옛 더블픽). 게임 개발 시 참고/재작업
 - `channel-profile.html` — 카카오 채널 프로필 이미지
 - `retro-sample.html` — 레트로 스타일 샘플(참고용)
@@ -51,8 +51,8 @@
 - `public.signup_count()` 함수 (anon 실행 가능) — 랜딩 카운터용
 
 ## 다음 할 일 (로드맵)
-1. `db/schema.sql` 적용(MCP) → 점검
-2. **오늘의 예측 화면** (5문제 풀기·제출, 더블픽 2세트)
+1. ~~`db/schema.sql` 적용(MCP) → 점검~~ ✅ 완료. 테이블 3개(questions/predictions)+뷰/함수 생성, 보안 어드바이저 ERROR 0건
+2. **오늘의 예측 화면** (5문제 풀기·제출, 더블픽 2세트) ← 다음 차례
 3. **결과 화면** (두 세트 채점 + 더 잘 맞힌 세트 표시)
 4. **순위표 / 내 기록**
 5. 대회 전체 문제 일괄 생성(draft) + 운영 점검

@@ -52,7 +52,8 @@ create policy "own predictions update" on public.predictions
   for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- 3) 그날 점수 = 두 세트 중 더 잘 맞힌 세트의 정답 수 (내부 뷰)
-create or replace view public.daily_scores as
+--    security_invoker: 직접 조회 시 RLS 적용(자기 것만), 순위표 함수 안에선 definer 권한으로 전체 집계
+create or replace view public.daily_scores with (security_invoker = on) as
 select user_id, match_date, max(correct_count) as score
 from (
   select p.user_id, q.match_date, p.set_no,
