@@ -131,6 +131,9 @@
   .pc-mini-opt { flex: 1; text-align: center; background: #fff; border: 2px solid var(--border); padding: 5px 2px; font-size: 10px; }
   .pc-mini-opt.on { background: var(--accent); color: #fff; }
   .pc-mini-opt.on2 { background: var(--green); color: #fff; }
+  .vote-bar { display: flex; height: 8px; border: 2px solid var(--border); margin-top: 7px; overflow: hidden; }
+  .vote-bar span { display: block; height: 100%; }
+  .vote-leg { font-size: 9px; color: var(--text-dim); margin-top: 4px; text-align: center; }
   .pc-gauge { padding: 12px; background: #fff3d6; border: 2px solid var(--border); margin-bottom: 10px; }
   .pc-gauge-t { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-bottom: 6px; }
   .pc-gauge-c { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
@@ -404,7 +407,7 @@
     <div class="step-num">1</div>
     <div class="step-body">
       <div class="step-t">매일 5문제 예측 (30초)</div>
-      <div class="step-d">경기 결과·첫 골 시간·PK 선언·관중 난입까지, 뻔하지 않은 예측 5개</div>
+      <div class="step-d">경기 결과·첫 골 시간·PK 선언·관중 난입까지, 매일 바뀌는 뻔하지 않은 예측 5개</div>
     </div>
     <div class="step-emoji">🎯</div>
   </div>
@@ -454,31 +457,39 @@
       <div class="pc-mini">
         <div class="pc-mini-t">한국 vs 우루과이 22:00</div>
         <div class="pc-mini-opts">
-          <div class="pc-mini-opt on">승 52%</div>
-          <div class="pc-mini-opt">무 28%</div>
-          <div class="pc-mini-opt">패 20%</div>
+          <div class="pc-mini-opt on">승</div>
+          <div class="pc-mini-opt">무</div>
+          <div class="pc-mini-opt">패</div>
         </div>
+        <div class="vote-bar"><span style="width:52%;background:var(--accent)"></span><span style="width:28%;background:var(--blue)"></span><span style="width:20%;background:#b8b2d0"></span></div>
+        <div class="vote-leg">승 52% / 무 28% / 패 20%</div>
       </div>
       <div class="pc-mini">
         <div class="pc-mini-t">손흥민 공격포인트?</div>
         <div class="pc-mini-opts">
-          <div class="pc-mini-opt on">YES 64%</div>
-          <div class="pc-mini-opt">NO 36%</div>
+          <div class="pc-mini-opt on">YES</div>
+          <div class="pc-mini-opt">NO</div>
         </div>
+        <div class="vote-bar"><span style="width:64%;background:var(--accent)"></span><span style="width:36%;background:var(--blue)"></span></div>
+        <div class="vote-leg">YES 64% / NO 36%</div>
       </div>
       <div class="pc-mini">
         <div class="pc-mini-t">첫 골은 언제? ⏱️</div>
         <div class="pc-mini-opts">
-          <div class="pc-mini-opt on">전반 57%</div>
-          <div class="pc-mini-opt">후반 43%</div>
+          <div class="pc-mini-opt on">전반</div>
+          <div class="pc-mini-opt">후반</div>
         </div>
+        <div class="vote-bar"><span style="width:57%;background:var(--accent)"></span><span style="width:43%;background:var(--blue)"></span></div>
+        <div class="vote-leg">전반 57% / 후반 43%</div>
       </div>
       <div class="pc-mini">
         <div class="pc-mini-t">관중 난입 발생? 🎰</div>
         <div class="pc-mini-opts">
-          <div class="pc-mini-opt">YES 3%</div>
-          <div class="pc-mini-opt on">NO 97%</div>
+          <div class="pc-mini-opt">YES</div>
+          <div class="pc-mini-opt on">NO</div>
         </div>
+        <div class="vote-bar"><span style="width:3%;background:var(--accent)"></span><span style="width:97%;background:var(--blue)"></span></div>
+        <div class="vote-leg">YES 3% / NO 97%</div>
       </div>
     </div>
   </div>
