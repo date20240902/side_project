@@ -6,6 +6,11 @@
 <title>월승치못 · 월드컵 승부 예측에 치킨? 이건 못 참지</title>
 <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
 <style>
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/DungGeunMo.woff') format('woff');
+    font-display: swap;
+  }
   :root {
     --bg: #d7e3f7;
     --bg-elev: #fbf3e3;
@@ -35,48 +40,51 @@
       linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px);
     background-size: 26px 26px;
     color: var(--text);
-    font-family: 'Galmuri11', monospace; -webkit-font-smoothing: none;
+    font-family: 'DungGeunMo', 'Galmuri11', monospace; -webkit-font-smoothing: none;
   }
   button { font-family: inherit; }
   b { font-weight: normal; }
 
   /* ===== Hero ===== */
   .hero {
-    padding: 30px 20px 28px; text-align: center; position: relative; overflow: hidden;
+    padding: 48px 20px 42px; text-align: center; position: relative; overflow: hidden;
     background: #0f1430;
     border-bottom: 4px solid var(--border);
   }
   .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; image-rendering: pixelated; }
-  .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(15,20,48,0.35) 0%, rgba(15,20,48,0.72) 100%); }
+  .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(15,20,48,0.32) 0%, rgba(15,20,48,0.7) 100%); }
   .hero > *:not(.hero-bg):not(.hero-scrim) { position: relative; z-index: 2; }
-  .hero-logo { font-family: 'Galmuri14', monospace; font-size: 30px; color: #fff; text-shadow: 2px 2px 0 var(--border); }
+  .hero-logo { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 46px; letter-spacing: 1px; color: #fff; text-shadow: 3px 3px 0 var(--border); }
   .hero-logo .dot { color: var(--accent); }
-  .hero-tag { font-size: 12px; color: #d7ddf2; margin-top: 6px; margin-bottom: 22px; }
-  .hero-icon { font-size: 52px; margin-bottom: 14px; }
-  .hero-title { font-family: 'Galmuri14', monospace; font-size: 24px; line-height: 1.5; margin: 0 0 10px; color: #fff; text-shadow: 2px 2px 0 var(--border); }
-  .hero-title .br { color: var(--gold); }
-  .hero-sub { font-size: 12px; color: #dfe4f5; line-height: 1.7; margin-bottom: 22px; }
+  .hero-tag { font-size: 14px; color: #e7ebf8; line-height: 1.7; margin-top: 16px; text-shadow: 1px 1px 0 var(--border); }
+  .hero-tag .hl { color: #ffd24a; font-size: 1.08em; }
+
+  .hero-cta { margin: 18px 14px 0; padding: 26px 20px; text-align: center; background: var(--bg-card); border: 3px solid var(--border); box-shadow: var(--shadow); }
+  .hero-icon { font-size: 50px; margin-bottom: 12px; }
+  .hero-title { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 24px; line-height: 1.5; margin: 0 0 10px; color: var(--text); }
+  .hero-title .br { color: var(--accent); }
+  .hero-sub { font-size: 12px; color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; }
   .countdown-box {
     display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px;
     background: #fff6d8; border: 3px solid var(--border); box-shadow: 2px 2px 0 var(--border);
     margin-bottom: 22px;
   }
   .cb-label { font-size: 11px; color: var(--text-dim); }
-  .cb-time { font-family: 'Galmuri14', monospace; font-size: 18px; color: var(--accent); }
+  .cb-time { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 18px; color: var(--accent); }
   .btn-kakao-big {
     width: 100%; padding: 16px; background: var(--kakao); color: #2a2300;
     border: 3px solid var(--border); box-shadow: 4px 4px 0 var(--border);
-    font-family: 'Galmuri14', monospace; font-size: 15px; cursor: pointer;
+    font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 15px; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 9px;
   }
   .btn-kakao-big:active { transform: translate(4px,4px); box-shadow: none; }
   .btn-kakao-big .ico { width: 20px; height: 20px; background: var(--border); color: var(--kakao); display: grid; place-items: center; font-size: 12px; }
-  .hero-note { font-size: 11px; color: #c4cae6; margin-top: 12px; }
+  .hero-note { font-size: 11px; color: var(--text-faint); margin-top: 12px; }
 
   /* ===== Section ===== */
   .section { padding: 32px 20px 16px; }
   .section-label { display: inline-block; font-size: 11px; color: #fff; background: var(--accent); border: 2px solid var(--border); padding: 3px 8px; margin-bottom: 10px; }
-  .section-title { font-family: 'Galmuri14', monospace; font-size: 20px; line-height: 1.35; margin: 0 0 6px; }
+  .section-title { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 20px; line-height: 1.35; margin: 0 0 6px; }
   .section-desc { font-size: 12px; color: var(--text-dim); line-height: 1.7; margin: 0 0 18px; }
 
   /* ===== Live Stats ===== */
@@ -87,7 +95,7 @@
   .ls-label { font-size: 11px; color: var(--text-dim); }
   .ls-row { display: flex; gap: 16px; margin-bottom: 12px; }
   .ls-cell { flex: 1; text-align: left; }
-  .ls-val { font-family: 'Galmuri14', monospace; font-size: 30px; line-height: 1; }
+  .ls-val { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 30px; line-height: 1; }
   .ls-val.gold { color: var(--gold); }
   .ls-val.accent { color: var(--accent); }
   .ls-unit { font-size: 13px; color: var(--text-dim); margin-left: 2px; }
@@ -102,7 +110,7 @@
   /* ===== Steps ===== */
   .steps { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
   .step { display: flex; gap: 14px; padding: 16px; background: var(--bg-card); border: 3px solid var(--border); box-shadow: var(--shadow); align-items: center; }
-  .step-num { width: 30px; height: 30px; background: var(--accent); color: #fff; border: 2px solid var(--border); display: grid; place-items: center; font-family: 'Galmuri14', monospace; font-size: 14px; flex-shrink: 0; }
+  .step-num { width: 30px; height: 30px; background: var(--accent); color: #fff; border: 2px solid var(--border); display: grid; place-items: center; font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 14px; flex-shrink: 0; }
   .step-body { flex: 1; }
   .step-t { font-size: 14px; margin-bottom: 4px; }
   .step-d { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
@@ -124,12 +132,12 @@
   .pc-gauge { padding: 12px; background: #fff3d6; border: 2px solid var(--border); margin-bottom: 10px; }
   .pc-gauge-t { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-bottom: 6px; }
   .pc-gauge-c { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
-  .pc-gauge-c .big { font-family: 'Galmuri14', monospace; font-size: 24px; color: var(--gold); }
+  .pc-gauge-c .big { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 24px; color: var(--gold); }
   .pc-gauge-c .small { font-size: 11px; color: var(--text-dim); }
   .pc-gauge-bar { height: 8px; background: var(--bg-card-2); border: 1px solid var(--border); overflow: hidden; }
   .pc-gauge-bar > span { display: block; width: 62%; height: 100%; background: var(--accent-2); }
   .pc-rank-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-card-2); border: 2px solid var(--border); margin-bottom: 5px; }
-  .pc-rank-num { font-family: 'Galmuri14', monospace; font-size: 12px; min-width: 24px; }
+  .pc-rank-num { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 12px; min-width: 24px; }
   .pc-rank-num.gold { color: var(--gold); }
   .pc-rank-name { flex: 1; font-size: 11px; }
   .pc-rank-score { font-size: 11px; color: var(--accent-2); }
@@ -175,13 +183,13 @@
 
   /* ===== Final CTA ===== */
   .final-cta { margin: 36px 20px 20px; padding: 30px 20px; background: #fff3d6; border: 3px solid var(--border); box-shadow: var(--shadow); text-align: center; }
-  .fc-title { font-family: 'Galmuri14', monospace; font-size: 18px; line-height: 1.5; margin-bottom: 10px; }
+  .fc-title { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 18px; line-height: 1.5; margin-bottom: 10px; }
   .fc-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 20px; }
 
   /* ===== Footer ===== */
   .footer { padding: 24px 20px 40px; text-align: center; font-size: 11px; color: var(--text-faint); line-height: 1.8; }
   .footer a { color: var(--text-dim); text-decoration: underline; }
-  .footer .logo-mini { font-family: 'Galmuri14', monospace; font-size: 14px; color: var(--text); margin-bottom: 8px; display: block; }
+  .footer .logo-mini { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 14px; color: var(--text); margin-bottom: 8px; display: block; }
   .footer .logo-mini .dot { color: var(--accent); }
 
   /* ===== Modal ===== */
@@ -191,13 +199,13 @@
   .modal { width: 100%; max-width: 460px; background: var(--bg-elev); border: 4px solid var(--border); border-bottom: none; padding: 22px 20px 28px; animation: slideUp 0.25s ease; }
   @keyframes slideUp { from{transform:translateY(20px);} to{transform:none;} }
   .modal-handle { width: 40px; height: 5px; background: var(--border-light); margin: 0 auto 16px; }
-  .modal-title { font-family: 'Galmuri14', monospace; font-size: 17px; text-align: center; margin-bottom: 8px; }
+  .modal-title { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 17px; text-align: center; margin-bottom: 8px; }
   .modal-desc { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 18px; line-height: 1.6; }
   .success-card { text-align: center; }
   .success-emoji { font-size: 56px; margin-bottom: 8px; }
   .success-code { margin: 14px 0 16px; padding: 12px; background: var(--bg-card); border: 2px solid var(--border); font-size: 13px; color: var(--text-dim); word-break: break-all; text-align: center; }
   .success-code b { color: var(--accent-2); }
-  .btn-secondary { width: 100%; padding: 13px; border: 3px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'Galmuri11', monospace; font-size: 14px; cursor: pointer; margin-top: 8px; }
+  .btn-secondary { width: 100%; padding: 13px; border: 3px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'DungGeunMo', 'Galmuri11', monospace; font-size: 14px; cursor: pointer; margin-top: 8px; }
   .modal-actions { display: flex; flex-direction: column; gap: 8px; }
 
   /* ===== Kakao loading ===== */
@@ -286,10 +294,12 @@
   </svg>
   <div class="hero-scrim"></div>
   <div class="hero-logo">월승치못<span class="dot">!</span></div>
-  <div class="hero-tag">월드컵 승부 예측에 치킨? 이건 못 참지</div>
+  <div class="hero-tag"><span class="hl">월</span>드컵 <span class="hl">승</span>부 예측에 <span class="hl">치</span>킨? 이건 <span class="hl">못</span> 참지</div>
+</section>
 
+<!-- ============ HERO CTA BOX ============ -->
+<section class="hero-cta">
   <div class="hero-icon">🍗⚽</div>
-
   <h1 class="hero-title">
     매일 5문제 예측하고<br><span class="br">치킨 받자</span>
   </h1>
@@ -303,13 +313,11 @@
     <span class="cb-time" id="countdown">D-43</span>
   </div>
 
-  <div>
-    <button class="btn-kakao-big" id="signup-kakao">
-      <span class="ico">K</span>
-      카카오로 1초 사전 예약
-    </button>
-    <div class="hero-note">꼭 필요한 정보만 받아요 · 30초면 끝</div>
-  </div>
+  <button class="btn-kakao-big" id="signup-kakao">
+    <span class="ico">K</span>
+    카카오로 1초 사전 예약
+  </button>
+  <div class="hero-note">꼭 필요한 정보만 받아요 · 30초면 끝</div>
 </section>
 
 <!-- ============ LIVE STATS ============ -->
