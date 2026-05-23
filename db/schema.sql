@@ -64,6 +64,9 @@ from (
 ) s
 group by user_id, match_date;
 
+-- 본인 기록 조회용(security_invoker라 RLS로 자기 행만 보임)
+grant select on public.daily_scores to authenticated;
+
 -- 4) 오늘 순위표 (정답 많은 순, 닉네임 포함) - 모든 유저 집계라 definer
 create or replace function public.daily_leaderboard(p_match_date date, p_limit int default 50)
 returns table (user_id uuid, nickname text, score bigint)
