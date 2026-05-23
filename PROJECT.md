@@ -76,5 +76,6 @@
 - **데모 데이터**: `questions`에 오늘(2026-05-23) published 5문제 + `lock_at = 시드시각+3h`; `winners`에 데모 당첨자 4명(display_name 마스킹값). 정리: `delete from public.questions where match_date=date '2026-05-23'; delete from public.winners where user_id is null;`
 - **당첨자 입력(운영)**: 추첨 후 `insert into public.winners(win_date, kind, user_id, prize, score) values (date '2026-06-15','daily','<당첨 user_id>','치킨 1마리',5);` → 상품 탭 지난 당첨자에 자동 노출(닉 마스킹)
 - **실제 로그인은 카카오 비즈앱 심사 통과 후 가능**. 그 전엔 로그아웃 화면(문제·투표율·순위 열람 + 하단 로그인 CTA)까지만 동작
+- **테스트 모드(임시, 출시 전 제거)**: 로그인 바의 "🧪 로그인 없이 테스트로 참여하기" = Supabase 익명 로그인(`signInAnonymously`). 실제 DB에 기록되어 제출·채점·순위까지 진짜로 동작. 닉네임 `테스터NNN`. 상단 닉네임 탭하면 로그아웃(새 테스터로 재시도). **사용 전 Supabase 대시보드 → Authentication → Sign In/Providers → "Allow anonymous sign-ins" 활성화 필요.** 출시 시 `#test-join` 버튼+핸들러 제거할 것
 - **브라우저 E2E 미검증**: 환경 인터넷 차단으로 클릭 테스트 불가. JS 문법·DB 쿼리/RPC/정책·채점 SQL·마스킹은 검증됨
 - **운영(채점)**: 경기 후 `update public.questions set correct='승' where match_date=... and order_no=1;` → 점수/순위 자동, 추첨만 수동. 문제 만들 때 `lock_at`(킥오프) 꼭 넣기

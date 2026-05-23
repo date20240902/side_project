@@ -67,6 +67,9 @@
   }
   .login-bar .lb-msg { text-align: center; font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
   .login-bar .lb-msg b { color: var(--accent); }
+  .btn-test { width: 100%; margin-top: 8px; padding: 9px; background: transparent; color: var(--text-dim); border: 2px dashed var(--border-light); font-family: inherit; font-size: 12px; }
+  .btn-test:active { transform: translate(2px,2px); }
+  .who.anon { text-decoration: underline; cursor: pointer; }
   .btn-kakao-big {
     width: 100%; padding: 16px; background: var(--kakao); color: #2a2300;
     border: 3px solid var(--border); box-shadow: var(--shadow);
@@ -321,6 +324,7 @@
 <div class="login-bar hidden" id="login-bar">
   <div class="lb-msg">🍗 <b>로그인</b>해야 예측에 참여할 수 있어요</div>
   <button class="btn-kakao-big" id="kakao-login">💬 카카오로 시작하기</button>
+  <button class="btn-test" id="test-join">🧪 로그인 없이 테스트로 참여하기</button>
 </div>
 
 <nav class="nav" id="nav">
@@ -387,6 +391,25 @@
     if (error) showToast('로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.');
   });
 
+  // ===== 테스트 참여(익명 로그인) — 출시 전 제거 =====
+  $('#test-join').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    showToast('🧪 테스트 계정으로 입장 중...');
+    const { error } = await sb.auth.signInAnonymously({
+      options: { data: { nickname: '테스터' + Math.floor(Math.random() * 1000) } },
+    });
+    if (error) {
+      btn.disabled = false;
+      showToast('익명 로그인이 꺼져 있어요. Supabase Auth 설정에서 켜주세요.', 4000);
+    }
+  });
+
+  // 테스트(익명) 세션이면 닉네임 클릭으로 로그아웃 → 새 테스터로 재시도 가능
+  $('#who').addEventListener('click', async () => {
+    if (state.user && state.user.is_anonymous) { await sb.auth.signOut(); }
+  });
+
   let _lastUid;
   function applySession(session) {
     const u = (session && session.user) || null;
@@ -405,7 +428,11 @@
 
   // ===== Boot (logged in) =====
   async function boot() {
-    $('#who').textContent = state.user ? (nicknameOf(state.user) + ' 님') : '';
+    const who = $('#who');
+    if (state.user) {
+      who.textContent = nicknameOf(state.user) + (state.user.is_anonymous ? ' 🧪 (탭=로그아웃)' : ' 님');
+      who.classList.toggle('anon', !!state.user.is_anonymous);
+    } else { who.textContent = ''; who.classList.remove('anon'); }
     toggleLoginBar();
     refreshPool();
 
@@ -440,6 +467,7 @@
     const guest = !state.user;
     $('#login-bar').classList.toggle('hidden', !guest);
     document.body.classList.toggle('guest', guest);
+    if (guest) { const tb = $('#test-join'); if (tb) tb.disabled = false; }
   }
 
   async function refreshPool() {
