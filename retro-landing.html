@@ -142,6 +142,11 @@
   .pc-rank-num.gold { color: var(--gold); }
   .pc-rank-name { flex: 1; font-size: 11px; }
   .pc-rank-score { font-size: 11px; color: var(--accent-2); }
+  .pc-set { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-card-2); border: 2px solid var(--border); margin-bottom: 8px; }
+  .pc-set-l { font-size: 11px; min-width: 38px; }
+  .pc-dots { display: flex; gap: 4px; }
+  .pc-dots i { width: 14px; height: 14px; background: #fff; border: 2px solid var(--border); display: block; }
+  .pc-dots.g i { background: var(--green); }
 
   /* ===== Bonus ===== */
   .bonus-list { margin: 0 20px; padding: 16px; background: #fff3d6; border: 3px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
@@ -318,7 +323,6 @@
     <span class="ico">K</span>
     카카오로 1초 사전 예약
   </button>
-  <div class="hero-note">꼭 필요한 정보만 받아요 · 30초면 끝</div>
 </section>
 
 <!-- ============ LIVE STATS ============ -->
@@ -381,7 +385,7 @@
     <div class="step-num">3</div>
     <div class="step-body">
       <div class="step-t">카톡 공유하면 더블 픽</div>
-      <div class="step-d">공유 1번에 한 문제는 답을 2개 고를 수 있어요 (하루 최대 3번)</div>
+      <div class="step-d">공유 1번에 예측을 한 세트 더! 정답 기회가 두 배로 (하루 최대 3번)</div>
     </div>
     <div class="step-emoji">🎰</div>
   </div>
@@ -450,19 +454,19 @@
       <span class="tag" style="color: var(--green);">친구 공유 보상</span>
     </div>
     <div class="pc-body">
-      <div style="padding: 10px; background: rgba(46, 204, 113, 0.12); border: 2px solid var(--green); margin-bottom: 10px; font-size: 11px; color: var(--green); text-align: center;">
-        🎯 더블 픽 1장 사용 가능
+      <div style="padding: 10px; background: rgba(46, 204, 113, 0.12); border: 2px solid var(--green); margin-bottom: 12px; font-size: 11px; color: var(--green); text-align: center;">
+        🎯 공유하면 예측을 한 세트 더!
       </div>
-      <div class="pc-mini" style="border-color: var(--green);">
-        <div class="pc-mini-t">한국 vs 우루과이</div>
-        <div class="pc-mini-opts">
-          <div class="pc-mini-opt on">승</div>
-          <div class="pc-mini-opt on2">무</div>
-          <div class="pc-mini-opt">패</div>
-        </div>
+      <div class="pc-set">
+        <span class="pc-set-l">1세트</span>
+        <span class="pc-dots"><i></i><i></i><i></i><i></i><i></i></span>
       </div>
-      <div style="font-size: 10px; color: var(--text-faint); padding: 0 4px;">
-        승과 무 둘 다 베팅 · 어느 쪽이든 정답!
+      <div class="pc-set">
+        <span class="pc-set-l" style="color: var(--green);">2세트</span>
+        <span class="pc-dots g"><i></i><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div style="font-size: 10px; color: var(--text-faint); padding: 4px 4px 0; text-align: center;">
+        예측 세트 2개 · 정답 기회가 두 배로!
       </div>
     </div>
   </div>
@@ -566,7 +570,7 @@
   </div>
   <div class="faq-item">
     <div class="faq-q">더블 픽이 뭐예요?</div>
-    <div class="faq-a">한 문제에 답을 2개 고를 수 있는 기회예요. '승'과 '무'를 둘 다 걸면 어느 쪽이 나와도 정답! 카카오톡으로 공유할 때마다 1장씩 생겨요 (하루 최대 3번).</div>
+    <div class="faq-a">예측 5문제를 한 세트 더 제출할 수 있는 기회예요. 예측 세트가 2개가 되니 정답 기회도 두 배! 카카오톡으로 공유할 때마다 1장씩 생겨요 (하루 최대 3번).</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">사전 예약하면 비용이 드나요?</div>
