@@ -35,7 +35,8 @@
   }
   .scene { width: 100%; display: block; image-rendering: pixelated; }
 
-  .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 5; }
+  .overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 5; }
+  .hud { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 20px 24px; background: rgba(18,22,46,0.62); border: 3px solid rgba(255,255,255,0.28); border-radius: 6px; }
   .lives { position: absolute; top: 10px; right: 12px; font-size: 16px; letter-spacing: 2px; z-index: 6; }
   .badge { font-size: 11px; color: var(--ink); background: var(--gold); border: 3px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); padding: 4px 10px; }
   .game-title {
@@ -44,10 +45,11 @@
       -3px 0 var(--ink), 3px 0 var(--ink), 0 -3px var(--ink), 0 3px var(--ink),
       3px 3px 0 var(--ink), -3px 3px 0 var(--ink), 6px 6px 0 var(--red);
   }
-  .game-sub { font-size: 13px; color: #fff; text-shadow: 1px 1px 0 var(--ink), -1px -1px 0 var(--ink); }
-  .btn-start { font-family: 'Galmuri14', monospace; font-size: 20px; color: #14310f; background: var(--green); border: 4px solid var(--ink); border-radius: 999px; box-shadow: 0 5px 0 var(--ink); padding: 13px 30px; cursor: pointer; }
+  .game-sub { font-size: 14px; color: #ffffff; }
+  .btn-start { font-family: 'Galmuri14', monospace; font-size: 20px; color: #2a2300; background: var(--kakao); border: 4px solid var(--ink); border-radius: 999px; box-shadow: 0 5px 0 var(--ink); padding: 13px 30px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-start .kbox { width: 18px; height: 18px; background: var(--ink); color: var(--kakao); display: grid; place-items: center; font-size: 11px; border-radius: 2px; }
   .btn-start:active { transform: translateY(5px); box-shadow: none; }
-  .press { font-size: 11px; color: #fff; text-shadow: 1px 1px 0 var(--ink); animation: blink 1.1s steps(1) infinite; }
+  .press { font-size: 11px; color: var(--gold); animation: blink 1.1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
   /* ===== windows ===== */
@@ -157,11 +159,13 @@
 
       <div class="lives">🍗🍗🍗</div>
       <div class="overlay">
-        <div class="badge">WORLD CUP 2026</div>
-        <div class="game-title">월승치못</div>
-        <div class="game-sub">매일 5문제 예측하고 치킨 받자</div>
-        <button class="btn-start">▶ 카카오로 시작</button>
-        <div class="press">PRESS START · 사전 예약 한정 더블픽 3장</div>
+        <div class="hud">
+          <div class="badge">WORLD CUP 2026</div>
+          <div class="game-title">월승치못</div>
+          <div class="game-sub">매일 5문제 예측하고 치킨 받자</div>
+          <button class="btn-start"><span class="kbox">K</span> 카카오로 시작</button>
+          <div class="press">PRESS START · 사전 예약 한정 더블픽 3장</div>
+        </div>
       </div>
     </div>
   </div>
