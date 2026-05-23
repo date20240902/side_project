@@ -42,17 +42,20 @@
 
   /* ===== Hero ===== */
   .hero {
-    padding: 34px 20px 28px; text-align: center; position: relative;
-    background: linear-gradient(180deg, #bfe0ff 0%, #ecd6f2 100%);
+    padding: 30px 20px 28px; text-align: center; position: relative; overflow: hidden;
+    background: #0f1430;
     border-bottom: 4px solid var(--border);
   }
-  .hero-logo { font-family: 'Galmuri14', monospace; font-size: 30px; }
+  .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; image-rendering: pixelated; }
+  .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(15,20,48,0.35) 0%, rgba(15,20,48,0.72) 100%); }
+  .hero > *:not(.hero-bg):not(.hero-scrim) { position: relative; z-index: 2; }
+  .hero-logo { font-family: 'Galmuri14', monospace; font-size: 30px; color: #fff; text-shadow: 2px 2px 0 var(--border); }
   .hero-logo .dot { color: var(--accent); }
-  .hero-tag { font-size: 12px; color: var(--text-dim); margin-top: 6px; margin-bottom: 22px; }
+  .hero-tag { font-size: 12px; color: #d7ddf2; margin-top: 6px; margin-bottom: 22px; }
   .hero-icon { font-size: 52px; margin-bottom: 14px; }
-  .hero-title { font-family: 'Galmuri14', monospace; font-size: 24px; line-height: 1.5; margin: 0 0 10px; }
-  .hero-title .br { color: var(--accent); }
-  .hero-sub { font-size: 12px; color: var(--text-dim); line-height: 1.7; margin-bottom: 22px; }
+  .hero-title { font-family: 'Galmuri14', monospace; font-size: 24px; line-height: 1.5; margin: 0 0 10px; color: #fff; text-shadow: 2px 2px 0 var(--border); }
+  .hero-title .br { color: var(--gold); }
+  .hero-sub { font-size: 12px; color: #dfe4f5; line-height: 1.7; margin-bottom: 22px; }
   .countdown-box {
     display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px;
     background: #fff6d8; border: 3px solid var(--border); box-shadow: 2px 2px 0 var(--border);
@@ -68,7 +71,7 @@
   }
   .btn-kakao-big:active { transform: translate(4px,4px); box-shadow: none; }
   .btn-kakao-big .ico { width: 20px; height: 20px; background: var(--border); color: var(--kakao); display: grid; place-items: center; font-size: 12px; }
-  .hero-note { font-size: 11px; color: var(--text-faint); margin-top: 12px; }
+  .hero-note { font-size: 11px; color: #c4cae6; margin-top: 12px; }
 
   /* ===== Section ===== */
   .section { padding: 32px 20px 16px; }
@@ -220,6 +223,68 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero">
+  <svg class="hero-bg" viewBox="0 0 200 165" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="crowd" width="8" height="8" patternUnits="userSpaceOnUse">
+        <rect width="8" height="8" fill="#22356b"/>
+        <rect x="0" y="1" width="2" height="2" fill="#e0623f"/>
+        <rect x="4" y="0" width="2" height="2" fill="#e9e4d6"/>
+        <rect x="2" y="4" width="2" height="2" fill="#5aa0d8"/>
+        <rect x="6" y="5" width="2" height="2" fill="#e7b94a"/>
+        <rect x="5" y="3" width="1" height="1" fill="#ffffff"/>
+        <rect x="1" y="6" width="1" height="1" fill="#cfd6e6"/>
+      </pattern>
+      <pattern id="net" width="6" height="6" patternUnits="userSpaceOnUse">
+        <rect width="6" height="6" fill="none"/>
+        <rect x="0" y="0" width="6" height="1" fill="#ffffff"/>
+        <rect x="0" y="0" width="1" height="6" fill="#ffffff"/>
+      </pattern>
+    </defs>
+    <rect x="0" y="0" width="200" height="46" fill="url(#crowd)"/>
+    <rect x="0" y="46" width="200" height="9" fill="#e7e0d0"/>
+    <rect x="6" y="47" width="40" height="7" fill="#e23b2e"/>
+    <rect x="70" y="47" width="46" height="7" fill="#2f6fd0"/>
+    <rect x="140" y="47" width="40" height="7" fill="#e7913f"/>
+    <rect x="0" y="55" width="200" height="110" fill="#5fb457"/>
+    <rect x="0" y="55" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="83" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="111" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="139" width="200" height="14" fill="#67bd5e"/>
+    <rect x="64" y="56" width="74" height="38" fill="url(#net)" opacity="0.55"/>
+    <rect x="64" y="54" width="74" height="3" fill="#ffffff"/>
+    <rect x="64" y="54" width="3" height="40" fill="#ffffff"/>
+    <rect x="135" y="54" width="3" height="40" fill="#ffffff"/>
+    <ellipse cx="92" cy="135" rx="17" ry="4" fill="#1c5a1f" opacity="0.22"/>
+    <ellipse cx="129" cy="133" rx="9" ry="3" fill="#1c5a1f" opacity="0.22"/>
+    <g transform="translate(121,116)">
+      <rect x="1" y="1" width="14" height="14" rx="7" fill="#ffffff" stroke="#20264f" stroke-width="2"/>
+      <rect x="6" y="3" width="4" height="4" fill="#20264f"/>
+      <rect x="3" y="8" width="3" height="3" fill="#20264f"/>
+      <rect x="10" y="9" width="3" height="3" fill="#20264f"/>
+    </g>
+    <g transform="translate(74,72)">
+      <rect x="4" y="0" width="20" height="8" fill="#1f2a52"/>
+      <rect x="4" y="8" width="4" height="6" fill="#1f2a52"/>
+      <rect x="20" y="8" width="4" height="6" fill="#1f2a52"/>
+      <rect x="8" y="7" width="12" height="11" fill="#b56b39"/>
+      <rect x="10" y="12" width="2" height="2" fill="#20264f"/>
+      <rect x="16" y="12" width="2" height="2" fill="#20264f"/>
+      <rect x="4" y="18" width="20" height="15" fill="#e23b2e"/>
+      <rect x="0" y="19" width="5" height="7" fill="#e23b2e"/>
+      <rect x="23" y="19" width="5" height="7" fill="#e23b2e"/>
+      <rect x="0" y="26" width="5" height="7" fill="#b56b39"/>
+      <rect x="23" y="26" width="5" height="7" fill="#b56b39"/>
+      <rect x="4" y="33" width="9" height="9" fill="#1f2a52"/>
+      <rect x="15" y="33" width="9" height="9" fill="#1f2a52"/>
+      <rect x="5" y="42" width="7" height="9" fill="#b56b39"/>
+      <rect x="16" y="42" width="7" height="9" fill="#b56b39"/>
+      <rect x="5" y="51" width="7" height="5" fill="#e23b2e"/>
+      <rect x="16" y="51" width="7" height="5" fill="#e23b2e"/>
+      <rect x="3" y="56" width="10" height="5" fill="#20264f"/>
+      <rect x="16" y="56" width="10" height="5" fill="#20264f"/>
+    </g>
+  </svg>
+  <div class="hero-scrim"></div>
   <div class="hero-logo">월승치못<span class="dot">!</span></div>
   <div class="hero-tag">월드컵 승부 예측에 치킨? 이건 못 참지</div>
 
