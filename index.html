@@ -156,6 +156,7 @@
   .vote-row .vlabel { width: 40px; color: var(--text-dim); }
   .vote-row .vbarwrap { flex: 1; height: 12px; background: var(--bg-card-2); border: 1px solid var(--border-light); }
   .vote-row .vbar { height: 100%; background: var(--blue); }
+  .vote-empty { font-size: 10px; color: var(--text-faint); text-align: center; margin-top: 5px; }
   .vote-row .vpct { width: 38px; text-align: right; color: var(--text-dim); }
 
   /* ===== Submit ===== */
@@ -187,6 +188,25 @@
   .lb-score { font-family: 'DungGeunMo', monospace; font-size: 15px; color: var(--accent); }
   .empty { text-align: center; padding: 40px 16px; color: var(--text-dim); font-size: 13px; line-height: 1.7; }
   .empty .e-emoji { font-size: 40px; }
+
+  /* ===== Prize view ===== */
+  .prize-pool { margin: 16px 0 0; padding: 20px; text-align: center; background: #0f1430; color: #fff; border: 3px solid var(--border); box-shadow: var(--shadow); }
+  .prize-pool .pp-label { font-size: 12px; color: #c7cdf0; }
+  .prize-pool .pp-count { font-family: 'DungGeunMo', monospace; font-size: 44px; line-height: 1.1; color: var(--accent-2); }
+  .prize-pool .pp-sub { font-size: 11px; color: #c7cdf0; margin-top: 6px; }
+  .rules { margin: 8px 0 0; }
+  .rule { display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; border: 2px solid var(--border); background: var(--bg-card); margin: 6px 0; font-size: 12px; line-height: 1.5; }
+  .rule .r-emoji { font-size: 20px; }
+  .winner-row { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border: 2px solid var(--border); background: var(--bg-card); margin: 6px 0; }
+  .winner-row .w-medal { font-size: 20px; }
+  .winner-row .w-info { flex: 1; }
+  .winner-row .w-name { font-size: 13px; }
+  .winner-row .w-date { font-size: 10px; color: var(--text-dim); }
+  .winner-row .w-prize { font-size: 12px; color: var(--accent); }
+  .winner-row .w-kind { font-size: 9px; color: #fff; background: var(--border); padding: 1px 5px; margin-left: 4px; }
+  .winner-row .w-kind.weekly { background: var(--purple); }
+  .btn-share-result { display: block; width: 100%; margin-top: 12px; padding: 13px; background: var(--kakao); color: #2a2300; border: 3px solid var(--border); font-family: 'DungGeunMo', monospace; font-size: 14px; }
+  .btn-share-result:active { transform: translate(2px,2px); }
 
   .tabs { display: flex; gap: 6px; margin: 16px 0 4px; }
   .tab { flex: 1; padding: 9px; text-align: center; font-size: 12px; border: 2px solid var(--border); background: var(--bg-card); }
@@ -280,6 +300,20 @@
     <div id="me-list"></div>
   </div>
 
+  <!-- ===== PRIZE view ===== -->
+  <div class="view hidden" id="view-prize">
+    <div class="prize-pool" id="prize-pool"></div>
+    <div class="sec-head"><h2>당첨 규칙</h2></div>
+    <div class="rules">
+      <div class="rule"><span class="r-emoji">🍗</span><div>치킨 풀 = <b>기본 1마리 + 참여자 500명당 1마리</b></div></div>
+      <div class="rule"><span class="r-emoji">🎯</span><div>그날 <b>정답 최다</b>인 사람들 중 <b>추첨 1명</b>에게 치킨 (동점이면 추첨)</div></div>
+      <div class="rule"><span class="r-emoji">📅</span><div><b>주간 누적 정답 1위</b>에게 추가 치킨 (매주 리셋)</div></div>
+      <div class="rule"><span class="r-emoji">📤</span><div>친구에게 공유하면 <b>더블 픽</b>(예측 세트 2개, 더 잘 맞힌 세트로 채점)</div></div>
+    </div>
+    <div class="sec-head"><h2>지난 당첨자</h2><span class="meta">추첨은 수동 진행</span></div>
+    <div id="winner-list"></div>
+  </div>
+
   <button class="submit-btn hidden" id="submit-btn" disabled>5개 모두 선택해주세요</button>
 </div>
 
@@ -292,6 +326,7 @@
 <nav class="nav" id="nav">
   <div class="nav-item active" data-nav="play"><span class="ico">⚽</span>오늘의 픽</div>
   <div class="nav-item" data-nav="rank"><span class="ico">🏆</span>순위</div>
+  <div class="nav-item" data-nav="prize"><span class="ico">🎁</span>상품</div>
   <div class="nav-item" data-nav="me"><span class="ico">📋</span>내 기록</div>
 </nav>
 
@@ -548,7 +583,7 @@
     });
 
     if (state.graded && q.correct == null) html += `<div class="q-result">채점 대기중 · 경기 후 정답 공개</div>`;
-    html += `<div class="vote" data-qid="${q.id}"></div>`;
+    html += `<div class="vote" data-qid="${q.id}">${voteBarsHtml(q, [])}</div>`;
     card.innerHTML = html;
 
     if (interactive) {
@@ -577,6 +612,7 @@
       btn.classList.add('hidden');
       area.innerHTML = state.user ? renderResultSummary()
         : '<div class="empty"><div class="e-emoji">✅</div>정답이 공개됐어요.<br>로그인하고 다음 예측에 참여하세요!</div>';
+      const sbtn = $('#share-result'); if (sbtn) sbtn.onclick = shareResultCard;
     } else if (state.locked) {
       btn.classList.add('hidden');
       area.innerHTML = state.user
@@ -621,7 +657,63 @@
       </div><div class="r-sub" style="margin-top:8px">더 잘 맞힌 세트로 채점돼요</div>`;
     }
     html += `</div>`;
+    html += `<button class="btn-share-result" id="share-result">📤 결과 자랑하기 · 친구 도전시키기</button>`;
     return html;
+  }
+
+  async function makeResultCard(score, total, dateLabel) {
+    try { await document.fonts.ready; } catch (e) { /* fonts api 없으면 무시 */ }
+    const c = document.createElement('canvas'); c.width = 1080; c.height = 1080;
+    const x = c.getContext('2d');
+    const F = (px) => `${px}px DungGeunMo, monospace`;
+    x.fillStyle = '#0f1430'; x.fillRect(0, 0, 1080, 1080);
+    x.strokeStyle = '#e23b2e'; x.lineWidth = 18; x.strokeRect(46, 46, 988, 988);
+    x.textAlign = 'center';
+    x.fillStyle = '#fff'; x.font = F(70); x.fillText('월승치못', 540, 215);
+    x.fillStyle = '#e7913f'; x.font = F(40); x.fillText('오늘의 픽 결과 · ' + dateLabel, 540, 300);
+    x.fillStyle = '#e23b2e'; x.font = F(240); x.fillText(score + ' / ' + total, 540, 650);
+    x.fillStyle = '#fff'; x.font = F(50); x.fillText('맞혔어요! 🍗', 540, 770);
+    x.fillStyle = '#c7cdf0'; x.font = F(36); x.fillText('월드컵 예측하고 치킨 받자', 540, 890);
+    x.fillStyle = '#FEE500'; x.font = F(44); x.fillText('wsmot.vercel.app', 540, 965);
+    return await new Promise(res => c.toBlob(res, 'image/png'));
+  }
+
+  async function shareResultCard() {
+    const has2 = Object.keys(state.picks[2]).length > 0;
+    const best = Math.max(score(1), has2 ? score(2) : 0);
+    const total = state.questions.length;
+    const url = window.location.origin;
+    const text = `월승치못 오늘의 픽 ${best}/${total} 맞혔다 🍗 너도 도전!`;
+    let blob = null;
+    try { blob = await makeResultCard(best, total, fmtDate(state.activeDate)); } catch (e) { /* canvas 실패 시 링크만 */ }
+    try {
+      if (blob && navigator.canShare) {
+        const file = new File([blob], 'wsmot-result.png', { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text, url }); return; }
+      }
+      if (navigator.share) { await navigator.share({ title: '월승치못', text, url }); return; }
+    } catch (e) { return; } // 사용자가 공유 취소
+    // 폴백: 링크 복사 + 이미지 저장
+    try { await navigator.clipboard.writeText(text + ' ' + url); } catch (e) { /* ignore */ }
+    if (blob) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'wsmot-result.png';
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+    showToast('🔗 링크 복사 완료! (결과 이미지도 저장했어요)');
+  }
+
+  function voteBarsHtml(q, rows) {
+    const total = rows.reduce((n, r) => n + Number(r.votes), 0);
+    const bars = q.options.map(o => {
+      const v = Number((rows.find(r => r.choice === o) || {}).votes || 0);
+      const pct = total ? Math.round(v / total * 100) : 0;
+      return `<div class="vote-row"><span class="vlabel">${escapeHtml(o)}</span>
+        <span class="vbarwrap"><span class="vbar" style="width:${pct}%"></span></span>
+        <span class="vpct">${pct}%</span></div>`;
+    }).join('');
+    return `<div class="set-label">투표율</div>${bars}` +
+      (total ? '' : `<div class="vote-empty">아직 투표 진행 전입니다</div>`);
   }
 
   async function loadVotes() {
@@ -631,17 +723,7 @@
     data.forEach(r => { (byQ[r.question_id] = byQ[r.question_id] || []).push(r); });
     state.questions.forEach(q => {
       const slot = document.querySelector(`.vote[data-qid="${q.id}"]`);
-      if (!slot) return;
-      const rows = byQ[q.id] || [];
-      const total = rows.reduce((n, r) => n + Number(r.votes), 0);
-      if (!total) { slot.innerHTML = ''; return; }
-      slot.innerHTML = `<div class="set-label">투표율</div>` + q.options.map(o => {
-        const v = Number((rows.find(r => r.choice === o) || {}).votes || 0);
-        const pct = Math.round(v / total * 100);
-        return `<div class="vote-row"><span class="vlabel">${escapeHtml(o)}</span>
-          <span class="vbarwrap"><span class="vbar" style="width:${pct}%"></span></span>
-          <span class="vpct">${pct}%</span></div>`;
-      }).join('');
+      if (slot) slot.innerHTML = voteBarsHtml(q, byQ[q.id] || []);
     });
   }
 
@@ -724,11 +806,36 @@
   $$('[data-nav]').forEach(n => n.addEventListener('click', () => {
     const name = n.dataset.nav;
     $$('[data-nav]').forEach(x => x.classList.toggle('active', x === n));
-    ['play', 'rank', 'me'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
+    ['play', 'rank', 'prize', 'me'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
     $('#submit-btn').classList.toggle('hidden', !state.user || name !== 'play' || state.graded || state.locked || !state.questions.length);
     if (name === 'rank') renderRank();
     if (name === 'me') renderMe();
+    if (name === 'prize') renderPrize();
   }));
+
+  // ===== Prize / Winners =====
+  async function renderPrize() {
+    const { data: cnt } = await sb.rpc('signup_count');
+    const people = Number(cnt || 0);
+    const chickens = 1 + Math.floor(people / 500);
+    $('#prize-pool').innerHTML = `<div class="pp-label">지금까지 모인 치킨 풀</div>
+      <div class="pp-count">🍗 ${chickens}마리</div>
+      <div class="pp-sub">참여자 ${people.toLocaleString()}명 · 500명당 +1마리</div>`;
+
+    const list = $('#winner-list');
+    list.innerHTML = `<div class="loading">불러오는 중...</div>`;
+    const { data, error } = await sb.rpc('recent_winners', { p_limit: 20 });
+    if (error) { list.innerHTML = `<div class="empty">불러오지 못했어요.</div>`; return; }
+    if (!data || !data.length) { list.innerHTML = `<div class="empty"><div class="e-emoji">🎉</div>첫 당첨자를 기다리고 있어요!<br>오늘의 예측에 참여해보세요.</div>`; return; }
+    list.innerHTML = data.map(w => `<div class="winner-row">
+      <span class="w-medal">${w.kind === 'weekly' ? '👑' : '🍗'}</span>
+      <div class="w-info">
+        <div class="w-name">${escapeHtml(w.nickname)}<span class="w-kind${w.kind === 'weekly' ? ' weekly' : ''}">${w.kind === 'weekly' ? '주간' : '데일리'}</span></div>
+        <div class="w-date">${fmtDate(w.win_date)}${w.score != null ? ' · ' + w.score + '점' : ''}</div>
+      </div>
+      <span class="w-prize">${escapeHtml(w.prize)}</span>
+    </div>`).join('');
+  }
 
   // ===== utils =====
   function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }

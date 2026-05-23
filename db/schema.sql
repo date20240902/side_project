@@ -129,3 +129,35 @@ language sql security definer set search_path = public as $$
   group by p.question_id, p.choice
 $$;
 grant execute on function public.vote_counts(date) to anon, authenticated;
+
+-- 7) 당첨자 (추첨은 수동: 운영자가 insert)
+create table if not exists public.winners (
+  id           bigint generated always as identity primary key,
+  win_date     date    not null,
+  kind         text    not null default 'daily' check (kind in ('daily','weekly')),
+  user_id      uuid    references auth.users on delete set null,
+  display_name text,                                  -- 계정 없는 과거 당첨자 표기용(마스킹된 값 권장)
+  prize        text    not null default '치킨 1마리',
+  score        int,
+  created_at   timestamptz default now()
+);
+alter table public.winners enable row level security;
+-- 정책 없음: recent_winners(definer)로만 노출. 원본 user_id는 클라이언트에 안 나감
+
+-- 지난 당첨자(공개): 본인은 원본, 타인은 마스킹, 계정없으면 display_name
+create or replace function public.recent_winners(p_limit int default 20)
+returns table (win_date date, kind text, nickname text, prize text, score int)
+language sql security definer set search_path = public as $$
+  select w.win_date, w.kind,
+         case
+           when w.user_id is null then coalesce(w.display_name, '익명')
+           when w.user_id = auth.uid() then s.nickname
+           else public.mask_nick(s.nickname)
+         end,
+         w.prize, w.score
+  from public.winners w
+  left join public.signups s on s.id = w.user_id
+  order by w.win_date desc, w.kind
+  limit p_limit
+$$;
+grant execute on function public.recent_winners(int) to anon, authenticated;
