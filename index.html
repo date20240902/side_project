@@ -119,6 +119,14 @@
   .btn-share:active { transform: translate(2px,2px); }
 
   /* ===== Question card ===== */
+  /* ===== Deadline countdown ===== */
+  .deadline {
+    margin: 10px 0 0; padding: 11px 14px; text-align: center; font-size: 13px;
+    background: #fff1ee; border: 3px solid var(--accent); color: var(--text);
+  }
+  .deadline b { font-family: 'DungGeunMo', monospace; font-size: 17px; color: var(--accent); }
+  .deadline.locked { background: var(--bg-card-2); border-color: var(--border); color: var(--text-dim); }
+
   .q-card { margin: 10px 0; padding: 14px; background: var(--bg-card); border: 3px solid var(--border); box-shadow: var(--shadow); }
   .q-no { font-size: 11px; color: #fff; background: var(--border); padding: 2px 7px; }
   .q-no.jackpot { background: var(--accent); }
@@ -250,6 +258,8 @@
       <span class="meta" id="play-date"></span>
     </div>
 
+    <div class="deadline hidden" id="deadline"></div>
+
     <div id="questions"></div>
     <div id="result-area"></div>
   </div>
@@ -302,6 +312,8 @@
     questions: [],      // active date's questions
     activeDate: null,
     graded: false,
+    locked: false,      // 마감(lock_at) 지났는데 아직 채점 전
+    lockAt: null,       // ms epoch, 그날 가장 이른 마감시각
     picks: { 1: {}, 2: {} },   // set_no -> { question_id: choice }
     dpUnlocked: false,
   };
@@ -364,7 +376,7 @@
 
     // load published questions
     const { data: qs, error } = await sb.from('questions')
-      .select('id,match_date,order_no,text,options,correct,status')
+      .select('id,match_date,order_no,text,options,correct,status,lock_at')
       .eq('status', 'published')
       .order('match_date', { ascending: false })
       .order('order_no', { ascending: true });
@@ -380,6 +392,9 @@
     state.activeDate = active;
     state.questions = qs.filter(q => q.match_date === active).sort((a, b) => a.order_no - b.order_no);
     state.graded = state.questions.some(q => q.correct != null);
+    const locks = state.questions.map(q => q.lock_at).filter(Boolean).map(t => new Date(t).getTime());
+    state.lockAt = locks.length ? Math.min(...locks) : null;
+    state.locked = !state.graded && state.lockAt != null && Date.now() >= state.lockAt;
     state.dpUnlocked = localStorage.getItem('wsmot_dp_' + active) === '1';
 
     if (state.user) await loadMyPicks();
@@ -418,7 +433,9 @@
   // ===== Render: empty =====
   function renderEmptyPlay() {
     state.questions = [];
+    clearInterval(state._tick);
     $('#dp-banner').classList.add('hidden');
+    $('#deadline').classList.add('hidden');
     $('#play-date').textContent = '';
     $('#questions').innerHTML = `<div class="empty"><div class="e-emoji">⏳</div>
       오늘의 예측은 아직 공개되지 않았어요.<br>경기 시작에 맞춰 매일 5문제가 열립니다!</div>`;
@@ -438,12 +455,42 @@
     state.questions.forEach((q, i) => wrap.appendChild(renderQuestion(q, i)));
 
     renderResultOrSubmit();
-    if (state.graded) loadVotes();
+    startCountdown();
+    loadVotes();
+    if (!state._voteTick) state._voteTick = setInterval(() => { if (state.questions.length) loadVotes(); }, 20000);
+  }
+
+  function renderDeadline() {
+    const el = $('#deadline');
+    if (!el) return;
+    if (state.lockAt == null || state.graded) { el.classList.add('hidden'); return; }
+    el.classList.remove('hidden');
+    const ms = state.lockAt - Date.now();
+    if (ms <= 0) { el.className = 'deadline locked'; el.innerHTML = '🔒 오늘 투표가 마감됐어요 · 채점 대기중'; return; }
+    el.className = 'deadline';
+    const h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000), s = Math.floor(ms % 60000 / 1000);
+    const pad = (n) => String(n).padStart(2, '0');
+    el.innerHTML = `⏰ 투표 마감까지 <b>${pad(h)}:${pad(m)}:${pad(s)}</b>`;
+  }
+
+  function startCountdown() {
+    clearInterval(state._tick);
+    renderDeadline();
+    if (state.lockAt == null || state.graded || state.locked) return;
+    state._tick = setInterval(() => {
+      if (Date.now() >= state.lockAt) {
+        clearInterval(state._tick);
+        state.locked = true;
+        renderPlay(); // 마감 → 잠금 상태로 다시 그림
+      } else {
+        renderDeadline();
+      }
+    }, 1000);
   }
 
   function renderDpBanner() {
     const b = $('#dp-banner');
-    if (!state.user || state.graded) { b.classList.add('hidden'); return; }
+    if (!state.user || state.graded || state.locked) { b.classList.add('hidden'); return; }
     b.classList.remove('hidden');
     if (state.dpUnlocked) {
       b.className = 'dp-banner on';
@@ -475,39 +522,36 @@
     const card = document.createElement('div');
     card.className = 'q-card';
     const jackpot = /난입|잭팟|🎰/.test(q.text);
-    const sets = (state.dpUnlocked || Object.keys(state.picks[2]).length) ? [1, 2] : [1];
+    const hasSet2 = Object.keys(state.picks[2]).length > 0;
+    const interactive = !state.graded && !state.locked;   // 마감 전 + 미채점일 때만 선택 가능
+    const sets = (interactive ? (state.dpUnlocked || hasSet2) : hasSet2) ? [1, 2] : [1];
 
     let html = `<span class="q-no${jackpot ? ' jackpot' : ''}">Q${q.order_no}${jackpot ? ' 🎰' : ''}</span>
       <div class="q-title">${escapeHtml(q.text)}</div>`;
 
-    if (state.graded) {
-      // result mode
-      sets.forEach(setNo => {
-        if (setNo === 2 && !Object.keys(state.picks[2]).length) return;
-        const my = state.picks[setNo][q.id];
-        html += `<div class="set-label${setNo === 2 ? ' s2' : ''}">${setNo === 1 ? '세트 1' : '세트 2'}</div>`;
-        html += `<div class="opts">` + q.options.map(o => {
-          let cls = 'opt locked';
-          if (q.correct != null && o === q.correct) cls += ' correct';
-          else if (my === o) cls += ' wrong';
-          return `<div class="${cls}">${escapeHtml(o)}</div>`;
-        }).join('') + `</div>`;
-      });
-      if (q.correct == null) html += `<div class="q-result">채점 대기중 · 경기 후 정답 공개</div>`;
-      html += `<div class="vote" data-qid="${q.id}"></div>`;
-    } else {
-      // pick mode
-      sets.forEach(setNo => {
-        html += `<div class="set-label${setNo === 2 ? ' s2' : ''}">${setNo === 1 ? '세트 1' : '세트 2 (더블 픽)'}</div>`;
-        const my = state.picks[setNo][q.id];
+    sets.forEach(setNo => {
+      const my = state.picks[setNo][q.id];
+      const lbl = setNo === 1 ? '세트 1' : (interactive ? '세트 2 (더블 픽)' : '세트 2');
+      html += `<div class="set-label${setNo === 2 ? ' s2' : ''}">${lbl}</div>`;
+      if (interactive) {
         html += `<div class="opts" data-qid="${q.id}" data-set="${setNo}">` + q.options.map(o =>
           `<div class="opt${my === o ? (setNo === 2 ? ' sel s2' : ' sel') : ''}" data-opt="${escapeAttr(o)}">${escapeHtml(o)}</div>`
         ).join('') + `</div>`;
-      });
-    }
+      } else {
+        html += `<div class="opts">` + q.options.map(o => {
+          let cls = 'opt locked';
+          if (state.graded && q.correct != null && o === q.correct) cls += ' correct';
+          else if (my === o) cls += state.graded ? ' wrong' : (setNo === 2 ? ' sel s2' : ' sel');
+          return `<div class="${cls}">${escapeHtml(o)}</div>`;
+        }).join('') + `</div>`;
+      }
+    });
+
+    if (state.graded && q.correct == null) html += `<div class="q-result">채점 대기중 · 경기 후 정답 공개</div>`;
+    html += `<div class="vote" data-qid="${q.id}"></div>`;
     card.innerHTML = html;
 
-    if (!state.graded) {
+    if (interactive) {
       card.querySelectorAll('.opts').forEach(row => {
         row.addEventListener('click', e => {
           const opt = e.target.closest('.opt'); if (!opt) return;
@@ -533,6 +577,11 @@
       btn.classList.add('hidden');
       area.innerHTML = state.user ? renderResultSummary()
         : '<div class="empty"><div class="e-emoji">✅</div>정답이 공개됐어요.<br>로그인하고 다음 예측에 참여하세요!</div>';
+    } else if (state.locked) {
+      btn.classList.add('hidden');
+      area.innerHTML = state.user
+        ? '<div class="empty"><div class="e-emoji">🔒</div>투표가 마감됐어요.<br>경기 후 채점되면 점수·순위가 올라가요!</div>'
+        : '<div class="empty"><div class="e-emoji">🔒</div>오늘 투표는 마감됐어요.<br>내일 다시 도전하세요!</div>';
     } else if (state.user) {
       area.innerHTML = '';
       btn.classList.remove('hidden');
@@ -597,6 +646,10 @@
   }
 
   async function submitPicks() {
+    if (state.lockAt != null && Date.now() >= state.lockAt) {
+      state.locked = true; renderPlay(); showToast('⏰ 투표가 마감됐어요');
+      return;
+    }
     const btn = $('#submit-btn');
     btn.disabled = true; btn.textContent = '제출 중...';
     const rows = [];
@@ -672,7 +725,7 @@
     const name = n.dataset.nav;
     $$('[data-nav]').forEach(x => x.classList.toggle('active', x === n));
     ['play', 'rank', 'me'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
-    $('#submit-btn').classList.toggle('hidden', !state.user || name !== 'play' || state.graded || !state.questions.length);
+    $('#submit-btn').classList.toggle('hidden', !state.user || name !== 'play' || state.graded || state.locked || !state.questions.length);
     if (name === 'rank') renderRank();
     if (name === 'me') renderMe();
   }));

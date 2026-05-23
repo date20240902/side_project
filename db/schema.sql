@@ -17,6 +17,7 @@ create table if not exists public.questions (
   options     text[]  not null,                 -- 예: {'승','무','패'}
   correct     text,                              -- 채점 전엔 null
   status      text    not null default 'draft' check (status in ('draft','published')),
+  lock_at     timestamptz,                       -- 투표 마감(킥오프). null이면 마감 없음
   created_at  timestamptz default now(),
   unique (match_date, order_no)
 );
@@ -43,13 +44,22 @@ drop policy if exists "own predictions select" on public.predictions;
 create policy "own predictions select" on public.predictions
   for select to authenticated using (auth.uid() = user_id);
 
+-- 마감(lock_at) 후 또는 미공개 문제엔 insert/update 불가 (공정성)
 drop policy if exists "own predictions insert" on public.predictions;
 create policy "own predictions insert" on public.predictions
-  for insert to authenticated with check (auth.uid() = user_id);
+  for insert to authenticated with check (
+    auth.uid() = user_id
+    and exists (select 1 from public.questions q
+                where q.id = question_id and q.status = 'published'
+                  and (q.lock_at is null or now() < q.lock_at)));
 
 drop policy if exists "own predictions update" on public.predictions;
 create policy "own predictions update" on public.predictions
-  for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for update to authenticated using (auth.uid() = user_id) with check (
+    auth.uid() = user_id
+    and exists (select 1 from public.questions q
+                where q.id = question_id and q.status = 'published'
+                  and (q.lock_at is null or now() < q.lock_at)));
 
 -- 3) 그날 점수 = 두 세트 중 더 잘 맞힌 세트의 정답 수 (내부 뷰)
 --    security_invoker: 직접 조회 시 RLS 적용(자기 것만), 순위표 함수 안에선 definer 권한으로 전체 집계
@@ -67,11 +77,23 @@ group by user_id, match_date;
 -- 본인 기록 조회용(security_invoker라 RLS로 자기 행만 보임)
 grant select on public.daily_scores to authenticated;
 
--- 4) 오늘 순위표 (정답 많은 순, 닉네임 포함) - 모든 유저 집계라 definer
+-- 닉네임 마스킹(공개 화면용): 앞 1글자 + 최대 *** . 본인 행은 호출부에서 원본 사용
+create or replace function public.mask_nick(n text) returns text
+language sql immutable set search_path = '' as $$
+  select case
+    when n is null or n = '' then '익명'
+    when char_length(n) <= 1 then n
+    else left(n, 1) || repeat('*', least(char_length(n) - 1, 3))
+  end
+$$;
+
+-- 4) 오늘 순위표 (정답 많은 순) - 본인은 원본 닉, 타인은 마스킹
 create or replace function public.daily_leaderboard(p_match_date date, p_limit int default 50)
 returns table (user_id uuid, nickname text, score bigint)
 language sql security definer set search_path = public as $$
-  select d.user_id, s.nickname, d.score
+  select d.user_id,
+         case when d.user_id = auth.uid() then s.nickname else public.mask_nick(s.nickname) end,
+         d.score
   from public.daily_scores d
   left join public.signups s on s.id = d.user_id
   where d.match_date = p_match_date
@@ -80,16 +102,18 @@ language sql security definer set search_path = public as $$
 $$;
 grant execute on function public.daily_leaderboard(date, int) to anon, authenticated;
 
--- 5) 주간 누적 순위표 (주: 월요일 시작. 일요일 리셋 원하면 운영에서 주 경계 조정)
+-- 5) 주간 누적 순위표 (주: 월요일 시작)
 create or replace function public.weekly_leaderboard(p_week_start date, p_limit int default 50)
 returns table (user_id uuid, nickname text, total bigint)
 language sql security definer set search_path = public as $$
-  select d.user_id, s.nickname, sum(d.score)::bigint as total
+  select d.user_id,
+         case when d.user_id = auth.uid() then s.nickname else public.mask_nick(s.nickname) end,
+         sum(d.score)::bigint
   from public.daily_scores d
   left join public.signups s on s.id = d.user_id
   where date_trunc('week', d.match_date)::date = p_week_start
   group by d.user_id, s.nickname
-  order by total desc nulls last
+  order by 3 desc nulls last
   limit p_limit
 $$;
 grant execute on function public.weekly_leaderboard(date, int) to anon, authenticated;
