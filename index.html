@@ -423,10 +423,17 @@
   });
 
   // ===== 테스트 참여(익명 로그인) — 출시 전 제거 =====
+  function clearTestLocalState() {
+    Object.keys(localStorage).forEach(k => { if (k.indexOf('wsmot_dp_') === 0) localStorage.removeItem(k); });
+    state.dpBalance = 0; state.dpUnlocked = false;
+  }
+
   $('#test-join').addEventListener('click', async (e) => {
     const btn = e.currentTarget;
     btn.disabled = true;
     showToast('🧪 테스트 계정으로 입장 중...');
+    try { await sb.auth.signOut(); } catch (_) { /* 세션 없으면 무시 */ }
+    clearTestLocalState();   // 새 테스터 = 더블픽 보유량/사용여부도 초기화
     const { error } = await sb.auth.signInAnonymously({
       options: { data: { nickname: '테스터' + Math.floor(Math.random() * 1000) } },
     });
@@ -438,7 +445,7 @@
 
   // 테스트(익명) 세션이면 닉네임 클릭으로 로그아웃 → 새 테스터로 재시도 가능
   $('#who').addEventListener('click', async () => {
-    if (state.user && state.user.is_anonymous) { await sb.auth.signOut(); }
+    if (state.user && state.user.is_anonymous) { clearTestLocalState(); await sb.auth.signOut(); }
   });
 
   let _lastUid;
