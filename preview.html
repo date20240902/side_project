@@ -222,19 +222,8 @@
   .modal-desc { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 18px; line-height: 1.6; }
   .success-card { text-align: center; }
   .success-emoji { font-size: 56px; margin-bottom: 8px; }
-  .success-code { margin: 14px 0 16px; padding: 12px; background: var(--bg-card); border: 2px solid var(--border); font-size: 13px; color: var(--text-dim); word-break: break-all; text-align: center; }
-  .success-code b { color: var(--accent-2); }
   .btn-secondary { width: 100%; padding: 13px; border: 3px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'DungGeunMo', 'Galmuri11', monospace; font-size: 14px; cursor: pointer; margin-top: 8px; }
   .modal-actions { display: flex; flex-direction: column; gap: 8px; }
-
-  /* ===== Kakao loading ===== */
-  .kakao-loading { position: fixed; inset: 0; z-index: 300; background: rgba(20,26,50,0.6); display: none; align-items: center; justify-content: center; }
-  .kakao-loading.active { display: flex; }
-  .kakao-loading-box { background: #fff; color: var(--text); padding: 28px 36px; border: 3px solid var(--border); text-align: center; min-width: 240px; }
-  .kakao-loading-box .ico-big { width: 44px; height: 44px; margin: 0 auto 12px; background: var(--kakao); border: 2px solid var(--border); display: grid; place-items: center; font-size: 22px; animation: kakaoPulse 1s ease-in-out infinite; }
-  @keyframes kakaoPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
-  .kakao-loading-box .t { font-size: 14px; }
-  .kakao-loading-box .d { font-size: 11px; color: #888; margin-top: 4px; }
 
   /* ===== Toast ===== */
   .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 30px; z-index: 300; background: var(--border); color: #fff; padding: 12px 18px; border: 2px solid var(--gold); font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
@@ -357,7 +346,7 @@
     매일 5문제 예측하고<br><span class="br">치킨 받자</span>
   </h1>
   <p class="hero-sub">
-    본격 오픈 전, 사전 예약하고 미리 참여하세요.<br>
+    본격 오픈 전, 채널 추가하고 오픈 알림 받으세요.<br>
     참여자가 모일수록 치킨도 같이 늘어나요 🍗
   </p>
 
@@ -368,7 +357,7 @@
 
   <button class="btn-kakao-big" id="signup-kakao">
     <span class="ico">K</span>
-    카카오로 1초 사전 예약
+    카카오톡 채널 추가하고 알림 받기
   </button>
 </section>
 
@@ -701,7 +690,7 @@
     <div class="fc-sub">오픈 첫날부터 한 발 앞서 시작해요</div>
     <button class="btn-kakao-big" id="signup-kakao-2">
       <span class="ico">K</span>
-      카카오로 1초 사전 예약
+      카카오톡 채널 추가하고 알림 받기
     </button>
   </div>
 </section>
@@ -718,7 +707,7 @@
 <div class="sticky-cta" id="sticky-cta">
   <button class="btn-kakao-big" id="signup-kakao-3">
     <span class="ico">K</span>
-    카카오로 1초 사전 예약
+    카카오톡 채널 추가하고 알림 받기
   </button>
 </div>
 
@@ -727,37 +716,24 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="success-card">
-      <div class="success-emoji">🎉</div>
-      <div class="modal-title">사전 예약 완료!</div>
-      <div class="modal-desc"><b style="color: var(--accent-2);" id="success-name">홍길동</b>님 환영해요.<br>본선 시작 1주일 전, 알림으로 깨워드릴게요.</div>
+      <div class="success-emoji">🔔</div>
+      <div class="modal-title">거의 다 됐어요!</div>
+      <div class="modal-desc">카카오톡에서 <b style="color: var(--accent-2);">월승치못</b> 채널을 <b>추가</b>하면 끝!<br>오픈하면 제일 먼저 알림 보내드릴게요.</div>
     </div>
 
-    <div style="background: #e7f7ee; border: 2px solid var(--green); padding: 14px; margin-bottom: 14px; text-align: center;">
-      <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 4px;">🎯 자동 적립된 보너스</div>
-      <div style="font-size: 16px; color: var(--green);">더블 픽 3장 · 오픈 시 자동 지급</div>
-    </div>
-
-    <div class="success-code">
-      내 추천 코드 · <b id="success-code">U-K3F9A</b><br>
-      <span style="font-size: 11px;">친구가 이 코드로 가입하면 더블 픽 +1장</span>
+    <div style="background: #fff3d6; border: 2px solid var(--border); padding: 14px; margin-bottom: 14px; text-align: center;">
+      <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 4px;">🎯 오픈 첫날 보너스</div>
+      <div style="font-size: 16px; color: var(--accent-2);">더블 픽 3장 자동 지급</div>
     </div>
 
     <div class="modal-actions">
-      <button class="btn-kakao-big" id="share-friends">
+      <button class="btn-kakao-big" id="open-channel">
         <span class="ico">K</span>
-        친구한테 자랑하기
+        채널 추가하러 가기
       </button>
+      <button class="btn-secondary" id="share-friends">🔗 친구한테 알리기</button>
       <button class="btn-secondary" data-close>나중에</button>
     </div>
-  </div>
-</div>
-
-<!-- Kakao loading overlay -->
-<div class="kakao-loading" id="kakao-loading">
-  <div class="kakao-loading-box">
-    <div class="ico-big">K</div>
-    <div class="t">카카오 로그인 중...</div>
-    <div class="d">잠시만 기다려주세요</div>
   </div>
 </div>
 
@@ -802,7 +778,7 @@
     $('#live-bar').style.width = (inCycle / 500 * 100) + '%';
   }
   async function refreshCount() {
-    const { data, error } = await sb.rpc('signup_count');
+    const { data, error } = await sb.rpc('prereg_count');
     if (!error && data != null) { people = Number(data); renderLive(); }
   }
   renderLive();
@@ -816,59 +792,36 @@
     else sticky.classList.remove('show');
   });
 
-  // ===== Kakao signup via Supabase Auth =====
-  function nicknameOf(user) {
-    const m = (user && user.user_metadata) || {};
-    return m.name || m.full_name || m.user_name || m.nickname || m.preferred_username || '치킨러버';
-  }
-  function refCode(user) {
-    return 'U-' + String((user && user.id) || '').replace(/-/g, '').slice(0, 5).toUpperCase();
-  }
-
-  async function startKakaoSignup() {
-    sessionStorage.setItem('wsmot_signup', '1');
-    $('#kakao-loading').classList.add('active');
-    const { error } = await sb.auth.signInWithOAuth({
-      provider: 'kakao',
-      options: {
-        scopes: 'profile_nickname',
-        redirectTo: window.location.origin + window.location.pathname,
-      },
-    });
-    if (error) {
-      $('#kakao-loading').classList.remove('active');
-      sessionStorage.removeItem('wsmot_signup');
-      showToast('로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.');
-    }
-  }
-  $('#signup-kakao').addEventListener('click', startKakaoSignup);
-  $('#signup-kakao-2').addEventListener('click', startKakaoSignup);
-  $('#signup-kakao-3').addEventListener('click', startKakaoSignup);
+  // ===== Kakao Channel add (pre-registration) =====
+  const CHANNEL_URL = 'http://pf.kakao.com/_DqSbX';
 
   function markRegistered() {
     $$('.btn-kakao-big').forEach(b => {
       if (b.id && b.id.indexOf('signup-kakao') === 0) {
-        b.innerHTML = '✅ 사전 예약 완료';
-        b.disabled = true;
-        b.style.opacity = '0.7';
-        b.style.cursor = 'default';
+        b.innerHTML = '✅ 알림 신청 완료 · 다시 추가하기';
       }
     });
   }
 
-  // ===== React to login state (fires on load and after Kakao redirect) =====
-  sb.auth.onAuthStateChange((_event, session) => {
-    if (!session) return;
-    $('#kakao-loading').classList.remove('active');
-    markRegistered();
-    refreshCount();
-    if (sessionStorage.getItem('wsmot_signup')) {
-      sessionStorage.removeItem('wsmot_signup');
-      $('#success-name').textContent = nicknameOf(session.user);
-      $('#success-code').textContent = refCode(session.user);
-      $('#modal-success').classList.add('active');
+  async function joinPrereg() {
+    // 브라우저당 1회만 카운트(과대집계 완화). 카카오 채널 친구 수가 진짜 지표.
+    if (!localStorage.getItem('wsmot_prereg')) {
+      localStorage.setItem('wsmot_prereg', '1');
+      try {
+        const { data } = await sb.rpc('prereg_join');
+        if (data != null) { people = Number(data); renderLive(); }
+      } catch (e) { /* ignore */ }
+      markRegistered();
     }
-  });
+    window.open(CHANNEL_URL, '_blank', 'noopener');
+    $('#modal-success').classList.add('active');
+  }
+  $('#signup-kakao').addEventListener('click', joinPrereg);
+  $('#signup-kakao-2').addEventListener('click', joinPrereg);
+  $('#signup-kakao-3').addEventListener('click', joinPrereg);
+  $('#open-channel').addEventListener('click', () => window.open(CHANNEL_URL, '_blank', 'noopener'));
+
+  if (localStorage.getItem('wsmot_prereg')) markRegistered();
 
   // ===== Modal close =====
   $$('[data-close]').forEach(b => b.addEventListener('click', () => {
