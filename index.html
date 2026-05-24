@@ -109,6 +109,16 @@
   .banner .b-emoji { font-size: 24px; }
   .banner .accent { color: var(--accent); }
 
+  /* ===== Ad banner (placeholder) ===== */
+  .ad-banner { display: flex; align-items: center; gap: 10px; margin: 12px 0 0; padding: 12px 14px;
+    background: var(--bg-card-2); border: 3px dashed var(--border-light); color: var(--text); text-decoration: none; }
+  .ad-banner:active { transform: translate(2px,2px); }
+  .ad-tag { font-size: 10px; background: var(--border); color: #fff; padding: 2px 6px; align-self: flex-start; }
+  .ad-banner .ad-body { flex: 1; }
+  .ad-banner .ad-t { font-size: 12px; }
+  .ad-banner .ad-d { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .ad-banner .ad-arrow { color: var(--text-dim); font-size: 18px; }
+
   .dp-banner {
     margin: 14px 0 0; padding: 14px; border: 3px solid var(--border);
     background: linear-gradient(180deg, #fff6e0, #ffe9bf); box-shadow: var(--shadow);
@@ -306,6 +316,12 @@
 
     <div class="dp-banner" id="dp-banner"></div>
 
+    <a class="ad-banner" href="mailto:ad@wsmot.kr">
+      <span class="ad-tag">AD</span>
+      <div class="ad-body"><div class="ad-t">여기에 광고를 실어보세요 🍗</div><div class="ad-d">월승치못 광고 문의 · ad@wsmot.kr</div></div>
+      <span class="ad-arrow">›</span>
+    </a>
+
     <div class="sec-head">
       <h2 id="play-title">오늘의 예측</h2>
       <span class="meta" id="play-date"></span>
@@ -316,6 +332,13 @@
     <div class="pick-note hidden" id="pick-note">⚠️ 예측은 한 번 제출하면 <b>수정할 수 없어요</b>. 신중하게 골라주세요!</div>
 
     <div id="questions"></div>
+
+    <a class="ad-banner" href="mailto:ad@wsmot.kr">
+      <span class="ad-tag">AD</span>
+      <div class="ad-body"><div class="ad-t">치킨·피자·음료 브랜드 환영 🍗🍕</div><div class="ad-d">월승치못 광고 문의 · ad@wsmot.kr</div></div>
+      <span class="ad-arrow">›</span>
+    </a>
+
     <div id="result-area"></div>
   </div>
 
