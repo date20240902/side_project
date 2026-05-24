@@ -240,14 +240,9 @@
   .rec-card.open .rec-detail { display: block; }
   .rec-q { padding: 9px 0; border-bottom: 1px solid var(--bg-card-2); }
   .rec-q:last-child { border-bottom: none; }
-  .rec-q-t { font-size: 12px; margin-bottom: 5px; line-height: 1.4; }
-  .rec-pick { font-size: 12px; color: var(--text-dim); }
-  .rec-pick b { color: var(--text); }
-  .rec-pick.rec-na { color: var(--text-faint); }
-  .rec-ans { font-size: 11px; color: var(--green); margin-top: 3px; }
-  .rec-ans.dim { color: var(--text-faint); }
-  .rec-q .ok { color: var(--green); }
-  .rec-q .no { color: var(--accent); }
+  .rec-q-t { font-size: 12px; margin-bottom: 6px; line-height: 1.4; }
+  .rec-q .opts { margin: 4px 0; }
+  .rec-na { font-size: 11px; color: var(--text-faint); margin-top: 5px; }
 
   /* ===== Bottom nav ===== */
   .nav {
@@ -941,6 +936,20 @@
     return Math.max(recScore(qs, myByQ, 1), has2 ? recScore(qs, myByQ, 2) : 0);
   }
 
+  // 오늘의 픽 결과와 동일한 옵션 그리드: 정답=초록, 내 오답=빨강, 미채점이면 내 픽만 강조
+  function recOptsHtml(q, myPick) {
+    return '<div class="opts">' + q.options.map(o => {
+      let cls = 'opt locked';
+      if (q.correct != null) {
+        if (o === q.correct) cls += ' correct';
+        else if (o === myPick) cls += ' wrong';
+      } else if (o === myPick) {
+        cls += ' sel';
+      }
+      return `<div class="${cls}">${escapeHtml(o)}</div>`;
+    }).join('') + '</div>';
+  }
+
   function recCardHtml(date, qs, myByQ) {
     qs = qs.slice().sort((a, b) => a.order_no - b.order_no);
     const predicted = qs.some(q => myByQ[q.id] && myByQ[q.id][1] != null);
@@ -953,18 +962,16 @@
     const detail = qs.map(q => {
       const my1 = myByQ[q.id] && myByQ[q.id][1];
       const my2 = myByQ[q.id] && myByQ[q.id][2];
-      const mark = (pick) => (q.correct == null || !pick) ? '' : (pick === q.correct ? ' <span class="ok">⭕</span>' : ' <span class="no">❌</span>');
-      let picks;
-      if (!my1 && !my2) {
-        picks = `<div class="rec-pick rec-na">예측 안 함</div>`;
+      let body;
+      if (my2) {
+        body = `<div class="set-label">세트 1</div>${recOptsHtml(q, my1)}`
+             + `<div class="set-label s2">세트 2 (더블픽)</div>${recOptsHtml(q, my2)}`;
       } else {
-        picks = `<div class="rec-pick">내 예측: <b>${escapeHtml(my1 || '-')}</b>${mark(my1)}</div>`;
-        if (my2) picks += `<div class="rec-pick">더블픽: <b>${escapeHtml(my2)}</b>${mark(my2)}</div>`;
+        body = recOptsHtml(q, my1);
       }
-      const ans = q.correct != null
-        ? `<div class="rec-ans">정답: <b>${escapeHtml(q.correct)}</b></div>`
-        : `<div class="rec-ans dim">채점 대기중</div>`;
-      return `<div class="rec-q"><div class="rec-q-t">Q${q.order_no}. ${escapeHtml(q.text)}</div>${picks}${ans}</div>`;
+      if (!my1 && !my2) body += `<div class="rec-na">이 날은 예측하지 않았어요</div>`;
+      else if (q.correct == null) body += `<div class="q-result">채점 대기중 · 경기 후 정답 공개</div>`;
+      return `<div class="rec-q"><div class="rec-q-t">Q${q.order_no}. ${escapeHtml(q.text)}</div>${body}</div>`;
     }).join('');
 
     return `<div class="rec-card">
