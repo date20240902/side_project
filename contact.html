@@ -100,7 +100,7 @@
     </div>
 
     <div class="field">
-      <label for="contact">담당자명</label>
+      <label for="contact">담당자명 <span class="req">*</span></label>
       <input type="text" id="contact" maxlength="40" placeholder="예: 홍길동">
     </div>
 
@@ -110,8 +110,8 @@
     </div>
 
     <div class="field">
-      <label for="phone">연락처 (선택)</label>
-      <input type="text" id="phone" maxlength="40" placeholder="전화번호 등">
+      <label for="phone">연락처 <span class="req">*</span></label>
+      <input type="text" id="phone" maxlength="40" placeholder="전화번호 등 회신받을 연락처">
     </div>
 
     <div class="field">
@@ -167,19 +167,23 @@
     e.preventDefault();
     if ($('#website').value) return; // honeypot에 값이 있으면 봇 → 조용히 무시
     const company = $('#company').value.trim();
+    const contact = $('#contact').value.trim();
     const email = $('#email').value.trim();
+    const phone = $('#phone').value.trim();
     const message = $('#message').value.trim();
     if (!company) { showToast('회사 / 브랜드명을 입력해주세요'); $('#company').focus(); return; }
+    if (!contact) { showToast('담당자명을 입력해주세요'); $('#contact').focus(); return; }
     if (!validEmail(email)) { showToast('올바른 이메일을 입력해주세요'); $('#email').focus(); return; }
+    if (!phone) { showToast('연락처를 입력해주세요'); $('#phone').focus(); return; }
     if (!message) { showToast('문의 내용을 입력해주세요'); $('#message').focus(); return; }
 
     const btn = $('#submit'); btn.disabled = true; btn.textContent = '보내는 중...';
     const { error } = await sb.rpc('submit_inquiry', {
       p_kind: kind,
       p_company: company,
-      p_contact_name: $('#contact').value.trim(),
+      p_contact_name: contact,
       p_email: email,
-      p_phone: $('#phone').value.trim(),
+      p_phone: phone,
       p_budget: $('#budget').value.trim(),
       p_message: message,
     });
