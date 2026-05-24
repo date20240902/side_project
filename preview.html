@@ -91,21 +91,8 @@
 
   /* ===== Live Stats ===== */
   .live-stats { margin: 0 20px 20px; padding: 18px; background: var(--bg-card); border: 3px solid var(--border); box-shadow: var(--shadow); }
-  .ls-head { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; }
-  .ls-pulse { width: 9px; height: 9px; background: var(--green); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
-  .ls-label { font-size: 11px; color: var(--text-dim); }
-  .ls-row { display: flex; gap: 16px; margin-bottom: 12px; }
-  .ls-cell { flex: 1; text-align: left; }
-  .ls-val { font-family: 'DungGeunMo', 'Galmuri14', monospace; font-size: 30px; line-height: 1; }
-  .ls-val.gold { color: var(--gold); }
-  .ls-val.accent { color: var(--accent); }
-  .ls-unit { font-size: 13px; color: var(--text-dim); margin-left: 2px; }
-  .ls-cap { font-size: 11px; color: var(--text-faint); margin-top: 6px; }
-  .ls-formula { text-align: center; font-size: 13px; color: var(--text); background: #fff2cf; border: 2px solid var(--border); padding: 9px; margin-bottom: 12px; }
+  .ls-formula { text-align: center; font-size: 13px; color: var(--text); background: #fff2cf; border: 2px solid var(--border); padding: 9px; }
   .ls-formula b { color: var(--accent); }
-  .ls-bar-wrap { height: 18px; padding: 3px; background: var(--bg-card-2); border: 3px solid var(--border); overflow: hidden; margin-bottom: 8px; }
-  .ls-bar { height: 100%; width: 50%; background: repeating-linear-gradient(90deg, var(--blue) 0 9px, transparent 9px 12px); }
   .ls-next { font-size: 11px; color: var(--text-dim); text-align: center; }
   .ls-next b { color: var(--text); }
 
@@ -361,35 +348,16 @@
   </button>
 </section>
 
-<!-- ============ LIVE STATS ============ -->
+<!-- ============ REWARD SCALING ============ -->
 <section style="padding-top: 28px;">
   <div class="section" style="padding: 0 20px 14px;">
-    <div class="section-label">🔴 LIVE</div>
-    <h2 class="section-title">이미 모인 사람들</h2>
+    <div class="section-label">🍗 치킨 풀</div>
+    <h2 class="section-title">사람이 모일수록<br>치킨도 같이 커져요</h2>
   </div>
 
   <div class="live-stats">
-    <div class="ls-head">
-      <span class="ls-pulse"></span>
-      <span class="ls-label">실시간 업데이트 중</span>
-    </div>
-    <div class="ls-row">
-      <div class="ls-cell">
-        <div class="ls-val accent" id="live-people">3,247</div>
-        <div class="ls-cap">명 참여 중</div>
-      </div>
-      <div class="ls-cell" style="text-align: right;">
-        <div class="ls-val gold"><span id="live-chickens">18</span><span class="ls-unit">마리</span></div>
-        <div class="ls-cap">이미 적립된 치킨</div>
-      </div>
-    </div>
-    <div class="ls-formula">🍗 기본 <b>1마리</b>로 시작 · 500명마다 <b>+1마리</b></div>
-    <div class="ls-bar-wrap">
-      <div class="ls-bar" id="live-bar"></div>
-    </div>
-    <div class="ls-next">
-      다음 치킨까지 <b id="live-next">253</b>명 🍗
-    </div>
+    <div class="ls-formula">🍗 기본 <b>1마리</b>로 시작 · 참여자 <b>500명</b>마다 <b>+1마리</b></div>
+    <div class="ls-next" style="margin-top: 10px;">채널 추가가 쌓일수록 오픈 첫날 치킨 풀이 더 커집니다 🍗</div>
   </div>
 </section>
 
@@ -740,16 +708,10 @@
 <!-- Toast -->
 <div class="toast" id="toast">완료</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => document.querySelectorAll(s);
-
-  // ===== Supabase =====
-  const SUPABASE_URL = 'https://mgmaibrwapphvgafzdon.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_5EusOBrKORHh3NpUkRcXNA_ZAlyHg4k';
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function showToast(msg, dur=1800) {
     const t = $('#toast');
@@ -768,23 +730,6 @@
   updateCountdown();
 
   // ===== Live stats (real count from Supabase) =====
-  let people = 0;
-  function renderLive() {
-    const chickens = 1 + Math.floor(people / 500);
-    $('#live-people').textContent = people.toLocaleString();
-    $('#live-chickens').textContent = chickens;
-    const inCycle = people % 500;
-    $('#live-next').textContent = 500 - inCycle;
-    $('#live-bar').style.width = (inCycle / 500 * 100) + '%';
-  }
-  async function refreshCount() {
-    const { data, error } = await sb.rpc('prereg_count');
-    if (!error && data != null) { people = Number(data); renderLive(); }
-  }
-  renderLive();
-  refreshCount();
-  setInterval(refreshCount, 20000);
-
   // ===== Sticky CTA on scroll =====
   const sticky = $('#sticky-cta');
   window.addEventListener('scroll', () => {
@@ -803,14 +748,9 @@
     });
   }
 
-  async function joinPrereg() {
-    // 브라우저당 1회만 카운트(과대집계 완화). 카카오 채널 친구 수가 진짜 지표.
+  function joinPrereg() {
     if (!localStorage.getItem('wsmot_prereg')) {
       localStorage.setItem('wsmot_prereg', '1');
-      try {
-        const { data } = await sb.rpc('prereg_join');
-        if (data != null) { people = Number(data); renderLive(); }
-      } catch (e) { /* ignore */ }
       markRegistered();
     }
     window.open(CHANNEL_URL, '_blank', 'noopener');
