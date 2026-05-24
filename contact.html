@@ -177,6 +177,7 @@
     if (!phone) { showToast('연락처를 입력해주세요'); $('#phone').focus(); return; }
     if (!message) { showToast('문의 내용을 입력해주세요'); $('#message').focus(); return; }
 
+    const budget = $('#budget').value.trim();
     const btn = $('#submit'); btn.disabled = true; btn.textContent = '보내는 중...';
     const { error } = await sb.rpc('submit_inquiry', {
       p_kind: kind,
@@ -184,7 +185,7 @@
       p_contact_name: contact,
       p_email: email,
       p_phone: phone,
-      p_budget: $('#budget').value.trim(),
+      p_budget: budget,
       p_message: message,
     });
     if (error) {
@@ -192,6 +193,26 @@
       showToast('전송에 실패했어요. 잠시 후 다시 시도해주세요.');
       return;
     }
+    // 이메일 알림(jhjh126@gmail.com). 실패해도 문의는 이미 저장됐으니 접수 완료 처리.
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '8c9d11bf-83d5-4002-9c38-30a1b9894358',
+          subject: `[월승치못 문의] ${kind} · ${company}`,
+          from_name: '월승치못 문의폼',
+          replyto: email,
+          문의유형: kind,
+          '회사/브랜드': company,
+          담당자: contact,
+          이메일: email,
+          연락처: phone,
+          예산: budget || '(미입력)',
+          문의내용: message,
+        }),
+      });
+    } catch (_) { /* 이메일 발송 실패는 무시 */ }
     $('#form').style.display = 'none';
     $('#done').classList.add('show');
     window.scrollTo({ top: 0, behavior: 'smooth' });
