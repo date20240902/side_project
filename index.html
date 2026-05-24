@@ -116,11 +116,17 @@
   .dp-banner .dp-t { font-family: 'DungGeunMo', monospace; font-size: 15px; }
   .dp-banner .dp-d { font-size: 11px; color: var(--text-dim); margin: 4px 0 10px; line-height: 1.5; }
   .dp-banner.on { background: linear-gradient(180deg,#e7f7ec,#cdeed7); }
+  .dp-head { display: flex; align-items: center; justify-content: space-between; }
+  .dp-bal { font-size: 12px; color: var(--text-dim); }
+  .dp-bal b { font-family: 'DungGeunMo', monospace; font-size: 17px; color: var(--accent); }
+  .dp-actions { display: flex; gap: 8px; margin-top: 10px; }
   .btn-share {
     width: 100%; padding: 12px; background: var(--kakao); color: #2a2300;
     border: 3px solid var(--border); font-family: 'DungGeunMo', monospace; font-size: 14px;
   }
   .btn-share:active { transform: translate(2px,2px); }
+  .dp-actions .btn-share { flex: 1; width: auto; padding: 11px 6px; font-size: 13px; }
+  .btn-share.alt { background: #fff; }
 
   /* ===== Question card ===== */
   /* ===== Deadline countdown ===== */
@@ -361,7 +367,8 @@
     submitted2: false,  // 세트2(더블픽) 제출 완료
     nav: 'play',
     picks: { 1: {}, 2: {} },   // set_no -> { question_id: choice }
-    dpUnlocked: false,
+    dpUnlocked: false,  // 오늘 더블픽 사용함(세트2 가능)
+    dpBalance: 0,       // 더블픽 보유량
   };
 
   function showToast(msg, dur = 2000) {
@@ -464,7 +471,8 @@
     const locks = state.questions.map(q => q.lock_at).filter(Boolean).map(t => new Date(t).getTime());
     state.lockAt = locks.length ? Math.min(...locks) : null;
     state.locked = !state.graded && state.lockAt != null && Date.now() >= state.lockAt;
-    state.dpUnlocked = localStorage.getItem('wsmot_dp_' + active) === '1';
+    state.dpBalance = Number(localStorage.getItem('wsmot_dp_balance') || 0);
+    state.dpUnlocked = localStorage.getItem('wsmot_dp_used_' + active) === '1';
 
     if (state.user) await loadMyPicks();
     state.submitted1 = !!(state.user && Object.keys(state.picks[1]).length);
@@ -585,28 +593,40 @@
     b.classList.remove('hidden');
     if (state.dpUnlocked) {
       b.className = 'dp-banner on';
-      b.innerHTML = `<div class="dp-t">🎯 더블 픽 — 한 번 더!</div>
-        <div class="dp-d">아래에서 한 번 더 예측하세요. 그날 점수는 <b>더 잘 맞힌 세트</b>로 계산돼요.</div>`;
+      b.innerHTML = `<div class="dp-t">🎯 더블픽 사용 중 — 한 번 더!</div>
+        <div class="dp-d">아래에서 새로 예측하세요. 그날 점수는 <b>더 잘 맞힌 쪽</b>으로 계산돼요.</div>`;
     } else {
       b.className = 'dp-banner';
-      b.innerHTML = `<div class="dp-t">🎯 한 번 더 예측할 기회!</div>
-        <div class="dp-d">친구에게 공유하면 <b>예측을 한 번 더</b> 할 수 있어요 (더블 픽). 더 잘 맞힌 세트로 채점!</div>
-        <button class="btn-share" id="dp-share">📤 공유하고 한 번 더 예측하기</button>`;
-      $('#dp-share').addEventListener('click', doShare);
+      const useBtnHtml = state.dpBalance > 0 ? '<button class="btn-share" id="dp-use">🎯 더블픽 사용하기</button>' : '';
+      b.innerHTML = `<div class="dp-head"><span class="dp-t">🎯 더블픽</span><span class="dp-bal">보유 <b id="dp-count">${state.dpBalance}</b>개</span></div>
+        <div class="dp-d">더블픽을 쓰면 오늘 예측을 <b>한 번 더</b> 할 수 있어요. 친구에게 공유하면 더블픽을 받아요!</div>
+        <div class="dp-actions">${useBtnHtml}<button class="btn-share alt" id="dp-earn">📤 공유하고 더블픽 받기</button></div>`;
+      $('#dp-earn').addEventListener('click', earnDoublePick);
+      const useBtn = $('#dp-use'); if (useBtn) useBtn.addEventListener('click', useDoublePick);
     }
   }
 
-  async function doShare() {
+  async function earnDoublePick() {
     const url = window.location.origin;
     const text = '월드컵 예측하고 치킨 받자! 🍗 월승치못 →';
     try {
       if (navigator.share) await navigator.share({ title: '월승치못', text, url });
-      else { await navigator.clipboard.writeText(text + ' ' + url); showToast('🔗 링크 복사 완료! 친구에게 붙여넣기 하세요'); }
-    } catch (e) { return; } // cancelled
-    localStorage.setItem('wsmot_dp_' + state.activeDate, '1');
-    state.dpUnlocked = true;
+      else { await navigator.clipboard.writeText(text + ' ' + url); }
+    } catch (e) { return; } // 공유 취소 → 보상 없음
+    state.dpBalance += 1;
+    localStorage.setItem('wsmot_dp_balance', String(state.dpBalance));
     renderPlay();
-    showToast('🎯 한 번 더 예측할 수 있어요! 세트 2를 채워보세요');
+    showToast('🎯 더블픽 +1 획득! (보유 ' + state.dpBalance + '개)');
+  }
+
+  function useDoublePick() {
+    if (state.dpBalance <= 0) return;
+    state.dpBalance -= 1;
+    localStorage.setItem('wsmot_dp_balance', String(state.dpBalance));
+    state.dpUnlocked = true;
+    localStorage.setItem('wsmot_dp_used_' + state.activeDate, '1');
+    renderPlay();
+    showToast('🎯 더블픽 사용! 한 번 더 예측하세요');
   }
 
   function renderQuestion(q) {
@@ -614,8 +634,12 @@
     card.className = 'q-card';
     const jackpot = /난입|잭팟|🎰/.test(q.text);
     const edit = editingSet();
-    const showSet2 = state.submitted2 || (state.dpUnlocked && !state.graded && !state.locked);
-    const sets = showSet2 ? [1, 2] : [1];
+    const showSet1 = edit !== 2;   // 더블픽 재픽 중엔 세트1 숨김(처음처럼 한 세트만)
+    const showSet2 = state.submitted2 || edit === 2;
+    const sets = [];
+    if (showSet1) sets.push(1);
+    if (showSet2) sets.push(2);
+    const showLabels = sets.length > 1;
 
     let html = `<span class="q-no${jackpot ? ' jackpot' : ''}">Q${q.order_no}${jackpot ? ' 🎰' : ''}</span>
       <div class="q-title">${escapeHtml(q.text)}</div>`;
@@ -624,11 +648,13 @@
       const my = state.picks[setNo][q.id];
       const editable = edit === setNo;
       const done = setNo === 1 ? state.submitted1 : state.submitted2;
-      const lbl = (setNo === 1 ? '세트 1' : '세트 2 (더블 픽)') + (done && !state.graded ? ' · ✅ 완료' : '');
-      html += `<div class="set-label${setNo === 2 ? ' s2' : ''}">${lbl}</div>`;
+      if (showLabels) {
+        const lbl = (setNo === 1 ? '세트 1' : '세트 2 (더블 픽)') + (done && !state.graded ? ' · ✅ 완료' : '');
+        html += `<div class="set-label${setNo === 2 ? ' s2' : ''}">${lbl}</div>`;
+      }
       if (editable) {
         html += `<div class="opts" data-qid="${q.id}" data-set="${setNo}">` + q.options.map(o =>
-          `<div class="opt${my === o ? (setNo === 2 ? ' sel s2' : ' sel') : ''}" data-opt="${escapeAttr(o)}">${escapeHtml(o)}</div>`
+          `<div class="opt${my === o ? ' sel' : ''}" data-opt="${escapeAttr(o)}">${escapeHtml(o)}</div>`
         ).join('') + `</div>`;
       } else {
         html += `<div class="opts${state.graded ? '' : ' done'}">` + q.options.map(o => {
@@ -651,7 +677,7 @@
           const qid = Number(row.dataset.qid), setNo = Number(row.dataset.set);
           state.picks[setNo][qid] = opt.dataset.opt;
           row.querySelectorAll('.opt').forEach(o => o.classList.remove('sel', 's2'));
-          opt.classList.add('sel'); if (setNo === 2) opt.classList.add('s2');
+          opt.classList.add('sel');
           updateSubmit();
         });
       });
