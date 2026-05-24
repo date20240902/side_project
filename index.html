@@ -130,6 +130,7 @@
   }
   .deadline b { font-family: 'DungGeunMo', monospace; font-size: 17px; color: var(--accent); }
   .deadline.locked { background: var(--bg-card-2); border-color: var(--border); color: var(--text-dim); }
+  .play-status { margin: 10px 0 0; padding: 13px 14px; text-align: center; font-size: 14px; background: #e7f7ec; border: 3px solid var(--green); box-shadow: var(--shadow); }
 
   .q-card { margin: 10px 0; padding: 14px; background: var(--bg-card); border: 3px solid var(--border); box-shadow: var(--shadow); }
   .q-no { font-size: 11px; color: #fff; background: var(--border); padding: 2px 7px; }
@@ -283,6 +284,7 @@
     </div>
 
     <div class="deadline hidden" id="deadline"></div>
+    <div class="play-status hidden" id="play-status"></div>
 
     <div id="questions"></div>
     <div id="result-area"></div>
@@ -354,7 +356,8 @@
     graded: false,
     locked: false,      // 마감(lock_at) 지났는데 아직 채점 전
     lockAt: null,       // ms epoch, 그날 가장 이른 마감시각
-    submitted: false,   // 이미 제출함(1회 제출, 수정 불가)
+    submitted1: false,  // 세트1 제출 완료(블록)
+    submitted2: false,  // 세트2(더블픽) 제출 완료
     nav: 'play',
     picks: { 1: {}, 2: {} },   // set_no -> { question_id: choice }
     dpUnlocked: false,
@@ -463,8 +466,17 @@
     state.dpUnlocked = localStorage.getItem('wsmot_dp_' + active) === '1';
 
     if (state.user) await loadMyPicks();
-    state.submitted = !!(state.user && Object.keys(state.picks[1]).length);
+    state.submitted1 = !!(state.user && Object.keys(state.picks[1]).length);
+    state.submitted2 = !!(state.user && Object.keys(state.picks[2]).length);
     renderPlay();
+  }
+
+  // 현재 편집(예측 입력) 가능한 세트: 0=없음(블록), 1, 2
+  function editingSet() {
+    if (state.graded || state.locked) return 0;
+    if (!state.submitted1) return 1;
+    if (state.dpUnlocked && !state.submitted2) return 2;
+    return 0;
   }
 
   function toggleLoginBar() {
@@ -516,6 +528,12 @@
     if (!state.questions.length) { renderEmptyPlay(); return; }
     $('#play-date').textContent = fmtDate(state.activeDate);
 
+    const status = $('#play-status');
+    if (!state.graded && !state.locked && state.submitted1 && editingSet() === 0) {
+      status.classList.remove('hidden');
+      status.innerHTML = state.submitted2 ? '✅ 오늘의 예측 완료! (더블 픽 포함)' : '✅ 오늘의 예측 완료!';
+    } else { status.classList.add('hidden'); }
+
     renderDpBanner();
 
     const wrap = $('#questions');
@@ -559,17 +577,20 @@
 
   function renderDpBanner() {
     const b = $('#dp-banner');
-    if (!state.user || state.graded || state.locked || state.submitted) { b.classList.add('hidden'); return; }
+    // 더블픽은 세트1 제출 후 제공, 세트2까지 내면 숨김
+    if (!state.user || state.graded || state.locked || !state.submitted1 || state.submitted2) {
+      b.classList.add('hidden'); return;
+    }
     b.classList.remove('hidden');
     if (state.dpUnlocked) {
       b.className = 'dp-banner on';
-      b.innerHTML = `<div class="dp-t">🎯 더블 픽 사용 중</div>
-        <div class="dp-d">예측 세트를 2개 냈어요. 그날 점수는 <b>더 잘 맞힌 세트</b>로 계산돼요.</div>`;
+      b.innerHTML = `<div class="dp-t">🎯 더블 픽 — 한 번 더!</div>
+        <div class="dp-d">아래에서 한 번 더 예측하세요. 그날 점수는 <b>더 잘 맞힌 세트</b>로 계산돼요.</div>`;
     } else {
       b.className = 'dp-banner';
-      b.innerHTML = `<div class="dp-t">🎯 더블 픽 잠금 해제</div>
-        <div class="dp-d">친구에게 공유하면 <b>예측 세트를 한 번 더(2세트)</b> 낼 수 있어요. 더 잘 맞힌 세트로 채점!</div>
-        <button class="btn-share" id="dp-share">📤 공유하고 더블 픽 받기</button>`;
+      b.innerHTML = `<div class="dp-t">🎯 한 번 더 예측할 기회!</div>
+        <div class="dp-d">친구에게 공유하면 <b>예측을 한 번 더</b> 할 수 있어요 (더블 픽). 더 잘 맞힌 세트로 채점!</div>
+        <button class="btn-share" id="dp-share">📤 공유하고 한 번 더 예측하기</button>`;
       $('#dp-share').addEventListener('click', doShare);
     }
   }
@@ -584,25 +605,27 @@
     localStorage.setItem('wsmot_dp_' + state.activeDate, '1');
     state.dpUnlocked = true;
     renderPlay();
-    showToast('🎯 더블 픽 잠금 해제! 세트 2를 채워보세요');
+    showToast('🎯 한 번 더 예측할 수 있어요! 세트 2를 채워보세요');
   }
 
-  function renderQuestion(q, idx) {
+  function renderQuestion(q) {
     const card = document.createElement('div');
     card.className = 'q-card';
     const jackpot = /난입|잭팟|🎰/.test(q.text);
-    const hasSet2 = Object.keys(state.picks[2]).length > 0;
-    const interactive = !state.graded && !state.locked && !state.submitted;   // 마감 전 + 미채점 + 미제출일 때만 선택 가능
-    const sets = (interactive ? (state.dpUnlocked || hasSet2) : hasSet2) ? [1, 2] : [1];
+    const edit = editingSet();
+    const showSet2 = state.submitted2 || (state.dpUnlocked && !state.graded && !state.locked);
+    const sets = showSet2 ? [1, 2] : [1];
 
     let html = `<span class="q-no${jackpot ? ' jackpot' : ''}">Q${q.order_no}${jackpot ? ' 🎰' : ''}</span>
       <div class="q-title">${escapeHtml(q.text)}</div>`;
 
     sets.forEach(setNo => {
       const my = state.picks[setNo][q.id];
-      const lbl = setNo === 1 ? '세트 1' : (interactive ? '세트 2 (더블 픽)' : '세트 2');
+      const editable = edit === setNo;
+      const done = setNo === 1 ? state.submitted1 : state.submitted2;
+      const lbl = (setNo === 1 ? '세트 1' : '세트 2 (더블 픽)') + (done && !state.graded ? ' · ✅ 완료' : '');
       html += `<div class="set-label${setNo === 2 ? ' s2' : ''}">${lbl}</div>`;
-      if (interactive) {
+      if (editable) {
         html += `<div class="opts" data-qid="${q.id}" data-set="${setNo}">` + q.options.map(o =>
           `<div class="opt${my === o ? (setNo === 2 ? ' sel s2' : ' sel') : ''}" data-opt="${escapeAttr(o)}">${escapeHtml(o)}</div>`
         ).join('') + `</div>`;
@@ -620,8 +643,8 @@
     html += `<div class="vote" data-qid="${q.id}">${voteBarsHtml(q, [])}</div>`;
     card.innerHTML = html;
 
-    if (interactive) {
-      card.querySelectorAll('.opts').forEach(row => {
+    if (edit !== 0) {
+      card.querySelectorAll('.opts[data-set]').forEach(row => {
         row.addEventListener('click', e => {
           const opt = e.target.closest('.opt'); if (!opt) return;
           const qid = Number(row.dataset.qid), setNo = Number(row.dataset.set);
@@ -635,8 +658,8 @@
     return card;
   }
 
-  function set1Complete() {
-    return state.questions.length > 0 && state.questions.every(q => state.picks[1][q.id]);
+  function setComplete(setNo) {
+    return state.questions.length > 0 && state.questions.every(q => state.picks[setNo][q.id]);
   }
 
   function renderResultArea() {
@@ -649,15 +672,13 @@
       area.innerHTML = state.user
         ? '<div class="empty"><div class="e-emoji">🔒</div>투표가 마감됐어요.<br>경기 후 채점되면 점수·순위가 올라가요!</div>'
         : '<div class="empty"><div class="e-emoji">🔒</div>오늘 투표는 마감됐어요.<br>내일 다시 도전하세요!</div>';
-    } else if (state.submitted) {
-      area.innerHTML = '<div class="empty"><div class="e-emoji">✅</div>예측을 제출했어요!<br>경기 후 채점되면 점수·순위가 올라가요. <b style="color:var(--accent)">(수정 불가)</b></div>';
     } else {
       area.innerHTML = '';
     }
   }
 
   function syncSubmitBtn() {
-    const show = state.nav === 'play' && state.user && !state.graded && !state.locked && !state.submitted && state.questions.length > 0;
+    const show = state.nav === 'play' && state.user && state.questions.length > 0 && editingSet() !== 0;
     const btn = $('#submit-btn');
     btn.classList.toggle('hidden', !show);
     document.body.classList.toggle('has-submit', show);
@@ -665,10 +686,11 @@
   }
 
   function updateSubmit() {
+    const set = editingSet();
     const btn = $('#submit-btn');
-    const ok = set1Complete();
+    const ok = set !== 0 && setComplete(set);
     btn.disabled = !ok;
-    btn.textContent = ok ? '예측 제출하기' : '5개 모두 선택해주세요';
+    btn.textContent = ok ? (set === 2 ? '더블 픽 제출하기' : '예측 제출하기') : '5개 모두 선택해주세요';
   }
 
   function score(setNo) {
@@ -768,22 +790,22 @@
   }
 
   async function submitPicks() {
+    const set = editingSet();
+    if (set === 0) return;
     if (state.lockAt != null && Date.now() >= state.lockAt) {
       state.locked = true; renderPlay(); showToast('⏰ 투표가 마감됐어요');
       return;
     }
     const btn = $('#submit-btn');
     btn.disabled = true; btn.textContent = '제출 중...';
-    const rows = [];
-    state.questions.forEach(q => {
-      if (state.picks[1][q.id]) rows.push({ user_id: state.user.id, question_id: q.id, set_no: 1, choice: state.picks[1][q.id] });
-      if (state.dpUnlocked && state.picks[2][q.id]) rows.push({ user_id: state.user.id, question_id: q.id, set_no: 2, choice: state.picks[2][q.id] });
-    });
+    const rows = state.questions
+      .filter(q => state.picks[set][q.id])
+      .map(q => ({ user_id: state.user.id, question_id: q.id, set_no: set, choice: state.picks[set][q.id] }));
     // 1회 제출, 수정 불가: 중복은 무시(ON CONFLICT DO NOTHING)
     const { error } = await sb.from('predictions').upsert(rows, { onConflict: 'user_id,question_id,set_no', ignoreDuplicates: true });
     if (error) { showToast('제출에 실패했어요. 다시 시도해주세요.'); updateSubmit(); return; }
-    state.submitted = true;
-    showToast('✅ 예측이 제출됐어요! 행운을 빌어요 🍀');
+    if (set === 1) state.submitted1 = true; else state.submitted2 = true;
+    showToast(set === 2 ? '🎯 더블 픽 제출 완료!' : '✅ 예측이 제출됐어요! 행운을 빌어요 🍀');
     renderPlay();
   }
 
