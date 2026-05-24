@@ -222,6 +222,12 @@
   .btn-share-result { display: block; width: 100%; margin-top: 12px; padding: 13px; background: var(--kakao); color: #2a2300; border: 3px solid var(--border); font-family: 'DungGeunMo', monospace; font-size: 14px; }
   .btn-share-result:active { transform: translate(2px,2px); }
 
+  .rank-reward { display: flex; gap: 8px; margin: 16px 0 4px; }
+  .rank-reward .rr-item { flex: 1; display: flex; gap: 8px; align-items: center; padding: 11px; border: 3px solid var(--border); background: var(--bg-card); box-shadow: var(--shadow); }
+  .rank-reward .rr-emoji { font-size: 22px; }
+  .rank-reward .rr-item b { font-size: 12px; display: block; }
+  .rank-reward .rr-item span { font-size: 10px; color: var(--text-dim); }
+
   .tabs { display: flex; gap: 6px; margin: 16px 0 4px; }
   .tab { flex: 1; padding: 9px; text-align: center; font-size: 12px; border: 2px solid var(--border); background: var(--bg-card); }
   .tab.active { background: var(--border); color: #fff; }
@@ -315,6 +321,10 @@
 
   <!-- ===== RANK view ===== -->
   <div class="view hidden" id="view-rank">
+    <div class="rank-reward">
+      <div class="rr-item"><span class="rr-emoji">🥇</span><div><b>주간 누적 1위</b><span>추가 치킨 · 매주 리셋</span></div></div>
+      <div class="rr-item"><span class="rr-emoji">🏆</span><div><b>전체 누적 1위</b><span>치킨 5마리!</span></div></div>
+    </div>
     <div class="tabs">
       <div class="tab active" data-rtab="weekly">주간 누적</div>
       <div class="tab" data-rtab="overall">전체 누적</div>
@@ -998,6 +1008,7 @@
     const name = n.dataset.nav;
     $$('[data-nav]').forEach(x => x.classList.toggle('active', x === n));
     ['play', 'rank', 'prize', 'me'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
+    $('.pool').classList.toggle('hidden', name === 'rank'); // 순위 탭엔 오늘의 풀 대신 보상 박스
     state.nav = name;
     syncSubmitBtn();
     if (name === 'rank') renderRank();
