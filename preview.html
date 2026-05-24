@@ -667,7 +667,7 @@
 <footer class="footer">
   <div class="logo-mini">월승치못<span class="dot">!</span></div>
   월드컵 승부 예측에 치킨? 이건 못 참지<br><br>
-  <a href="mailto:ad@wsmot.kr">광고 / 후원 문의</a> · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보 처리방침</a><br><br>
+  <a href="/contact">광고 / 후원 문의</a> · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보 처리방침</a><br><br>
   © 2026 월승치못 · wsmot.kr
 </footer>
 
@@ -787,9 +787,7 @@
 
   // ===== Sponsor inquiry =====
   $$('.sp-item.empty').forEach(el => {
-    el.addEventListener('click', () => {
-      showToast('📩 광고 / 후원 문의는 ad@wsmot.kr');
-    });
+    el.addEventListener('click', () => { window.location.href = '/contact'; });
   });
 
 })();
