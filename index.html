@@ -73,10 +73,13 @@
 
   /* ===== Sticky login CTA (logged-out) ===== */
   .login-bar {
-    position: fixed; left: 50%; transform: translateX(-50%); bottom: 60px;
+    position: fixed; left: 50%; bottom: 60px;
     width: 100%; max-width: 460px; padding: 12px 16px 14px;
     background: var(--bg-elev); border-top: 3px solid var(--border); z-index: 45;
+    transform: translateX(-50%) translateY(24px); opacity: 0; pointer-events: none;
+    transition: transform 0.28s ease, opacity 0.28s ease;
   }
+  .login-bar.reveal { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
   .login-bar .lb-msg { text-align: center; font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
   .login-bar .lb-msg b { color: var(--accent); }
   .btn-test { width: 100%; margin-top: 8px; padding: 9px; background: transparent; color: var(--text-dim); border: 2px dashed var(--border-light); font-family: inherit; font-size: 12px; }
@@ -708,6 +711,18 @@
     $('#login-bar').classList.toggle('hidden', !guest);
     document.body.classList.toggle('guest', guest);
     if (guest) { const tb = $('#test-join'); if (tb) tb.disabled = false; }
+    updateLoginReveal();
+  }
+
+  // 로그인 바: 오늘의 예측 Q1이 화면에 들어오면 슬라이드 인(비로그인 한정)
+  function updateLoginReveal() {
+    const bar = $('#login-bar');
+    if (!bar || state.user) return; // 로그인 사용자는 .hidden 으로 숨김 처리됨
+    let reveal;
+    const q1 = state.nav === 'play' && $('#questions') ? $('#questions').firstElementChild : null;
+    if (q1) reveal = q1.getBoundingClientRect().top < window.innerHeight * 0.9;
+    else reveal = window.scrollY > 200;
+    bar.classList.toggle('reveal', reveal);
   }
 
   async function refreshPool() {
@@ -766,6 +781,7 @@
     const wrap = $('#questions');
     wrap.innerHTML = '';
     state.questions.forEach((q, i) => wrap.appendChild(renderQuestion(q, i)));
+    updateLoginReveal();
 
     renderResultArea();
     syncSubmitBtn();
@@ -892,6 +908,11 @@
       card.querySelectorAll('.opts[data-set]').forEach(row => {
         row.addEventListener('click', e => {
           const opt = e.target.closest('.opt'); if (!opt) return;
+          if (!state.user) {   // 비로그인: 선택(빨간색) 막고 로그인 안내
+            showToast('🍗 로그인해야 예측에 참여할 수 있어요');
+            $('#login-bar').classList.add('reveal');
+            return;
+          }
           const qid = Number(row.dataset.qid), setNo = Number(row.dataset.set);
           state.picks[setNo][qid] = opt.dataset.opt;
           row.querySelectorAll('.opt').forEach(o => o.classList.remove('sel', 's2'));
@@ -1187,10 +1208,14 @@
     $('.pool').classList.toggle('hidden', name === 'rank'); // 순위 탭엔 오늘의 풀 대신 보상 박스
     state.nav = name;
     syncSubmitBtn();
+    updateLoginReveal();
     if (name === 'rank') renderRank();
     if (name === 'me') renderMe();
     if (name === 'prize') renderPrize();
   }));
+
+  window.addEventListener('scroll', updateLoginReveal, { passive: true });
+  window.addEventListener('resize', updateLoginReveal);
 
   // ===== Prize / Winners =====
   async function renderPrize() {
