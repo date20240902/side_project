@@ -140,6 +140,7 @@
   .set-label { font-size: 11px; color: var(--text-dim); margin: 8px 0 4px; }
   .set-label.s2 { color: var(--accent-2); }
   .opts { display: flex; gap: 6px; }
+  .opts.done { filter: grayscale(.85) blur(.6px); opacity: .55; pointer-events: none; }
   .opt {
     flex: 1; padding: 11px 4px; text-align: center; font-size: 14px;
     background: var(--bg-elev); border: 2px solid var(--border); color: var(--text);
@@ -630,7 +631,7 @@
           `<div class="opt${my === o ? (setNo === 2 ? ' sel s2' : ' sel') : ''}" data-opt="${escapeAttr(o)}">${escapeHtml(o)}</div>`
         ).join('') + `</div>`;
       } else {
-        html += `<div class="opts">` + q.options.map(o => {
+        html += `<div class="opts${state.graded ? '' : ' done'}">` + q.options.map(o => {
           let cls = 'opt locked';
           if (state.graded && q.correct != null && o === q.correct) cls += ' correct';
           else if (my === o) cls += state.graded ? ' wrong' : (setNo === 2 ? ' sel s2' : ' sel');
