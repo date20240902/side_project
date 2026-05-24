@@ -3,14 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>월승치못 — 채널 프로필</title>
+<title>월승치못 — 채널 프로필 (새 UI)</title>
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
 <style>
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/gh/fontbee/font@main/Orioncactus/DungGeunMo.woff') format('woff');
+    font-display: swap;
+  }
   :root {
-    --bg: #0a0e1a;
-    --accent: #ff3d57;
-    --gold: #ffd54a;
-    --gold-2: #ffb84d;
-    --text: #ffffff;
+    --border: #27235a;
+    --accent: #e23b2e;
+    --gold: #ffd24a;
+    --cream: #f7ecd9;
+    --hero: #0f1430;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -18,81 +25,65 @@
     min-height: 100vh;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 22px;
-    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
-    padding: 30px;
+    gap: 22px; padding: 30px;
+    font-family: 'DungGeunMo', 'Galmuri11', monospace; -webkit-font-smoothing: none;
   }
 
-  /* ===== 640x640 profile square ===== */
+  /* ===== 640x640 profile square (Kakao crops to a circle) ===== */
   .profile {
     width: 640px; height: 640px;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
     background:
-      radial-gradient(circle at 50% 32%, rgba(255, 61, 87, 0.35), transparent 55%),
-      radial-gradient(circle at 50% 88%, rgba(255, 213, 74, 0.28), transparent 55%),
-      radial-gradient(circle at 50% 50%, #141a2e 0%, #080b16 100%);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+      radial-gradient(circle at 50% 34%, rgba(226,59,46,0.30), transparent 52%),
+      radial-gradient(circle at 50% 90%, rgba(255,210,74,0.22), transparent 55%),
+      radial-gradient(circle at 50% 50%, #161c3c 0%, var(--hero) 70%, #080b18 100%);
+    display: flex; align-items: center; justify-content: center;
   }
-
-  /* subtle ring to look crisp inside circular crop */
-  .profile::after {
-    content: '';
-    position: absolute; inset: 46px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 213, 74, 0.18);
-  }
+  /* faint pixel grid like the app body */
   .profile::before {
-    content: '';
-    position: absolute; inset: 0;
-    background:
-      repeating-linear-gradient(45deg,
-        rgba(255,255,255,0.015) 0 22px,
-        transparent 22px 44px);
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 2px, transparent 2px);
+    background-size: 32px 32px;
+  }
+  /* framing ring inside the circular crop */
+  .profile::after {
+    content: ''; position: absolute; inset: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,210,74,0.30);
+    box-shadow: inset 0 0 0 8px rgba(15,20,48,0.0), 0 0 0 3px rgba(39,35,90,0.0);
   }
 
   .stack {
     position: relative; z-index: 2;
-    display: flex; flex-direction: column;
-    align-items: center;
-    transform: translateY(-6px);
+    display: flex; flex-direction: column; align-items: center;
+    transform: translateY(-4px);
   }
-
-  .icon {
-    font-size: 188px;
-    line-height: 1;
-    filter: drop-shadow(0 10px 30px rgba(255, 213, 74, 0.45));
-    margin-bottom: 14px;
-  }
+  .emblem { line-height: 0; margin-bottom: 24px; filter: drop-shadow(0 10px 22px rgba(0,0,0,0.45)); }
+  .emblem svg { width: 300px; height: auto; image-rendering: pixelated; }
 
   .wordmark {
-    font-size: 104px;
-    font-weight: 900;
-    letter-spacing: -3px;
-    color: var(--text);
-    line-height: 1;
-    text-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    font-family: 'DungGeunMo', monospace;
+    font-size: 116px; line-height: 1; letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 5px 5px 0 var(--border), 0 6px 26px rgba(0,0,0,0.5);
   }
-  .wordmark .dot { color: var(--accent); }
+  .wordmark .dot { color: var(--accent); text-shadow: 5px 5px 0 #7a1109; }
 
   .tagline {
-    margin-top: 18px;
-    font-size: 27px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--gold);
-    background: rgba(255, 213, 74, 0.12);
-    border: 1.5px solid rgba(255, 213, 74, 0.35);
-    padding: 8px 20px;
-    border-radius: 999px;
+    margin-top: 30px;
+    font-family: 'DungGeunMo', monospace;
+    font-size: 27px; letter-spacing: 0.5px;
+    color: var(--border);
+    background: var(--cream);
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.35);
+    padding: 10px 24px;
   }
 
   /* helper UI (not part of image) */
-  .hint {
-    color: #aab2c5; font-size: 13px; text-align: center;
-    line-height: 1.7; max-width: 640px;
-  }
+  .hint { color: #aab2c5; font-size: 13px; text-align: center; line-height: 1.8; max-width: 640px; font-family: -apple-system, "Apple SD Gothic Neo", sans-serif; }
   .hint b { color: #fff; }
 </style>
 </head>
@@ -100,16 +91,49 @@
 
   <div class="profile" id="profile">
     <div class="stack">
-      <div class="icon">🍗</div>
+      <div class="emblem">
+        <svg viewBox="0 0 62 30" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(1,1)">
+            <g transform="rotate(-30 10 7)">
+              <rect x="7" y="2" width="6" height="11" rx="3" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+              <circle cx="7.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+              <circle cx="12.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+            </g>
+            <ellipse cx="14" cy="18" rx="10" ry="9" fill="#d8893a" stroke="#5a3411" stroke-width="2"/>
+            <ellipse cx="10" cy="13.5" rx="2.6" ry="1.7" fill="#efb87a"/>
+            <circle cx="10" cy="16" r="1.1" fill="#a85e1f"/>
+            <circle cx="16" cy="19" r="1.1" fill="#a85e1f"/>
+            <circle cx="12" cy="21" r="1.1" fill="#a85e1f"/>
+          </g>
+          <g transform="translate(36,2)">
+            <defs><clipPath id="ballclip"><circle cx="12" cy="12" r="10.5"/></clipPath></defs>
+            <circle cx="12" cy="12" r="11" fill="#ffffff" stroke="#27235a" stroke-width="2"/>
+            <g clip-path="url(#ballclip)" fill="#27235a">
+              <polygon points="12,7.4 16.4,10.6 14.7,15.8 9.3,15.8 7.6,10.6"/>
+              <polygon points="12,-1 15,2 13,5 11,5 9,2"/>
+              <polygon points="23,9 26,12 24,15 21,14 21,11"/>
+              <polygon points="18,23 20,26 17,28 14,26 16,23"/>
+              <polygon points="6,23 8,26 5,28 2,26 4,23"/>
+              <polygon points="1,9 4,11 4,14 1,15 -1,12"/>
+            </g>
+            <g stroke="#27235a" stroke-width="1.3" stroke-linecap="round">
+              <line x1="12" y1="7.4" x2="12" y2="2.5"/>
+              <line x1="16.4" y1="10.6" x2="21.5" y2="9.5"/>
+              <line x1="14.7" y1="15.8" x2="17.5" y2="22"/>
+              <line x1="9.3" y1="15.8" x2="6.5" y2="22"/>
+              <line x1="7.6" y1="10.6" x2="2.5" y2="9.5"/>
+            </g>
+          </g>
+        </svg>
+      </div>
       <div class="wordmark">월승치못<span class="dot">!</span></div>
       <div class="tagline">월드컵 예측 · 치킨 챌린지</div>
     </div>
   </div>
 
   <div class="hint">
-    위 정사각형(640×640)이 채널 프로필 이미지예요.<br>
-    <b>저장 방법:</b> 이 사각형만 <b>화면 캡처</b> 후 정사각형으로 잘라서 업로드하거나,
-    네모에 <b>마우스 오른쪽 → 이미지로 저장</b>이 안 되면 캡처를 이용하세요.
+    위 정사각형(640×640)이 새 UI 기준 채널 프로필이에요. 카카오는 <b>원형으로 크롭</b>하니 모서리는 잘려도 됩니다.<br>
+    <b>저장 방법:</b> 이 사각형만 <b>화면 캡처</b> 후 정사각형으로 잘라 업로드하세요.
   </div>
 
 </body>
