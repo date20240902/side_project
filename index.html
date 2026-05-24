@@ -113,6 +113,7 @@
   .sec-head h2 { font-family: 'DungGeunMo', monospace; font-size: 19px; margin: 0; }
   .sec-head .meta { font-size: 12px; color: var(--text-dim); }
   .sec-head .meta b { color: var(--accent); }
+  .sec-head .play-date { font-family: 'DungGeunMo', monospace; font-size: 14px; color: #fff; background: var(--accent); border: 2px solid var(--border); box-shadow: 2px 2px 0 var(--border); padding: 3px 10px; }
 
   /* ===== Prize / banner ===== */
   .banner {
@@ -240,10 +241,6 @@
   .empty .e-emoji { font-size: 40px; }
 
   /* ===== Prize view ===== */
-  .prize-pool { margin: 16px 0 0; padding: 20px; text-align: center; background: #0f1430; color: #fff; border: 3px solid var(--border); box-shadow: var(--shadow); }
-  .prize-pool .pp-label { font-size: 12px; color: #c7cdf0; }
-  .prize-pool .pp-count { font-family: 'DungGeunMo', monospace; font-size: 44px; line-height: 1.1; color: var(--accent-2); }
-  .prize-pool .pp-sub { font-size: 11px; color: #c7cdf0; margin-top: 6px; }
   .rules { margin: 8px 0 0; }
   .rule { display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; border: 2px solid var(--border); background: var(--bg-card); margin: 6px 0; font-size: 12px; line-height: 1.5; }
   .rule .r-emoji { font-size: 20px; }
@@ -450,7 +447,7 @@
   <div class="view" id="view-play">
     <div class="banner">
       <div class="b-emoji">🏆</div>
-      <div>오늘 <b class="accent">정답 최다</b>인 사람들 중 추첨으로 <b class="accent">치킨 풀 마리 수만큼</b> 선물!<br>
+      <div>매일 <b class="accent">최다 정답자</b>들 중 추첨으로 <b class="accent">치킨 기프티콘</b> 선물!<br>
         <span style="font-size:11px;color:var(--text-dim)">예측 틀려도 OK · 매주 누적 정답이 가장 많은 사람에게도 추가 치킨</span></div>
     </div>
 
@@ -468,12 +465,12 @@
 
     <div class="sec-head">
       <h2 id="play-title">오늘의 예측</h2>
-      <span class="meta" id="play-date"></span>
+      <span class="play-date" id="play-date"></span>
     </div>
 
     <div class="deadline hidden" id="deadline"></div>
     <div class="play-status hidden" id="play-status"></div>
-    <div class="pick-note hidden" id="pick-note">⚠️ 예측은 한 번 제출하면 <b>수정할 수 없어요</b>. 신중하게 골라주세요!</div>
+    <div class="pick-note hidden" id="pick-note">⚠️ 제출 후엔 <b>수정 불가</b> · 신중하게 골라주세요!</div>
 
     <div id="questions"></div>
 
@@ -508,14 +505,13 @@
 
   <!-- ===== PRIZE view ===== -->
   <div class="view hidden" id="view-prize">
-    <div class="prize-pool" id="prize-pool"></div>
-    <div class="sec-head"><h2>당첨 규칙</h2></div>
+    <div class="sec-head"><h2>월승치못 규칙</h2></div>
     <div class="rules">
-      <div class="rule"><span class="r-emoji">🍗</span><div>치킨 풀 = <b>기본 1마리 + 참여자 500명당 1마리</b></div></div>
-      <div class="rule"><span class="r-emoji">🎯</span><div>그날 <b>정답 최다</b>인 사람들 중 추첨으로, 치킨 풀에 쌓인 <b>마리 수만큼</b> 선물!</div></div>
+      <div class="rule"><span class="r-emoji">🍗</span><div>치킨 풀 = <b>기본 1마리 + 참여자 500명당 1마리 추가</b></div></div>
+      <div class="rule"><span class="r-emoji">🎯</span><div><b>매일 최다 정답자</b>들 중 치킨 풀에 쌓인 <b>마리 수만큼</b> 추첨하여 <b>치킨 기프티콘</b> 선물!</div></div>
       <div class="rule"><span class="r-emoji">📅</span><div>예측 틀렸다고 실망 No! <b>매주 누적 정답이 가장 많은 사람</b>에게 추가 치킨 선물 (매주 리셋)</div></div>
       <div class="rule"><span class="r-emoji">🏆</span><div><b>대회 전체 누적 1위</b>에게는 무려 <b>치킨 5마리!</b> 끝까지 도전하세요</div></div>
-      <div class="rule"><span class="r-emoji">📤</span><div>친구에게 공유하면 <b>예측을 한 번 더</b> 할 수 있는 <b>더블 픽</b> 제공</div></div>
+      <div class="rule"><span class="r-emoji">📤</span><div>친구에게 공유하면 <b>예측을 한 번 더</b> 할 수 있는 <b>더블 픽</b> 제공 (하루 최대 2번)</div></div>
     </div>
     <div class="sec-head"><h2>지난 당첨자</h2></div>
     <div id="winner-list"></div>
@@ -801,7 +797,7 @@
     el.className = 'deadline';
     const h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000), s = Math.floor(ms % 60000 / 1000);
     const pad = (n) => String(n).padStart(2, '0');
-    el.innerHTML = `⏰ 투표 마감까지 <b>${pad(h)}:${pad(m)}:${pad(s)}</b>`;
+    el.innerHTML = `⏰ 오늘 투표 마감까지 <b>${pad(h)}:${pad(m)}:${pad(s)}</b>`;
   }
 
   function startCountdown() {
@@ -1220,13 +1216,6 @@
 
   // ===== Prize / Winners =====
   async function renderPrize() {
-    const { data: cnt } = await sb.rpc('signup_count');
-    const people = Number(cnt || 0);
-    const chickens = 1 + Math.floor(people / 500);
-    $('#prize-pool').innerHTML = `<div class="pp-label">지금까지 모인 치킨 풀</div>
-      <div class="pp-count">🍗 ${chickens}마리</div>
-      <div class="pp-sub">참여자 ${people.toLocaleString()}명 · 500명당 +1마리</div>`;
-
     const list = $('#winner-list');
     list.innerHTML = `<div class="loading">불러오는 중...</div>`;
     const { data, error } = await sb.rpc('recent_winners', { p_limit: 20 });
