@@ -729,13 +729,17 @@
   }
   updateCountdown();
 
-  // ===== Live stats (real count from Supabase) =====
-  // ===== Sticky CTA on scroll =====
+  // ===== Sticky CTA on scroll (충분히 내렸을 때만 노출, 맨 아래 CTA 박스 보이면 숨김) =====
   const sticky = $('#sticky-cta');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 600) sticky.classList.add('show');
-    else sticky.classList.remove('show');
-  });
+  const finalCta = $('.final-cta');
+  function updateSticky() {
+    const scrolledEnough = window.scrollY > 600;
+    const r = finalCta.getBoundingClientRect();
+    const finalVisible = r.top < window.innerHeight && r.bottom > 0;
+    sticky.classList.toggle('show', scrolledEnough && !finalVisible);
+  }
+  window.addEventListener('scroll', updateSticky, { passive: true });
+  window.addEventListener('resize', updateSticky);
 
   // ===== Kakao Channel add (pre-registration) =====
   const CHANNEL_URL = 'http://pf.kakao.com/_DqSbX';
