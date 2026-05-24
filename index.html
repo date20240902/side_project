@@ -120,6 +120,18 @@
   .banner .b-emoji { font-size: 24px; }
   .banner .accent { color: var(--accent); }
 
+  /* ===== Channel notify CTA (logged-in nudge) ===== */
+  .ch-cta { display: none; align-items: center; gap: 10px; margin: 8px 0 0; padding: 11px 13px;
+    background: #fff8d6; border: 3px solid var(--border); box-shadow: var(--shadow); }
+  .ch-cta.show { display: flex; }
+  .ch-cta .ch-emoji { font-size: 22px; }
+  .ch-cta .ch-body { flex: 1; }
+  .ch-cta .ch-t { font-size: 12px; }
+  .ch-cta .ch-d { font-size: 10px; color: var(--text-dim); margin-top: 2px; line-height: 1.4; }
+  .ch-cta .ch-add { background: var(--kakao); color: #2a2300; border: 2px solid var(--border); padding: 7px 10px; font-family: 'DungGeunMo', monospace; font-size: 11px; white-space: nowrap; text-decoration: none; }
+  .ch-cta .ch-add:active { transform: translate(2px,2px); }
+  .ch-cta .ch-x { background: none; border: none; color: var(--text-faint); font-size: 16px; line-height: 1; padding: 0 2px; cursor: pointer; align-self: flex-start; }
+
   /* ===== Ad banner (placeholder) ===== */
   .ad-banner { display: flex; align-items: center; gap: 10px; margin: 12px 0 0; padding: 12px 14px;
     background: var(--bg-card-2); border: 3px dashed var(--border-light); color: var(--text); text-decoration: none; }
@@ -439,6 +451,16 @@
         <span style="font-size:11px;color:var(--text-dim)">예측 틀려도 OK · 매주 누적 정답이 가장 많은 사람에게도 추가 치킨</span></div>
     </div>
 
+    <div class="ch-cta" id="ch-cta">
+      <span class="ch-emoji">🔔</span>
+      <div class="ch-body">
+        <div class="ch-t">매일 새 픽 알림 받기</div>
+        <div class="ch-d">카카오톡 채널을 추가하면 오늘의 픽이 열릴 때 알려드려요</div>
+      </div>
+      <a class="ch-add" href="http://pf.kakao.com/_DqSbX" target="_blank" rel="noopener">채널 추가</a>
+      <button class="ch-x" id="ch-cta-x" aria-label="닫기">×</button>
+    </div>
+
     <div class="dp-banner" id="dp-banner"></div>
 
     <div class="sec-head">
@@ -601,6 +623,17 @@
     if (state.user && state.user.is_anonymous) { clearTestLocalState(); await sb.auth.signOut(); }
   });
 
+  // 채널 추가 유도 배너(로그인 사용자 대상, 닫으면 기억). 도달률↑용
+  function updateChannelCta() {
+    const el = $('#ch-cta');
+    if (!el) return;
+    el.classList.toggle('show', !!state.user && !localStorage.getItem('wsmot_ch_dismiss'));
+  }
+  $('#ch-cta-x').addEventListener('click', () => {
+    localStorage.setItem('wsmot_ch_dismiss', '1');
+    $('#ch-cta').classList.remove('show');
+  });
+
   let _lastUid;
   function applySession(session) {
     const u = (session && session.user) || null;
@@ -628,6 +661,7 @@
       who.classList.toggle('anon', !!state.user.is_anonymous);
     } else { who.textContent = ''; who.classList.remove('anon'); }
     toggleLoginBar();
+    updateChannelCta();
     refreshPool();
 
     // load published questions
