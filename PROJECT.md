@@ -13,7 +13,8 @@
 
 ## 기술 스택 / 배포
 - 정적 HTML + **Supabase**(DB·Auth) + **카카오 로그인**(Supabase Auth Kakao provider)
-- Vercel 배포: production 브랜치 = `claude/worldcup-project-ideas-Y9mt5` (push 하면 자동 배포)
+- Vercel 배포: production 브랜치 = `claude/worldcup-project-ideas-Y9mt5` (push 하면 자동 배포). 작업은 `claude/gracious-mayer-dXQct`에 커밋 → production 브랜치로 fast-forward push해서 배포
+- **사용자가 자동 배포 승인함**: 작은 변경은 매번 확인 없이 dev→production 바로 배포 (2026-05 기준)
 - Supabase 프로젝트 ref: `mgmaibrwapphvgafzdon`, publishable key는 `index.html`에 인라인
 - Supabase **MCP 커넥터 연결됨** → 세션에서 `execute_sql` 등으로 DB 직접 조작 가능
 - 내 실행환경은 외부 인터넷 차단(curl로 사이트/Supabase 직접 접근 불가) → Supabase는 MCP로
