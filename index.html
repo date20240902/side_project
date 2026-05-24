@@ -466,6 +466,9 @@
 
   // ===== Boot (logged in) =====
   async function boot() {
+    // 유저 전환/로그아웃 시 이전 선택이 화면에 남지 않도록 초기화
+    state.picks = { 1: {}, 2: {} };
+    state.submitted1 = false; state.submitted2 = false;
     const who = $('#who');
     if (state.user) {
       who.textContent = nicknameOf(state.user) + (state.user.is_anonymous ? ' 🧪 (탭=로그아웃)' : ' 님');
