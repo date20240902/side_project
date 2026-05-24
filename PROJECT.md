@@ -40,7 +40,7 @@
 - 별도 어드민 UI 없음(v1). Supabase + MCP로 운영
 
 ## 파일
-- `index.html` — **게임 본 화면(루트 `/`)**. 4탭: 오늘의 픽 / 순위 / 상품 / 내 기록. 항상 예측 화면 노출 + 로그아웃 시 하단 카카오 CTA 고정. 오늘의 픽(5문제, set1+더블픽 set2, 실시간 마감 카운트다운+잠금, 문제별 실시간 투표율) → 제출/수정 → 결과(두 세트 채점·더 잘 맞힌 세트 + **결과 자랑 카드 공유**) → 순위(오늘/주간) → 상품(치킨풀·규칙·지난 당첨자) → 내 기록. Supabase 실연동. 닉네임 마스킹. 더블픽 잠금해제는 공유 시 localStorage. 로그아웃도 열람 가능(참여=제출만 로그인)
+- `index.html` — **게임 본 화면(루트 `/`)**. 4탭: 오늘의 픽 / 내 기록 / 순위 / 상품. (내 기록=일자별 박스, 예측 안 한 날도 표시, 클릭하면 문제별 내 예측·정답·O/X 펼침) 항상 예측 화면 노출 + 로그아웃 시 하단 카카오 CTA 고정. 오늘의 픽(5문제, set1+더블픽 set2, 실시간 마감 카운트다운+잠금, 문제별 실시간 투표율) → 제출/수정 → 결과(두 세트 채점·더 잘 맞힌 세트 + **결과 자랑 카드 공유**) → 순위(오늘/주간) → 상품(치킨풀·규칙·지난 당첨자) → 내 기록. Supabase 실연동. 닉네임 마스킹. 더블픽 잠금해제는 공유 시 localStorage. 로그아웃도 열람 가능(참여=제출만 로그인)
 - `preview.html` — 기존 사전예약 랜딩(레트로/픽셀, signup_count 카운터). `/preview`로 보존
 - `db/schema.sql` — 게임 DB 스키마(questions, predictions, daily/weekly leaderboard, vote_counts). **적용 완료**(마이그레이션 `game_schema_v1`, `daily_scores_security_invoker`, `grant_daily_scores_select`)
 - `worldcup-mockup.html` — 앱 화면 목업(옛 더블픽). 디자인 참고용(게임 로직은 game.html이 최신)
@@ -75,7 +75,7 @@
 - **투표율**: 문제마다 상시 실시간 표시(20초 폴링). **누적 스택 막대 1개**(옵션별 색 비율) + 범례. **set1+set2 모두 합산**
 
 ### 메모 / 남은 검증
-- **데모 데이터**: `questions`에 오늘(2026-05-23) published 5문제 + `lock_at = 시드시각+3h`; `winners`에 데모 당첨자 4명(display_name 마스킹값). 정리: `delete from public.questions where match_date=date '2026-05-23'; delete from public.winners where user_id is null;`
+- **데모 데이터**: `questions` 3일치(오늘=열림/미채점, 직전 2일=채점완료) + 테스터 예측, `winners` 데모 4명. 정리: `delete from public.questions; delete from public.winners where user_id is null;`
 - **당첨자 입력(운영)**: 추첨 후 `insert into public.winners(win_date, kind, user_id, prize, score) values (date '2026-06-15','daily','<당첨 user_id>','치킨 1마리',5);` → 상품 탭 지난 당첨자에 자동 노출(닉 마스킹)
 - **실제 로그인은 카카오 비즈앱 심사 통과 후 가능**. 그 전엔 로그아웃 화면(문제·투표율·순위 열람 + 하단 로그인 CTA)까지만 동작
 - **테스트 모드(임시, 출시 전 제거)**: 로그인 바의 "🧪 로그인 없이 테스트로 참여하기" = Supabase 익명 로그인(`signInAnonymously`). 실제 DB에 기록되어 제출·채점·순위까지 진짜로 동작. 닉네임 `테스터NNN`. 상단 닉네임 탭하면 로그아웃(새 테스터로 재시도). **사용 전 Supabase 대시보드 → Authentication → Sign In/Providers → "Allow anonymous sign-ins" 활성화 필요.** 출시 시 `#test-join` 버튼+핸들러 제거할 것

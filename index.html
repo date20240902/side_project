@@ -227,9 +227,27 @@
   .tab.active { background: var(--border); color: #fff; }
 
   /* ===== Records ===== */
-  .rec-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; border: 2px solid var(--border); background: var(--bg-card); margin: 6px 0; }
-  .rec-date { font-size: 13px; }
-  .rec-score { font-family: 'DungGeunMo', monospace; font-size: 15px; }
+  .rec-card { border: 2px solid var(--border); background: var(--bg-card); margin: 6px 0; }
+  .rec-head { display: flex; align-items: center; gap: 10px; padding: 12px; cursor: pointer; }
+  .rec-date { flex: 1; font-size: 13px; }
+  .rec-badge { font-family: 'DungGeunMo', monospace; font-size: 13px; padding: 2px 9px; border: 2px solid var(--border); }
+  .rec-badge.score { background: var(--green); color: #fff; border-color: var(--green); }
+  .rec-badge.wait { background: var(--bg-card-2); color: var(--text-dim); }
+  .rec-badge.none { background: transparent; color: var(--text-faint); border-color: var(--border-light); }
+  .rec-arrow { font-size: 11px; color: var(--text-dim); transition: transform .2s; }
+  .rec-card.open .rec-arrow { transform: rotate(180deg); }
+  .rec-detail { display: none; border-top: 2px dashed var(--border-light); padding: 4px 12px 10px; }
+  .rec-card.open .rec-detail { display: block; }
+  .rec-q { padding: 9px 0; border-bottom: 1px solid var(--bg-card-2); }
+  .rec-q:last-child { border-bottom: none; }
+  .rec-q-t { font-size: 12px; margin-bottom: 5px; line-height: 1.4; }
+  .rec-pick { font-size: 12px; color: var(--text-dim); }
+  .rec-pick b { color: var(--text); }
+  .rec-pick.rec-na { color: var(--text-faint); }
+  .rec-ans { font-size: 11px; color: var(--green); margin-top: 3px; }
+  .rec-ans.dim { color: var(--text-faint); }
+  .rec-q .ok { color: var(--green); }
+  .rec-q .no { color: var(--accent); }
 
   /* ===== Bottom nav ===== */
   .nav {
@@ -342,9 +360,9 @@
 
 <nav class="nav" id="nav">
   <div class="nav-item active" data-nav="play"><span class="ico">⚽</span>오늘의 픽</div>
+  <div class="nav-item" data-nav="me"><span class="ico">📋</span>내 기록</div>
   <div class="nav-item" data-nav="rank"><span class="ico">🏆</span>순위</div>
   <div class="nav-item" data-nav="prize"><span class="ico">🎁</span>상품</div>
-  <div class="nav-item" data-nav="me"><span class="ico">📋</span>내 기록</div>
 </nav>
 
 <div class="toast" id="toast">완료</div>
@@ -361,6 +379,7 @@
 
   const state = {
     user: null,
+    allQuestions: [],   // 모든 published 문제(내 기록용)
     questions: [],      // active date's questions
     activeDate: null,
     graded: false,
@@ -461,6 +480,7 @@
       .order('order_no', { ascending: true });
 
     if (error) { $('#questions').innerHTML = `<div class="empty">문제를 불러오지 못했어요.</div>`; return; }
+    state.allQuestions = qs || [];
     if (!qs || qs.length === 0) { renderEmptyPlay(); return; }
 
     // choose active date: today if present, else most recent <= today, else earliest upcoming
@@ -884,19 +904,77 @@
     }).join('');
   }
 
-  // ===== Me =====
+  // ===== Me (일자별 기록, 박스 → 펼치면 세부) =====
   async function renderMe() {
     const list = $('#me-list');
     if (!state.user) { list.innerHTML = `<div class="empty"><div class="e-emoji">🔒</div>로그인하면 내 예측 기록을 볼 수 있어요.</div>`; return; }
     list.innerHTML = `<div class="loading">불러오는 중...</div>`;
-    const { data, error } = await sb.from('daily_scores')
-      .select('match_date,score')
-      .order('match_date', { ascending: false });
+
+    const { data: preds, error } = await sb.from('predictions').select('question_id,set_no,choice');
     if (error) { list.innerHTML = `<div class="empty">기록을 불러오지 못했어요.</div>`; return; }
-    if (!data || !data.length) { list.innerHTML = `<div class="empty"><div class="e-emoji">📋</div>아직 채점된 기록이 없어요.<br>오늘의 예측에 참여해보세요!</div>`; return; }
-    const total = data.reduce((n, r) => n + Number(r.score), 0);
-    list.innerHTML = `<div class="result-box"><div class="r-score">${total}점</div><div class="r-sub">누적 정답 (${data.length}일 참여)</div></div>`
-      + data.map(r => `<div class="rec-row"><span class="rec-date">${fmtDate(r.match_date)}</span><span class="rec-score">${r.score} / 5</span></div>`).join('');
+    const myByQ = {}; // question_id -> {1:choice, 2:choice}
+    (preds || []).forEach(p => { (myByQ[p.question_id] = myByQ[p.question_id] || {})[p.set_no] = p.choice; });
+
+    const byDate = {};
+    (state.allQuestions || []).forEach(q => { (byDate[q.match_date] = byDate[q.match_date] || []).push(q); });
+    const dates = Object.keys(byDate).sort().reverse();
+    if (!dates.length) { list.innerHTML = `<div class="empty"><div class="e-emoji">📋</div>아직 진행된 예측이 없어요.</div>`; return; }
+
+    let totalScore = 0, playedDays = 0;
+    dates.forEach(d => {
+      const qs = byDate[d];
+      if (qs.some(q => myByQ[q.id] && myByQ[q.id][1] != null)) playedDays++;
+      totalScore += recBest(qs, myByQ);
+    });
+
+    const head = `<div class="result-box"><div class="r-score">${totalScore}점</div><div class="r-sub">누적 정답 · ${playedDays}일 참여 / ${dates.length}일</div></div>`;
+    list.innerHTML = head + dates.map(d => recCardHtml(d, byDate[d], myByQ)).join('');
+    list.querySelectorAll('.rec-card .rec-head').forEach(h =>
+      h.addEventListener('click', () => h.parentElement.classList.toggle('open')));
+  }
+
+  function recScore(qs, myByQ, setNo) {
+    return qs.reduce((n, q) => n + (q.correct != null && myByQ[q.id] && myByQ[q.id][setNo] === q.correct ? 1 : 0), 0);
+  }
+  function recBest(qs, myByQ) {
+    const has2 = qs.some(q => myByQ[q.id] && myByQ[q.id][2] != null);
+    return Math.max(recScore(qs, myByQ, 1), has2 ? recScore(qs, myByQ, 2) : 0);
+  }
+
+  function recCardHtml(date, qs, myByQ) {
+    qs = qs.slice().sort((a, b) => a.order_no - b.order_no);
+    const predicted = qs.some(q => myByQ[q.id] && myByQ[q.id][1] != null);
+    const graded = qs.some(q => q.correct != null);
+    let badge, badgeCls;
+    if (!predicted) { badge = '예측 안 함'; badgeCls = 'none'; }
+    else if (!graded) { badge = '채점 대기'; badgeCls = 'wait'; }
+    else { badge = recBest(qs, myByQ) + ' / ' + qs.length; badgeCls = 'score'; }
+
+    const detail = qs.map(q => {
+      const my1 = myByQ[q.id] && myByQ[q.id][1];
+      const my2 = myByQ[q.id] && myByQ[q.id][2];
+      const mark = (pick) => (q.correct == null || !pick) ? '' : (pick === q.correct ? ' <span class="ok">⭕</span>' : ' <span class="no">❌</span>');
+      let picks;
+      if (!my1 && !my2) {
+        picks = `<div class="rec-pick rec-na">예측 안 함</div>`;
+      } else {
+        picks = `<div class="rec-pick">내 예측: <b>${escapeHtml(my1 || '-')}</b>${mark(my1)}</div>`;
+        if (my2) picks += `<div class="rec-pick">더블픽: <b>${escapeHtml(my2)}</b>${mark(my2)}</div>`;
+      }
+      const ans = q.correct != null
+        ? `<div class="rec-ans">정답: <b>${escapeHtml(q.correct)}</b></div>`
+        : `<div class="rec-ans dim">채점 대기중</div>`;
+      return `<div class="rec-q"><div class="rec-q-t">Q${q.order_no}. ${escapeHtml(q.text)}</div>${picks}${ans}</div>`;
+    }).join('');
+
+    return `<div class="rec-card">
+      <div class="rec-head">
+        <span class="rec-date">${fmtDate(date)}</span>
+        <span class="rec-badge ${badgeCls}">${badge}</span>
+        <span class="rec-arrow">▾</span>
+      </div>
+      <div class="rec-detail">${detail}</div>
+    </div>`;
   }
 
   // ===== Nav =====
