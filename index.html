@@ -719,8 +719,9 @@
     const bar = $('#login-bar');
     if (!bar || state.user) return; // 로그인 사용자는 .hidden 으로 숨김 처리됨
     let reveal;
-    const q1 = state.nav === 'play' && $('#questions') ? $('#questions').firstElementChild : null;
-    if (q1) reveal = q1.getBoundingClientRect().top < window.innerHeight * 0.9;
+    const qWrap = state.nav === 'play' ? $('#questions') : null;
+    const anchor = qWrap ? (qWrap.children[1] || qWrap.firstElementChild) : null; // Q2 기준(없으면 Q1)
+    if (anchor) reveal = anchor.getBoundingClientRect().top < window.innerHeight * 0.9;
     else reveal = window.scrollY > 200;
     bar.classList.toggle('reveal', reveal);
   }
