@@ -112,6 +112,21 @@ language sql security definer set search_path = public as $$
 $$;
 grant execute on function public.weekly_leaderboard(date, int) to anon, authenticated;
 
+-- 5-2) 전체 누적 순위표 (대회 전체)
+create or replace function public.overall_leaderboard(p_limit int default 50)
+returns table (user_id uuid, nickname text, total bigint)
+language sql security definer set search_path = public as $$
+  select d.user_id,
+         case when d.user_id = auth.uid() then s.nickname else public.mask_nick(s.nickname) end,
+         sum(d.score)::bigint
+  from public.daily_scores d
+  left join public.signups s on s.id = d.user_id
+  group by d.user_id, s.nickname
+  order by 3 desc nulls last
+  limit p_limit
+$$;
+grant execute on function public.overall_leaderboard(int) to anon, authenticated;
+
 -- 6) 실시간 투표율 (모든 세트 합산, 개별 예측은 노출 안 함)
 create or replace function public.vote_counts(p_match_date date)
 returns table (question_id bigint, choice text, votes bigint)

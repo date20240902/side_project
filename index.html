@@ -316,10 +316,10 @@
   <!-- ===== RANK view ===== -->
   <div class="view hidden" id="view-rank">
     <div class="tabs">
-      <div class="tab active" data-rtab="daily">오늘 순위</div>
-      <div class="tab" data-rtab="weekly">주간 누적</div>
+      <div class="tab active" data-rtab="weekly">주간 누적</div>
+      <div class="tab" data-rtab="overall">전체 누적</div>
     </div>
-    <div class="sec-head"><h2 id="rank-title">오늘 순위</h2><span class="meta" id="rank-date"></span></div>
+    <div class="sec-head"><h2 id="rank-title">주간 누적</h2><span class="meta" id="rank-date"></span></div>
     <div id="rank-list"></div>
   </div>
 
@@ -337,6 +337,7 @@
       <div class="rule"><span class="r-emoji">🍗</span><div>치킨 풀 = <b>기본 1마리 + 참여자 500명당 1마리</b></div></div>
       <div class="rule"><span class="r-emoji">🎯</span><div>그날 <b>정답 최다</b>인 사람들 중 추첨으로, 치킨 풀에 쌓인 <b>마리 수만큼</b> 선물!</div></div>
       <div class="rule"><span class="r-emoji">📅</span><div>예측 틀렸다고 실망 No! <b>매주 누적 정답이 가장 많은 사람</b>에게 추가 치킨 선물 (매주 리셋)</div></div>
+      <div class="rule"><span class="r-emoji">🏆</span><div><b>대회 전체 누적 1위</b>에게는 무려 <b>치킨 5마리!</b> 끝까지 도전하세요</div></div>
       <div class="rule"><span class="r-emoji">📤</span><div>친구에게 공유하면 <b>예측을 한 번 더</b> 할 수 있는 <b>더블 픽</b> 제공</div></div>
     </div>
     <div class="sec-head"><h2>지난 당첨자</h2></div>
@@ -868,7 +869,7 @@
   }
 
   // ===== Rank =====
-  let rankTab = 'daily';
+  let rankTab = 'weekly';
   $$('[data-rtab]').forEach(t => t.addEventListener('click', () => {
     rankTab = t.dataset.rtab;
     $$('[data-rtab]').forEach(x => x.classList.toggle('active', x === t));
@@ -877,18 +878,16 @@
 
   async function renderRank() {
     const list = $('#rank-list');
-    const date = state.activeDate || todayKST();
-    if (rankTab === 'daily') {
-      $('#rank-title').textContent = '오늘 순위';
-      $('#rank-date').textContent = fmtDate(date);
-      list.innerHTML = `<div class="loading">불러오는 중...</div>`;
-      const { data, error } = await sb.rpc('daily_leaderboard', { p_match_date: date, p_limit: 50 });
-      renderLbRows(list, (error ? [] : data) || [], 'score');
+    list.innerHTML = `<div class="loading">불러오는 중...</div>`;
+    if (rankTab === 'overall') {
+      $('#rank-title').textContent = '전체 누적';
+      $('#rank-date').textContent = '대회 전체';
+      const { data, error } = await sb.rpc('overall_leaderboard', { p_limit: 50 });
+      renderLbRows(list, (error ? [] : data) || [], 'total');
     } else {
-      const ws = weekStart(date);
+      const ws = weekStart(state.activeDate || todayKST());
       $('#rank-title').textContent = '주간 누적';
       $('#rank-date').textContent = fmtDate(ws) + ' 주';
-      list.innerHTML = `<div class="loading">불러오는 중...</div>`;
       const { data, error } = await sb.rpc('weekly_leaderboard', { p_week_start: ws, p_limit: 50 });
       renderLbRows(list, (error ? [] : data) || [], 'total');
     }
