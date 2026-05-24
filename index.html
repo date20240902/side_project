@@ -50,15 +50,26 @@
   b { font-weight: normal; }
   .hidden { display: none !important; }
 
-  /* ===== Top bar ===== */
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 16px; background: #0f1430; color: #fff;
-    position: sticky; top: 0; z-index: 50; border-bottom: 3px solid var(--border);
+  /* ===== Hero ===== */
+  .hero {
+    padding: 36px 20px 30px; text-align: center; position: relative; overflow: hidden;
+    background: #0f1430; border-bottom: 4px solid var(--border);
   }
-  .topbar .logo { font-family: 'DungGeunMo', monospace; font-size: 20px; letter-spacing: 1px; }
-  .topbar .logo .dot { color: var(--accent); }
-  .topbar .who { font-size: 11px; color: #c7cdf0; }
+  .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; image-rendering: pixelated; }
+  .hero-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(15,20,48,0.32) 0%, rgba(15,20,48,0.7) 100%); }
+  .hero > *:not(.hero-bg):not(.hero-scrim):not(.who) { position: relative; z-index: 2; }
+  .hero-logo { font-family: 'DungGeunMo', monospace; font-size: 42px; letter-spacing: 1px; color: #fff; text-shadow: 3px 3px 0 var(--border); }
+  .hero-logo .dot { color: var(--accent); }
+  .hero-tag { font-size: 13px; color: #e7ebf8; line-height: 1.7; margin-top: 14px; text-shadow: 1px 1px 0 var(--border); }
+  .hero-tag .hl { color: #ffd24a; font-size: 1.08em; }
+  .who { position: absolute; top: 12px; right: 14px; z-index: 3; font-size: 11px; color: #c7cdf0; }
+
+  .hero-cta { margin: 18px 14px 0; padding: 24px 20px; text-align: center; background: var(--bg-card); border: 3px solid var(--border); box-shadow: var(--shadow); }
+  .hero-icon { margin-bottom: 12px; line-height: 0; }
+  .hero-icon svg { height: 52px; width: auto; image-rendering: pixelated; }
+  .hero-title { font-family: 'DungGeunMo', monospace; font-size: 23px; line-height: 1.5; margin: 0 0 10px; color: var(--text); }
+  .hero-title .br { color: var(--accent); }
+  .hero-sub { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
 
   /* ===== Sticky login CTA (logged-out) ===== */
   .login-bar {
@@ -283,10 +294,118 @@
 </head>
 <body>
 
-<div class="topbar">
-  <div class="logo">월승치못<span class="dot">.</span></div>
+<section class="hero">
+  <svg class="hero-bg" viewBox="0 0 200 165" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="crowd" width="8" height="8" patternUnits="userSpaceOnUse">
+        <rect width="8" height="8" fill="#22356b"/>
+        <rect x="0" y="1" width="2" height="2" fill="#e0623f"/>
+        <rect x="4" y="0" width="2" height="2" fill="#e9e4d6"/>
+        <rect x="2" y="4" width="2" height="2" fill="#5aa0d8"/>
+        <rect x="6" y="5" width="2" height="2" fill="#e7b94a"/>
+        <rect x="5" y="3" width="1" height="1" fill="#ffffff"/>
+        <rect x="1" y="6" width="1" height="1" fill="#cfd6e6"/>
+      </pattern>
+      <pattern id="net" width="6" height="6" patternUnits="userSpaceOnUse">
+        <rect width="6" height="6" fill="none"/>
+        <rect x="0" y="0" width="6" height="1" fill="#ffffff"/>
+        <rect x="0" y="0" width="1" height="6" fill="#ffffff"/>
+      </pattern>
+    </defs>
+    <rect x="0" y="0" width="200" height="46" fill="url(#crowd)"/>
+    <rect x="0" y="46" width="200" height="9" fill="#e7e0d0"/>
+    <rect x="6" y="47" width="40" height="7" fill="#e23b2e"/>
+    <rect x="70" y="47" width="46" height="7" fill="#2f6fd0"/>
+    <rect x="140" y="47" width="40" height="7" fill="#e7913f"/>
+    <rect x="0" y="55" width="200" height="110" fill="#5fb457"/>
+    <rect x="0" y="55" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="83" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="111" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="139" width="200" height="14" fill="#67bd5e"/>
+    <rect x="64" y="56" width="74" height="38" fill="url(#net)" opacity="0.55"/>
+    <rect x="64" y="54" width="74" height="3" fill="#ffffff"/>
+    <rect x="64" y="54" width="3" height="40" fill="#ffffff"/>
+    <rect x="135" y="54" width="3" height="40" fill="#ffffff"/>
+    <ellipse cx="92" cy="135" rx="17" ry="4" fill="#1c5a1f" opacity="0.22"/>
+    <ellipse cx="129" cy="133" rx="9" ry="3" fill="#1c5a1f" opacity="0.22"/>
+    <g transform="translate(121,116)">
+      <rect x="1" y="1" width="14" height="14" rx="7" fill="#ffffff" stroke="#20264f" stroke-width="2"/>
+      <rect x="6" y="3" width="4" height="4" fill="#20264f"/>
+      <rect x="3" y="8" width="3" height="3" fill="#20264f"/>
+      <rect x="10" y="9" width="3" height="3" fill="#20264f"/>
+    </g>
+    <g transform="translate(74,72)">
+      <rect x="4" y="0" width="20" height="8" fill="#1f2a52"/>
+      <rect x="4" y="8" width="4" height="6" fill="#1f2a52"/>
+      <rect x="20" y="8" width="4" height="6" fill="#1f2a52"/>
+      <rect x="8" y="7" width="12" height="11" fill="#b56b39"/>
+      <rect x="10" y="12" width="2" height="2" fill="#20264f"/>
+      <rect x="16" y="12" width="2" height="2" fill="#20264f"/>
+      <rect x="4" y="18" width="20" height="15" fill="#e23b2e"/>
+      <rect x="0" y="19" width="5" height="7" fill="#e23b2e"/>
+      <rect x="23" y="19" width="5" height="7" fill="#e23b2e"/>
+      <rect x="0" y="26" width="5" height="7" fill="#b56b39"/>
+      <rect x="23" y="26" width="5" height="7" fill="#b56b39"/>
+      <rect x="4" y="33" width="9" height="9" fill="#1f2a52"/>
+      <rect x="15" y="33" width="9" height="9" fill="#1f2a52"/>
+      <rect x="5" y="42" width="7" height="9" fill="#b56b39"/>
+      <rect x="16" y="42" width="7" height="9" fill="#b56b39"/>
+      <rect x="5" y="51" width="7" height="5" fill="#e23b2e"/>
+      <rect x="16" y="51" width="7" height="5" fill="#e23b2e"/>
+      <rect x="3" y="56" width="10" height="5" fill="#20264f"/>
+      <rect x="16" y="56" width="10" height="5" fill="#20264f"/>
+    </g>
+  </svg>
+  <div class="hero-scrim"></div>
   <div class="who" id="who"></div>
-</div>
+  <div class="hero-logo">월승치못<span class="dot">!</span></div>
+  <div class="hero-tag"><span class="hl">월</span>드컵 <span class="hl">승</span>부 예측에 <span class="hl">치</span>킨? 이건 <span class="hl">못</span> 참지</div>
+</section>
+
+<section class="hero-cta">
+  <div class="hero-icon">
+    <svg viewBox="0 0 62 30" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(1,1)">
+        <g transform="rotate(-30 10 7)">
+          <rect x="7" y="2" width="6" height="11" rx="3" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+          <circle cx="7.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+          <circle cx="12.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+        </g>
+        <ellipse cx="14" cy="18" rx="10" ry="9" fill="#d8893a" stroke="#5a3411" stroke-width="2"/>
+        <ellipse cx="10" cy="13.5" rx="2.6" ry="1.7" fill="#efb87a"/>
+        <circle cx="10" cy="16" r="1.1" fill="#a85e1f"/>
+        <circle cx="16" cy="19" r="1.1" fill="#a85e1f"/>
+        <circle cx="12" cy="21" r="1.1" fill="#a85e1f"/>
+      </g>
+      <g transform="translate(36,2)">
+        <defs><clipPath id="ballclip"><circle cx="12" cy="12" r="10.5"/></clipPath></defs>
+        <circle cx="12" cy="12" r="11" fill="#ffffff" stroke="#27235a" stroke-width="2"/>
+        <g clip-path="url(#ballclip)" fill="#27235a">
+          <polygon points="12,7.4 16.4,10.6 14.7,15.8 9.3,15.8 7.6,10.6"/>
+          <polygon points="12,-1 15,2 13,5 11,5 9,2"/>
+          <polygon points="23,9 26,12 24,15 21,14 21,11"/>
+          <polygon points="18,23 20,26 17,28 14,26 16,23"/>
+          <polygon points="6,23 8,26 5,28 2,26 4,23"/>
+          <polygon points="1,9 4,11 4,14 1,15 -1,12"/>
+        </g>
+        <g stroke="#27235a" stroke-width="1.3" stroke-linecap="round">
+          <line x1="12" y1="7.4" x2="12" y2="2.5"/>
+          <line x1="16.4" y1="10.6" x2="21.5" y2="9.5"/>
+          <line x1="14.7" y1="15.8" x2="17.5" y2="22"/>
+          <line x1="9.3" y1="15.8" x2="6.5" y2="22"/>
+          <line x1="7.6" y1="10.6" x2="2.5" y2="9.5"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+  <h1 class="hero-title">
+    매일 5문제 예측하고<br><span class="br">치킨 받자</span>
+  </h1>
+  <p class="hero-sub">
+    오늘의 5문제 맞히고 치킨 받아가세요.<br>
+    참여자가 모일수록 치킨도 같이 늘어나요 🍗
+  </p>
+</section>
 
 <!-- ===== App (always visible; login gates participation) ===== -->
 <div id="app">
