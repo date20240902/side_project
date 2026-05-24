@@ -753,10 +753,8 @@
   }
 
   function joinPrereg() {
-    if (!localStorage.getItem('wsmot_prereg')) {
-      localStorage.setItem('wsmot_prereg', '1');
-      markRegistered();
-    }
+    // 클릭 직후에만 안내 문구로 바꿈(메모리). 새로고침하면 초기 버튼으로 리셋.
+    markRegistered();
     window.open(CHANNEL_URL, '_blank', 'noopener');
     $('#modal-success').classList.add('active');
   }
@@ -764,8 +762,6 @@
   $('#signup-kakao-2').addEventListener('click', joinPrereg);
   $('#signup-kakao-3').addEventListener('click', joinPrereg);
   $('#open-channel').addEventListener('click', () => window.open(CHANNEL_URL, '_blank', 'noopener'));
-
-  if (localStorage.getItem('wsmot_prereg')) markRegistered();
 
   // ===== Modal close =====
   $$('[data-close]').forEach(b => b.addEventListener('click', () => {
