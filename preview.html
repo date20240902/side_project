@@ -685,8 +685,8 @@
     <div class="modal-handle"></div>
     <div class="success-card">
       <div class="success-emoji">🔔</div>
-      <div class="modal-title">거의 다 됐어요!</div>
-      <div class="modal-desc">카카오톡에서 <b style="color: var(--accent-2);">월승치못</b> 채널을 <b>추가</b>하면 끝!<br>오픈하면 제일 먼저 알림 보내드릴게요.</div>
+      <div class="modal-title">마지막 한 단계!</div>
+      <div class="modal-desc">방금 열린 카카오톡에서 <b style="color: var(--accent-2);">[채널 추가]</b>를 눌러야<br>사전 예약이 완료돼요. 추가하면 오픈 첫날 혜택 🍗</div>
     </div>
 
     <div style="background: #fff3d6; border: 2px solid var(--border); padding: 14px; margin-bottom: 14px; text-align: center;">
@@ -747,7 +747,7 @@
   function markRegistered() {
     $$('.btn-kakao-big').forEach(b => {
       if (b.id && b.id.indexOf('signup-kakao') === 0) {
-        b.innerHTML = '✅ 알림 신청 완료 · 다시 추가하기';
+        b.innerHTML = '카톡에서 \'채널 추가\'를 눌러주세요 ↗';
       }
     });
   }
