@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>후원사 제안서 · 월승치못</title>
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
+<style>
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-display: swap;
+  }
+  :root {
+    --bg:#d7e3f7; --bg-elev:#fbf3e3; --bg-card:#f7ecd9; --bg-card-2:#efe0c8;
+    --border:#27235a; --border-light:#6a64a0; --text:#27235a; --text-dim:#6a6494; --text-faint:#9c96bd;
+    --accent:#e23b2e; --accent-2:#e7913f; --gold:#d39412; --green:#2f9e54; --hero:#0f1430; --kakao:#FEE500;
+    --shadow:4px 4px 0 rgba(39,35,90,0.26);
+  }
+  * { box-sizing:border-box; }
+  html { background:#b9c8e8; }
+  body {
+    margin:0 auto; max-width:680px; padding:0 0 60px;
+    background-color:var(--bg);
+    background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);
+    background-size:28px 28px;
+    color:var(--text); font-family:'DungGeunMo','Galmuri11',monospace; -webkit-font-smoothing:none;
+    line-height:1.7;
+  }
+  b { font-weight:normal; color:var(--accent); }
+
+  /* hero */
+  .hero { background:var(--hero); color:#fff; text-align:center; padding:40px 20px 34px; border-bottom:4px solid var(--border); }
+  .hero .emblem svg { height:54px; image-rendering:pixelated; }
+  .hero .logo { font-family:'DungGeunMo',monospace; font-size:40px; letter-spacing:1px; margin-top:8px; text-shadow:3px 3px 0 var(--border); }
+  .hero .logo .dot { color:var(--accent); }
+  .hero .badge { display:inline-block; margin-top:14px; background:var(--accent); border:2px solid #fff; padding:5px 14px; font-size:14px; }
+  .hero .tag { font-size:12px; color:#c7cdf0; margin-top:12px; }
+
+  .sec { padding:30px 20px 6px; }
+  .label { display:inline-block; font-size:11px; color:#fff; background:var(--accent); border:2px solid var(--border); padding:3px 9px; margin-bottom:10px; }
+  h2 { font-family:'DungGeunMo',monospace; font-size:21px; margin:0 0 6px; line-height:1.35; }
+  .lead { font-size:13px; color:var(--text-dim); margin:0 0 4px; }
+
+  .cards { padding:6px 20px; display:flex; flex-direction:column; gap:12px; }
+  .card { background:var(--bg-card); border:3px solid var(--border); box-shadow:var(--shadow); padding:16px; }
+  .card .ico { font-size:30px; }
+  .card .t { font-family:'DungGeunMo',monospace; font-size:16px; margin:6px 0 6px; }
+  .card .d { font-size:13px; color:#3a3658; }
+  .card .d b { color:var(--accent); }
+
+  table { width:calc(100% - 40px); margin:10px 20px; border-collapse:collapse; font-size:13px; background:var(--bg-card); }
+  th, td { border:2px solid var(--border); padding:9px 8px; text-align:center; }
+  th { background:var(--hero); color:#fff; }
+  td b { color:var(--accent); }
+  .note { font-size:11px; color:var(--text-faint); margin:0 20px; }
+
+  /* placement mockup */
+  .mock-wrap { padding:8px 20px; }
+  .phone { max-width:300px; margin:0 auto; border:3px solid var(--border); background:var(--bg); box-shadow:var(--shadow); overflow:hidden; }
+  .m-hero { background:var(--hero); color:#fff; text-align:center; padding:14px 8px; font-family:'DungGeunMo',monospace; font-size:18px; }
+  .m-hero .dot { color:var(--accent); }
+  .m-row { margin:8px; padding:9px 10px; border:2px solid var(--border); background:var(--bg-card); font-size:11px; }
+  .m-ad { position:relative; border:3px solid var(--gold); background:#fff7da; }
+  .m-ad .star { position:absolute; top:-11px; right:8px; background:var(--gold); color:#fff; border:2px solid var(--border); font-size:9px; padding:1px 6px; }
+  .m-pool { display:flex; justify-content:space-between; }
+  .m-pool .em { color:var(--accent); font-family:'DungGeunMo',monospace; }
+  .m-q .opts { display:flex; gap:4px; margin-top:6px; }
+  .m-q .opt { flex:1; text-align:center; border:2px solid var(--border); background:var(--bg-elev); padding:4px 0; font-size:10px; }
+  .m-q .opt.on { background:var(--accent); color:#fff; }
+  .m-prize { background:#e7f7ec; border-color:var(--green); text-align:center; }
+  .callout { font-size:11px; color:var(--green); margin:4px 8px 0; }
+  .callout b { color:var(--green); }
+
+  .earlybird { margin:14px 20px; padding:18px; background:#fff7da; border:3px solid var(--gold); box-shadow:var(--shadow); }
+  .earlybird .t { font-family:'DungGeunMo',monospace; font-size:18px; margin-bottom:8px; }
+  .earlybird .d { font-size:13px; color:#3a3658; }
+  .earlybird .d b { color:var(--accent); }
+
+  .pkg { margin:6px 20px; }
+  .pkg li { font-size:13px; margin:7px 0; list-style:none; padding-left:22px; position:relative; }
+  .pkg li::before { content:'🍗'; position:absolute; left:0; }
+
+  .cta { margin:26px 20px 10px; padding:24px 20px; background:var(--bg-card); border:3px solid var(--border); box-shadow:var(--shadow); text-align:center; }
+  .cta .t { font-family:'DungGeunMo',monospace; font-size:18px; margin-bottom:6px; }
+  .cta .d { font-size:12px; color:var(--text-dim); margin-bottom:16px; }
+  .cta a.btn { display:block; padding:15px; background:var(--accent); color:#fff; border:3px solid var(--border); box-shadow:var(--shadow); font-family:'DungGeunMo',monospace; font-size:16px; text-decoration:none; }
+  .cta a.btn:active { transform:translate(4px,4px); box-shadow:none; }
+  .cta .mail { display:block; margin-top:12px; font-size:12px; color:var(--text-dim); }
+  .foot { text-align:center; font-size:11px; color:var(--text-faint); margin-top:24px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="emblem">
+    <svg viewBox="0 0 62 30" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(1,1)">
+        <g transform="rotate(-30 10 7)">
+          <rect x="7" y="2" width="6" height="11" rx="3" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+          <circle cx="7.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+          <circle cx="12.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+        </g>
+        <ellipse cx="14" cy="18" rx="10" ry="9" fill="#d8893a" stroke="#5a3411" stroke-width="2"/>
+        <circle cx="10" cy="16" r="1.1" fill="#a85e1f"/><circle cx="16" cy="19" r="1.1" fill="#a85e1f"/><circle cx="12" cy="21" r="1.1" fill="#a85e1f"/>
+      </g>
+      <g transform="translate(36,2)">
+        <circle cx="12" cy="12" r="11" fill="#fff" stroke="#27235a" stroke-width="2"/>
+        <polygon points="12,7.4 16.4,10.6 14.7,15.8 9.3,15.8 7.6,10.6" fill="#27235a"/>
+      </g>
+    </svg>
+  </div>
+  <div class="logo">월승치못<span class="dot">!</span></div>
+  <div class="badge">공식 후원사 모집 제안서</div>
+  <div class="tag">월드컵 승부 예측에 치킨? 이건 못 참지</div>
+</div>
+
+<div class="sec">
+  <span class="label">ABOUT</span>
+  <h2>월드컵 한 달, 매일 치킨이 걸린<br>예측 게임</h2>
+  <p class="lead">매일 5문제를 예측하고, 많이 맞힌 사람에게 <b>치킨 기프티콘</b>을 쏩니다. 친구 공유로 한 번 더 도전하는 바이럴 구조 — 그 치킨에 <b>당신의 브랜드</b>를 얹습니다.</p>
+</div>
+
+<div class="sec"><span class="label">WHY</span><h2>왜 합리적인 후원인가</h2></div>
+<div class="cards">
+  <div class="card">
+    <div class="ico">🧮</div>
+    <div class="t">예산이 절대 터지지 않습니다</div>
+    <div class="d">상품은 <b>“참여자 500명당 치킨 1마리”</b>로 자동 산정돼요. 사람이 적으면 비용도 적고, 많으면 그만큼 더 많은 사람에게 브랜드가 노출됩니다. <b>지출이 참여 규모에 정확히 비례</b>해서 오버 지출이 구조적으로 불가능해요.</div>
+  </div>
+  <div class="card">
+    <div class="ico">👀</div>
+    <div class="t">노출은 참여자보다 많습니다</div>
+    <div class="d">‘참여’는 예측을 제출한 사람만 센 숫자예요. 들어와서 <b>구경만 하고 나가는 방문자</b>는 빠져 있죠. 즉 실제 방문·노출은 참여자 수보다 큽니다 — 후원 비용은 참여 기준인데 <b>브랜드 노출은 그 이상</b>입니다.</div>
+  </div>
+  <div class="card">
+    <div class="ico">🔁</div>
+    <div class="t">한 번 참여 = 최소 2번 방문</div>
+    <div class="d">예측할 때 한 번, <b>채점 결과를 확인하러</b> 또 한 번. 게다가 매일 새 문제가 열려서 대회 기간 내내 다시 들어와요. 같은 사람에게 브랜드가 <b>반복 노출</b>되는 구조입니다.</div>
+  </div>
+</div>
+
+<div class="sec"><span class="label">SCALE</span><h2>비용·노출이 함께 커집니다</h2><p class="lead">참여가 늘수록 협찬은 비례해서 늘지만, 노출은 그보다 더 빨리 늘어요(방문 ≥ 참여자 × 2회).</p></div>
+<table>
+  <tr><th>그날 참여자</th><th>협찬 치킨</th><th>최소 노출(방문)</th></tr>
+  <tr><td>500명</td><td><b>1마리</b></td><td>1,000+</td></tr>
+  <tr><td>1,000명</td><td><b>2마리</b></td><td>2,000+</td></tr>
+  <tr><td>3,000명</td><td><b>6마리</b></td><td>6,000+</td></tr>
+</table>
+<p class="note">* 최소 노출 = 참여자 × 2회 방문(예측+결과 확인) 기준. 구경만 한 비참여 방문은 별도로 더해집니다.</p>
+
+<div class="sec"><span class="label">WHERE</span><h2>어디에 노출되나요</h2><p class="lead">서비스 곳곳에서 브랜드를 만납니다. ⭐ 표시가 첫 후원사 전용 자리예요.</p></div>
+<div class="mock-wrap">
+  <div class="phone">
+    <div class="m-hero">월승치못<span class="dot">!</span></div>
+    <div class="m-row m-ad"><span class="star">⭐ 첫 후원사 전용</span>🍗 OO치킨 — 공식 후원사</div>
+    <div class="callout">↑ <b>최상단 배너</b> · 화면 열면 가장 먼저 보이는 자리</div>
+    <div class="m-row m-pool"><span>오늘의 치킨 풀</span><span class="em">3마리 🍗</span></div>
+    <div class="m-row m-q">한국 vs 브라질, 결과는?
+      <div class="opts"><span class="opt on">승</span><span class="opt">무</span><span class="opt">패</span></div>
+    </div>
+    <div class="m-row m-ad" style="border-color:var(--border-light);background:var(--bg-card-2);">🍕 인피드 광고 자리</div>
+    <div class="callout" style="color:var(--text-dim)">↑ 문제 사이 <b style="color:var(--text-dim)">인피드 배너</b></div>
+    <div class="m-row m-prize">🎉 <b style="color:var(--green)">OO치킨</b> 기프티콘 당첨!</div>
+    <div class="callout">↑ <b>상품이 곧 브랜드</b> · 당첨자가 직접 받는 후원사 치킨</div>
+  </div>
+</div>
+<ul class="pkg" style="margin-top:10px;">
+  <li>전 화면 상·하단 <b>배너 로고</b> 노출</li>
+  <li>당첨 <b>치킨 기프티콘 = 후원사 제품</b> (직접 수령 경험)</li>
+  <li>결과 자랑 공유 카드 · 카카오톡 채널 알림에 브랜드 노출(협의)</li>
+</ul>
+
+<div class="sec"><span class="label">EARLY BIRD</span><h2>먼저 약속할수록<br>가장 좋은 자리</h2></div>
+<div class="earlybird">
+  <div class="t">⭐ 1호 후원사 단독 혜택</div>
+  <div class="d">가장 먼저 후원을 확정해 주시는 브랜드께 <b>최상단 배너(화면 열면 첫 노출)</b>를 대회 기간 <b>단독</b>으로 드립니다. 카테고리(치킨/피자/음료) <b>독점</b> + “공식 OO 후원사” 타이틀까지. 자리는 선착순으로 채워집니다.</div>
+</div>
+
+<div class="sec"><span class="label">PACKAGE</span><h2>후원 구성</h2><p class="lead">현물(치킨 기프티콘) 협찬 기준이며, 규모·기간은 협의합니다.</p></div>
+<ul class="pkg">
+  <li><b>상품 협찬</b>: 치킨 기프티콘 (참여 규모에 따라 자동 산정 · 예측 가능)</li>
+  <li><b>브랜드 노출</b>: 배너 + 상품 + 공유 카드 패키지</li>
+  <li><b>독점/타이틀</b>: 카테고리 독점, “공식 후원사” 명기</li>
+  <li><b>리포트</b>: 참여자·노출 등 성과 데이터 공유</li>
+</ul>
+
+<div class="cta">
+  <div class="t">함께 치킨 쏘실래요? 🍗</div>
+  <div class="d">자리는 선착순이에요. 지금 문의하고 가장 좋은 자리를 선점하세요.</div>
+  <a class="btn" href="/contact">후원 문의하기 →</a>
+  <span class="mail">또는 ad@wsmot.kr</span>
+</div>
+
+<div class="foot">월승치못 · wsmot.kr</div>
+
+</body>
+</html>
