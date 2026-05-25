@@ -714,15 +714,16 @@
     updateLoginReveal();
   }
 
-  // 로그인 바: 오늘의 예측 Q1이 화면에 들어오면 슬라이드 인(비로그인 한정)
+  // 로그인 바: '오늘의 픽' 탭에서만, 예측 Q2가 화면에 들어오면 슬라이드 인(비로그인 한정)
   function updateLoginReveal() {
     const bar = $('#login-bar');
     if (!bar || state.user) return; // 로그인 사용자는 .hidden 으로 숨김 처리됨
-    let reveal;
-    const qWrap = state.nav === 'play' ? $('#questions') : null;
-    const anchor = qWrap ? (qWrap.children[1] || qWrap.firstElementChild) : null; // Q2 기준(없으면 Q1)
-    if (anchor) reveal = anchor.getBoundingClientRect().top < window.innerHeight * 0.9;
-    else reveal = window.scrollY > 200;
+    let reveal = false;
+    if (state.nav === 'play') {
+      const q = $('#questions');
+      const anchor = q ? (q.children[1] || q.firstElementChild) : null; // Q2 기준(없으면 Q1)
+      reveal = anchor ? anchor.getBoundingClientRect().top < window.innerHeight * 0.9 : false;
+    }
     bar.classList.toggle('reveal', reveal);
   }
 
