@@ -179,7 +179,6 @@
 
   .q-card { margin: 10px 0; padding: 14px; background: var(--bg-card); border: 3px solid var(--border); box-shadow: var(--shadow); }
   .q-no { font-size: 11px; color: #fff; background: var(--border); padding: 2px 7px; }
-  .q-no.jackpot { background: var(--accent); }
   .q-title { font-size: 15px; margin: 8px 0 2px; line-height: 1.45; }
   .q-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
   .set-label { font-size: 11px; color: var(--text-dim); margin: 8px 0 4px; }
@@ -374,9 +373,9 @@
   <div class="hero-tag"><span class="hl">월</span>드컵 <span class="hl">승</span>부 예측에 <span class="hl">치</span>킨? 이건 <span class="hl">못</span> 참지</div>
 </section>
 
-<a class="ad-banner" href="/contact" style="margin: 14px 14px 0;">
+<a class="ad-banner" href="/contact" target="_blank" rel="noopener" style="margin: 14px 14px 0;">
   <span class="ad-tag">AD</span>
-  <div class="ad-body"><div class="ad-t">여기에 광고를 실어보세요 🍗</div><div class="ad-d">월승치못 광고 문의 · ad@wsmot.kr</div></div>
+  <div class="ad-body"><div class="ad-t">여기에 광고를 실어보세요 🍗</div><div class="ad-d">문의하기 ›</div></div>
   <span class="ad-arrow">›</span>
 </a>
 
@@ -474,9 +473,9 @@
 
     <div id="questions"></div>
 
-    <a class="ad-banner" href="/contact">
+    <a class="ad-banner" href="/contact" target="_blank" rel="noopener">
       <span class="ad-tag">AD</span>
-      <div class="ad-body"><div class="ad-t">치킨·피자·음료 브랜드 환영 🍗🍕</div><div class="ad-d">월승치못 광고 문의 · ad@wsmot.kr</div></div>
+      <div class="ad-body"><div class="ad-t">치킨·피자·음료 브랜드 환영 🍗🍕</div><div class="ad-d">문의하기 ›</div></div>
       <span class="ad-arrow">›</span>
     </a>
 
@@ -661,7 +660,6 @@
     } else { who.textContent = ''; who.classList.remove('anon'); }
     toggleLoginBar();
     updateChannelCta();
-    refreshPool();
 
     // load published questions
     const { data: qs, error } = await sb.from('questions')
@@ -672,7 +670,7 @@
 
     if (error) { $('#questions').innerHTML = `<div class="empty">문제를 불러오지 못했어요.</div>`; return; }
     state.allQuestions = qs || [];
-    if (!qs || qs.length === 0) { renderEmptyPlay(); return; }
+    if (!qs || qs.length === 0) { renderEmptyPlay(); refreshPool(); return; }
 
     // choose active date: today if present, else most recent <= today, else earliest upcoming
     const today = todayKST();
@@ -687,6 +685,7 @@
     state.locked = !state.graded && state.lockAt != null && Date.now() >= state.lockAt;
     state.dpBalance = Number(localStorage.getItem('wsmot_dp_balance') || 0);
     state.dpUnlocked = localStorage.getItem('wsmot_dp_used_' + active) === '1';
+    refreshPool();
 
     if (state.user) await loadMyPicks();
     state.submitted1 = !!(state.user && Object.keys(state.picks[1]).length);
@@ -722,10 +721,13 @@
     bar.classList.toggle('reveal', reveal);
   }
 
+  // 치킨 풀 = 그날 예측 참가자 수 기준 (기본 1마리 + 참가자 500명당 +1마리)
   async function refreshPool() {
-    const { data, error } = await sb.rpc('signup_count');
-    if (error || data == null) return;
-    const people = Number(data);
+    let people = 0;
+    if (state.activeDate) {
+      const { data, error } = await sb.rpc('daily_participants', { p_match_date: state.activeDate });
+      if (!error && data != null) people = Number(data);
+    }
     const chickens = 1 + Math.floor(people / 500);
     $('#people-count').textContent = people.toLocaleString();
     $('#chicken-count').textContent = chickens;
@@ -863,7 +865,6 @@
   function renderQuestion(q) {
     const card = document.createElement('div');
     card.className = 'q-card';
-    const jackpot = /난입|잭팟|🎰/.test(q.text);
     const edit = editingSet();
     const showSet1 = edit !== 2;   // 더블픽 재픽 중엔 세트1 숨김(처음처럼 한 세트만)
     const showSet2 = state.submitted2 || edit === 2;
@@ -872,7 +873,7 @@
     if (showSet2) sets.push(2);
     const showLabels = sets.length > 1;
 
-    let html = `<span class="q-no${jackpot ? ' jackpot' : ''}">Q${q.order_no}${jackpot ? ' 🎰' : ''}</span>
+    let html = `<span class="q-no">Q${q.order_no}</span>
       <div class="q-title">${escapeHtml(q.text)}</div>`;
 
     sets.forEach(setNo => {
