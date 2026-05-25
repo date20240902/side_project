@@ -255,7 +255,8 @@
   .btn-share-result:active { transform: translate(2px,2px); }
 
   .rank-reward { margin: 16px 0 4px; padding: 13px 14px; border: 3px solid var(--border); background: var(--bg-card); box-shadow: var(--shadow); }
-  .rank-reward .rr-head { font-size: 11px; color: var(--text-dim); margin-bottom: 9px; }
+  .rank-reward .rr-head { font-size: 12px; color: var(--text); line-height: 1.5; margin-bottom: 10px; }
+  .rank-reward .rr-head b { color: var(--accent); }
   .rank-reward .rr-row { display: flex; gap: 9px; align-items: center; font-size: 12px; line-height: 1.4; }
   .rank-reward .rr-row + .rr-row { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--bg-card-2); }
   .rank-reward .rr-emoji { font-size: 20px; }
@@ -488,7 +489,7 @@
   <!-- ===== RANK view ===== -->
   <div class="view hidden" id="view-rank">
     <div class="rank-reward">
-      <div class="rr-head">🏅 이렇게 드려요</div>
+      <div class="rr-head">🍗 오늘 당첨되지 않았다고 실망 마세요! <b>주간 누적 1위·전체 누적 1위</b>에게도 치킨이 제공돼요.</div>
       <div class="rr-row"><span class="rr-emoji">🥇</span><div><b>주간 누적 1위</b> — 추가 치킨 (매주 리셋)</div></div>
       <div class="rr-row"><span class="rr-emoji">🏆</span><div><b>전체 누적 1위</b> — <span class="hl">치킨 5마리!</span></div></div>
     </div>
