@@ -70,6 +70,8 @@
   .hero-title { font-family: 'DungGeunMo', monospace; font-size: 23px; line-height: 1.5; margin: 0 0 10px; color: var(--text); }
   .hero-title .br { color: var(--accent); }
   .hero-sub { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .mini-top { background: #0f1430; color: #fff; text-align: center; padding: 14px 16px; border-bottom: 3px solid var(--border); font-family: 'DungGeunMo', monospace; font-size: 22px; letter-spacing: 1px; }
+  .mini-top .dot { color: var(--accent); }
 
   /* ===== Sticky login CTA (logged-out) ===== */
   .login-bar {
@@ -305,6 +307,8 @@
 </head>
 <body>
 
+<div class="mini-top hidden" id="mini-top">월승치못<span class="dot">!</span></div>
+<div id="play-top">
 <section class="hero">
   <svg class="hero-bg" viewBox="0 0 200 165" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -423,6 +427,7 @@
     참여자가 모일수록 치킨도 같이 늘어나요 🍗
   </p>
 </section>
+</div><!-- /play-top -->
 
 <!-- ===== App (always visible; login gates participation) ===== -->
 <div id="app">
@@ -786,7 +791,10 @@
     syncSubmitBtn();
     startCountdown();
     loadVotes();
-    if (!state._voteTick) state._voteTick = setInterval(() => { if (state.questions.length) loadVotes(); }, 20000);
+    // 투표율 폴링: 화면이 보이고, 오늘의 픽 탭이고, 문제가 있을 때만 60초마다 (egress 절약)
+    if (!state._voteTick) state._voteTick = setInterval(() => {
+      if (document.visibilityState === 'visible' && state.nav === 'play' && state.questions.length) loadVotes();
+    }, 60000);
   }
 
   function renderDeadline() {
@@ -1204,9 +1212,13 @@
     $$('[data-nav]').forEach(x => x.classList.toggle('active', x === n));
     ['play', 'rank', 'prize', 'me'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
     $('.pool').classList.toggle('hidden', name === 'rank'); // 순위 탭엔 오늘의 풀 대신 보상 박스
+    // 큰 히어로·광고·CTA는 오늘의 픽 탭에서만, 나머지 탭은 슬림 "월승치못!" 헤더
+    $('#play-top').classList.toggle('hidden', name !== 'play');
+    $('#mini-top').classList.toggle('hidden', name === 'play');
     state.nav = name;
     syncSubmitBtn();
     updateLoginReveal();
+    if (name === 'play' && state.questions.length) loadVotes();
     if (name === 'rank') renderRank();
     if (name === 'me') renderMe();
     if (name === 'prize') renderPrize();
