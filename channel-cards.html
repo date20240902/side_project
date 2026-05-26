@@ -78,18 +78,30 @@
   .hint { color:#aab2c5; font-size:14px; text-align:center; line-height:1.9; max-width:1000px; font-family:-apple-system,"Apple SD Gothic Neo",sans-serif; }
   .hint b { color:#fff; }
   .label { color:#fff; font-size:18px; font-family:-apple-system,"Apple SD Gothic Neo",sans-serif; margin-bottom:-18px; }
+
+  .card-wrap { position:relative; }
+  .dl-btn {
+    position:absolute; top:20px; right:20px; z-index:10;
+    background:#fff; color:var(--border); border:4px solid var(--border); box-shadow:8px 8px 0 rgba(0,0,0,0.2);
+    padding:12px 20px; font-family:'DungGeunMo',monospace; font-size:16px; cursor:pointer;
+    transition:all 0.15s; display:flex; align-items:center; gap:8px;
+  }
+  .dl-btn:hover { transform:translate(-2px,-2px); box-shadow:10px 10px 0 rgba(0,0,0,0.2); }
+  .dl-btn:active { transform:translate(4px,4px); box-shadow:none; }
 </style>
 </head>
 <body>
 
   <div class="hint" style="max-width:760px; margin-bottom:6px;">
     아래 카드들은 카카오톡 <b>채널홈 → 소식</b>에 올릴 이미지예요 (각 1000×1000).<br>
-    <b>저장:</b> 카드 하나씩 화면 캡처 후 정사각형으로 잘라 업로드하세요. 캡션엔 링크(사전예약 페이지)를 함께 넣으면 좋아요.
+    <b>저장:</b> 각 카드의 <b>다운로드 버튼</b>을 클릭해 PNG로 받으세요. 캡션엔 링크(사전예약 페이지)를 함께 넣으면 좋아요.
   </div>
 
   <!-- ===== Card 1 — 소개 ===== -->
   <div class="label">① 소개 카드</div>
-  <div class="card">
+  <div class="card-wrap">
+    <button class="dl-btn" onclick="downloadCard(this)">⬇️ 다운로드</button>
+    <div class="card" data-name="1_소개">
     <div class="hd">
       <div class="logo">월승치못<span class="dot">!</span></div>
       <div class="kicker">월드컵 승부예측 + 치킨 + 못참지</div>
@@ -100,11 +112,14 @@
       <div class="sub">매일 5문제 승부를 예측하고,<br>가장 많이 맞히면 <b>치킨 기프티콘</b>을 드려요.<br><b>무료</b>로 즐기는 월드컵 한 달!</div>
     </div>
     <div class="ft">로그인만 하면 끝 · 누구나 무료 참여<span class="dot">!</span></div>
+    </div>
   </div>
 
   <!-- ===== Card 2 — 참여 방법 ===== -->
   <div class="label">② 참여 방법 카드</div>
-  <div class="card">
+  <div class="card-wrap">
+    <button class="dl-btn" onclick="downloadCard(this)">⬇️ 다운로드</button>
+    <div class="card" data-name="2_참여방법">
     <div class="hd">
       <div class="logo">참여 방법 🎮</div>
       <div class="kicker">하루 딱 30초면 충분해요</div>
@@ -116,11 +131,14 @@
       <div class="step"><div class="n">4</div><div class="tx">친구 공유하면 <b>더블 픽</b> 한 번 더!</div></div>
     </div>
     <div class="ft">제출 후엔 수정 불가 · 신중하게 골라요 <span class="dot">⚠️</span></div>
+    </div>
   </div>
 
   <!-- ===== Card 3 — 치킨 받는 법 ===== -->
   <div class="label">③ 치킨 받는 법 카드</div>
-  <div class="card">
+  <div class="card-wrap">
+    <button class="dl-btn" onclick="downloadCard(this)">⬇️ 다운로드</button>
+    <div class="card" data-name="3_치킨받는법">
     <div class="hd">
       <div class="logo">치킨 받는 법 🍗</div>
       <div class="kicker">사람 늘어도 당첨 확률 안 줄어요</div>
@@ -131,11 +149,14 @@
       <div class="rw"><span class="e">🥇</span><div class="tx"><b>주간 누적 정답 1위</b>에게<br>추가 치킨 1마리 (매주 리셋)</div></div>
     </div>
     <div class="ft">틀려도 괜찮아요 · 매주 새로 시작<span class="dot">!</span></div>
+    </div>
   </div>
 
   <!-- ===== Card 4 — 사전예약 ===== -->
   <div class="label">④ 사전예약 혜택 카드</div>
-  <div class="card">
+  <div class="card-wrap">
+    <button class="dl-btn" onclick="downloadCard(this)">⬇️ 다운로드</button>
+    <div class="card" data-name="4_사전예약">
     <div class="hd">
       <div class="logo">지금 사전예약 🔔</div>
       <div class="kicker">오픈하면 제일 먼저 알려드려요</div>
@@ -148,7 +169,39 @@
       <div class="pill">💬 채널 추가하고 혜택 받기</div>
     </div>
     <div class="ft">wsmot.vercel.app<span class="dot">/preview</span></div>
+    </div>
   </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+function downloadCard(btn) {
+  const wrap = btn.closest('.card-wrap');
+  const card = wrap.querySelector('.card');
+  const name = card.dataset.name || 'card';
+
+  btn.disabled = true;
+  btn.textContent = '⏳ 다운로드 중...';
+
+  html2canvas(card, {
+    scale: 2,
+    backgroundColor: null,
+    useCORS: true,
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `월승치못_${name}.png`;
+    link.click();
+
+    btn.disabled = false;
+    btn.textContent = '⬇️ 다운로드';
+  }).catch(err => {
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = '❌ 실패';
+    setTimeout(() => { btn.textContent = '⬇️ 다운로드'; }, 2000);
+  });
+}
+</script>
 
 </body>
 </html>
