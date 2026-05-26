@@ -304,6 +304,11 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   .loading { text-align: center; padding: 60px 16px; color: var(--text-dim); }
+
+  .site-footer { padding: 20px 16px 12px; text-align: center; font-size: 11px; color: var(--text-faint); line-height: 1.9; border-top: 1px solid var(--bg-card-2); margin-top: 12px; }
+  .site-footer .logo-mini { font-family: 'DungGeunMo', monospace; font-size: 13px; color: var(--text); margin-bottom: 4px; display: block; }
+  .site-footer .logo-mini .dot { color: var(--accent); }
+  .site-footer a { color: var(--text-dim); text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -521,6 +526,15 @@
   </div>
 
   <button class="submit-btn hidden" id="submit-btn" disabled>5개 모두 선택해주세요</button>
+
+  <footer class="site-footer">
+    <span class="logo-mini">월승치못<span class="dot">!</span></span>
+    월드컵 승부 예측에 치킨? 이건 못 참지<br>
+    운영: 인사이트브릿지 (대표 이재훈) · 사업자등록번호 533-40-01301<br>
+    문의: <a href="mailto:newsletter@techissue.xyz">newsletter@techissue.xyz</a><br>
+    <a href="/contact">광고 / 후원 문의</a> · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보 처리방침</a><br>
+    © 2026 월승치못 · wsmot.vercel.app
+  </footer>
 </div>
 
 <!-- ===== Sticky login CTA (shown when logged out) ===== -->
