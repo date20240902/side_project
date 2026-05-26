@@ -353,7 +353,7 @@
 
   <button class="btn-kakao-big" id="signup-kakao">
     <span class="ico">K</span>
-    사전 예약(카톡 채널 추가)하고 혜택 받기
+    카카오로 1초 사전 예약
   </button>
 </section>
 
@@ -660,7 +660,7 @@
     <div class="fc-sub">오픈 첫날부터 한 발 앞서 시작해요</div>
     <button class="btn-kakao-big" id="signup-kakao-2">
       <span class="ico">K</span>
-      사전 예약(카톡 채널 추가)하고 혜택 받기
+      카카오로 1초 사전 예약
     </button>
   </div>
 </section>
@@ -677,7 +677,7 @@
 <div class="sticky-cta" id="sticky-cta">
   <button class="btn-kakao-big" id="signup-kakao-3">
     <span class="ico">K</span>
-    사전 예약(카톡 채널 추가)하고 혜택 받기
+    카카오로 1초 사전 예약
   </button>
 </div>
 
@@ -686,9 +686,9 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="success-card">
-      <div class="success-emoji">🔔</div>
-      <div class="modal-title">마지막 한 단계!</div>
-      <div class="modal-desc">방금 열린 카카오톡에서 <b style="color: var(--accent-2);">[채널 추가]</b>를 눌러야<br>사전 예약이 완료돼요. 추가하면 오픈 첫날 혜택 🍗</div>
+      <div class="success-emoji">🎉</div>
+      <div class="modal-title">사전 예약 완료!</div>
+      <div class="modal-desc">환영해요! 오픈하면 가장 먼저 알려드릴게요.<br><b style="color: var(--accent-2);">카카오톡 채널을 추가</b>하면 오픈 알림을 푸시로 받아<br>까먹지 않고 첫날부터 참여할 수 있어요 🔔</div>
     </div>
 
     <div style="background: #fff3d6; border: 2px solid var(--border); padding: 14px; margin-bottom: 14px; text-align: center;">
@@ -699,10 +699,10 @@
     <div class="modal-actions">
       <button class="btn-kakao-big" id="open-channel">
         <span class="ico">K</span>
-        채널 추가하러 가기
+        채널 추가하고 오픈 알림 받기
       </button>
-      <button class="btn-secondary" id="share-friends">🔗 친구한테 알리기</button>
-      <button class="btn-secondary" data-close>나중에</button>
+      <button class="btn-secondary" id="share-friends">🔗 친구한테 공유하기</button>
+      <button class="btn-secondary" data-close>다음에</button>
     </div>
   </div>
 </div>
@@ -710,6 +710,7 @@
 <!-- Toast -->
 <div class="toast" id="toast">완료</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
   const $ = (s) => document.querySelector(s);
@@ -743,27 +744,46 @@
   window.addEventListener('scroll', updateSticky, { passive: true });
   window.addEventListener('resize', updateSticky);
 
-  // ===== Kakao Channel add (pre-registration) =====
+  // ===== Supabase + 카카오 로그인 (사전예약) =====
+  const SUPABASE_URL = 'https://mgmaibrwapphvgafzdon.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_5EusOBrKORHh3NpUkRcXNA_ZAlyHg4k';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const CHANNEL_URL = 'http://pf.kakao.com/_DqSbX';
+
+  async function startSignup() {
+    sessionStorage.setItem('wsmot_prereg', '1');
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: { scopes: 'profile_nickname', redirectTo: window.location.origin + '/preview' },
+    });
+    if (error) {
+      sessionStorage.removeItem('wsmot_prereg');
+      showToast('로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.');
+    }
+  }
+  $('#signup-kakao').addEventListener('click', startSignup);
+  $('#signup-kakao-2').addEventListener('click', startSignup);
+  $('#signup-kakao-3').addEventListener('click', startSignup);
+  $('#open-channel').addEventListener('click', () => window.open(CHANNEL_URL, '_blank', 'noopener'));
 
   function markRegistered() {
     $$('.btn-kakao-big').forEach(b => {
       if (b.id && b.id.indexOf('signup-kakao') === 0) {
-        b.innerHTML = '카톡에서 \'채널 추가\'를 눌러주세요 ↗';
+        b.innerHTML = '✅ 사전 예약 완료';
+        b.disabled = true; b.style.opacity = '0.7'; b.style.cursor = 'default';
       }
     });
   }
 
-  function joinPrereg() {
-    // 클릭 직후에만 안내 문구로 바꿈(메모리). 새로고침하면 초기 버튼으로 리셋.
+  // 로그인 상태 감지(로드 시 + 카카오 로그인 후 복귀) → 가입완료 표시 + 모달
+  sb.auth.onAuthStateChange((_event, session) => {
+    if (!session) return;
     markRegistered();
-    window.open(CHANNEL_URL, '_blank', 'noopener');
-    $('#modal-success').classList.add('active');
-  }
-  $('#signup-kakao').addEventListener('click', joinPrereg);
-  $('#signup-kakao-2').addEventListener('click', joinPrereg);
-  $('#signup-kakao-3').addEventListener('click', joinPrereg);
-  $('#open-channel').addEventListener('click', () => window.open(CHANNEL_URL, '_blank', 'noopener'));
+    if (sessionStorage.getItem('wsmot_prereg')) {
+      sessionStorage.removeItem('wsmot_prereg');
+      $('#modal-success').classList.add('active');
+    }
+  });
 
   // ===== Modal close =====
   $$('[data-close]').forEach(b => b.addEventListener('click', () => {
