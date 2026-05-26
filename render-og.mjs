@@ -9,7 +9,7 @@ const pills = [
   { t: '매일 5문제', w: 188, fill: '#f7ecd9', color: '#27235a', border: '#27235a' },
   { t: '사전 예약 혜택', w: 214, fill: '#ffd24a', color: '#27235a', border: '#27235a' },
 ];
-const pillTop = 516, pillH = 52, gap = 16;
+const pillTop = 524, pillH = 52, gap = 16;
 let px = 80;
 const pillSvg = pills.map(p => {
   const x = px; px += p.w + gap;
@@ -98,12 +98,12 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   <rect width="${W}" height="${H}" fill="url(#scrim)"/>
 
   <!-- logo shadow -->
-  <text x="86" y="398" font-family="Galmuri11" font-weight="bold" font-size="108" fill="#27235a">월승치못!</text>
+  <text x="86" y="394" font-family="Galmuri11" font-weight="bold" font-size="124" fill="#27235a">월승치못!</text>
   <!-- logo -->
-  <text x="80" y="392" font-family="Galmuri11" font-weight="bold" font-size="108" fill="#ffffff">월승치못<tspan fill="#e23b2e">!</tspan></text>
+  <text x="80" y="388" font-family="Galmuri11" font-weight="bold" font-size="124" fill="#ffffff">월승치못<tspan fill="#e23b2e">!</tspan></text>
 
   <!-- tag -->
-  <text x="80" y="462" font-family="Galmuri11" font-size="40" fill="#e7ebf8"><tspan fill="#ffd24a">월</tspan>드컵 <tspan fill="#ffd24a">승</tspan>부 예측에 <tspan fill="#ffd24a">치</tspan>킨? 이건 <tspan fill="#ffd24a">못</tspan> 참지</text>
+  <text x="80" y="472" font-family="Galmuri11" font-size="46" fill="#e7ebf8"><tspan fill="#ffd24a">월</tspan>드컵 <tspan fill="#ffd24a">승</tspan>부 예측에 <tspan fill="#ffd24a">치</tspan>킨? 이건 <tspan fill="#ffd24a">못</tspan> 참지</text>
 
   ${pillSvg}
 </svg>`;
