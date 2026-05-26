@@ -767,16 +767,16 @@
 
   // ===== Share to friends =====
   $('#share-friends').addEventListener('click', async () => {
-    const url = window.location.origin;
-    const text = '월드컵 예측하고 치킨 받자! 🍗 월승치못 사전예약 →';
+    const url = window.location.origin + '/preview';
+    const text = '🍗 월드컵 예측하고 치킨 받는 게임, 같이 해요! 지금 사전예약하면 오픈 첫날 더블픽 3장 + 깜짝 추첨 →';
     try {
       if (navigator.share) {
-        await navigator.share({ title: '월승치못', text, url });
+        await navigator.share({ title: '월승치못! 월드컵 예측 + 치킨', text, url });
       } else {
         await navigator.clipboard.writeText(text + ' ' + url);
-        showToast('🔗 링크를 복사했어요! 친구에게 붙여넣기 하세요');
+        showToast('🔗 링크 복사 완료! 친구에게 붙여넣기 하세요', 2500);
       }
-    } catch (e) { /* user cancelled share */ }
+    } catch (e) { /* user cancelled */ }
   });
 
   // ===== Sponsor inquiry =====

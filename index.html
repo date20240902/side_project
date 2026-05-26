@@ -608,7 +608,7 @@
   $('#kakao-login').addEventListener('click', async () => {
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'kakao',
-      options: { scopes: 'profile_nickname', redirectTo: window.location.origin + window.location.pathname },
+      options: { scopes: 'profile_nickname plusfriends', redirectTo: window.location.origin + window.location.pathname },
     });
     if (error) showToast('로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.');
   });
@@ -666,6 +666,39 @@
     applySession(session);
   }
 
+  // ===== 사전예약 보너스: 카카오 채널 친구이면 더블픽 3장 1회 지급 =====
+  const CHANNEL_PUBLIC_ID = '_DqSbX';
+  async function checkPreregBonus() {
+    if (!state.user || state.user.is_anonymous) return;
+    try {
+      const { data: signup } = await sb.from('signups')
+        .select('prereg_bonus_given')
+        .eq('id', state.user.id)
+        .single();
+      if (signup?.prereg_bonus_given) return; // 이미 지급됨
+
+      const { data: { session } } = await sb.auth.getSession();
+      const token = session?.provider_token;
+      if (!token) return;
+
+      const res = await fetch('https://kapi.kakao.com/v1/api/talk/channels', {
+        headers: { Authorization: 'Bearer ' + token },
+      });
+      if (!res.ok) return;
+      const { channels } = await res.json();
+      const isFriend = channels?.some(
+        ch => ch.channel_public_id === CHANNEL_PUBLIC_ID && ch.relation === 'added'
+      );
+      if (!isFriend) return;
+
+      // 지급
+      state.dpBalance += 3;
+      localStorage.setItem('wsmot_dp_balance', String(state.dpBalance));
+      await sb.from('signups').update({ prereg_bonus_given: true }).eq('id', state.user.id);
+      showToast('🎉 사전예약 혜택! 더블픽 3장이 지급됐어요', 3500);
+    } catch (_) { /* 실패 시 조용히 넘김 */ }
+  }
+
   // ===== Boot (logged in) =====
   async function boot() {
     // 유저 전환/로그아웃 시 이전 선택이 화면에 남지 않도록 초기화
@@ -678,6 +711,7 @@
     } else { who.textContent = ''; who.classList.remove('anon'); }
     toggleLoginBar();
     updateChannelCta();
+    checkPreregBonus();
 
     // load published questions
     const { data: qs, error } = await sb.from('questions')
