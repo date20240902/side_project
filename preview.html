@@ -754,7 +754,7 @@
     sessionStorage.setItem('wsmot_prereg', '1');
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'kakao',
-      options: { scopes: 'profile_nickname profile_image account_email', redirectTo: window.location.origin + '/preview' },
+      options: { scopes: 'profile_nickname', redirectTo: window.location.origin + '/preview' },
     });
     if (error) {
       sessionStorage.removeItem('wsmot_prereg');
@@ -776,14 +776,18 @@
   }
 
   // 로그인 상태 감지(로드 시 + 카카오 로그인 후 복귀) → 가입완료 표시 + 모달
-  sb.auth.onAuthStateChange((_event, session) => {
+  let successShown = false;
+  function handleSession(session) {
     if (!session) return;
     markRegistered();
-    if (sessionStorage.getItem('wsmot_prereg')) {
+    if (!successShown && sessionStorage.getItem('wsmot_prereg')) {
+      successShown = true;
       sessionStorage.removeItem('wsmot_prereg');
       $('#modal-success').classList.add('active');
     }
-  });
+  }
+  sb.auth.onAuthStateChange((_event, session) => handleSession(session));
+  sb.auth.getSession().then(({ data }) => handleSession(data.session));
 
   // ===== Modal close =====
   $$('[data-close]').forEach(b => b.addEventListener('click', () => {
