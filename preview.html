@@ -754,7 +754,7 @@
     sessionStorage.setItem('wsmot_prereg', '1');
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'kakao',
-      options: { scopes: 'profile_nickname', redirectTo: window.location.origin + '/preview' },
+      options: { scopes: 'profile_nickname phone_number', redirectTo: window.location.origin + '/preview' },
     });
     if (error) {
       sessionStorage.removeItem('wsmot_prereg');
