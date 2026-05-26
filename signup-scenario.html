@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>회원가입 시나리오 · 월승치못</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
+<style>
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-display: swap;
+  }
+  :root { --border:#27235a; --accent:#e23b2e; --text:#27235a; --dim:#6a6494; }
+  * { box-sizing: border-box; }
+  body { margin:0 auto; max-width:720px; padding:28px 20px 60px; background:#fff; color:var(--text);
+    font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; line-height:1.75; font-size:15px; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .logo { font-family:'DungGeunMo',monospace; font-size:22px; }
+  .logo .dot { color:var(--accent); }
+  .back { font-size:13px; color:var(--dim); text-decoration:none; }
+  h1 { font-family:'DungGeunMo',monospace; font-size:24px; margin:18px 0 4px; }
+  .eff { color:var(--dim); font-size:13px; margin-bottom:24px; }
+  h2 { font-size:17px; margin:28px 0 8px; padding-top:8px; border-top:2px solid #eee; }
+  p, li, td { color:#33304f; }
+  ul { padding-left:20px; }
+  ol.flow { padding-left:0; list-style:none; counter-reset:step; }
+  ol.flow li { position:relative; padding:10px 0 10px 44px; border-bottom:1px dashed #e3e0ef; }
+  ol.flow li:last-child { border-bottom:none; }
+  ol.flow li::before { counter-increment:step; content:counter(step);
+    position:absolute; left:0; top:10px; width:28px; height:28px; line-height:28px; text-align:center;
+    background:var(--accent); color:#fff; border-radius:50%; font-family:'DungGeunMo',monospace; font-size:14px; }
+  ol.flow b { color:var(--text); }
+  table { border-collapse:collapse; width:100%; margin:8px 0; font-size:14px; }
+  th, td { border:1px solid #ddd; padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:#f6f4ef; }
+  .req { color:var(--accent); font-weight:bold; }
+  .opt { color:var(--dim); }
+  .muted { color:var(--dim); font-size:13px; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+  <div class="top">
+    <span class="logo">월승치못<span class="dot">!</span></span>
+    <a class="back" href="/preview">← 돌아가기</a>
+  </div>
+  <h1>회원가입 시나리오</h1>
+  <div class="eff">월승치못 (운영: 인사이트브릿지) · 카카오 로그인 기반 회원가입</div>
+
+  <h2>1. 서비스 개요</h2>
+  <p>월승치못은 매일 제공되는 월드컵 승부예측 문제 5개에 답하고, 정답 수에 따라 치킨 기프티콘 등 경품을 받을 수 있는 예측 게임 서비스입니다. 별도의 입력 폼 없이 <b>카카오 로그인 한 번으로 회원가입과 로그인이 동시에</b> 이루어집니다.</p>
+
+  <h2>2. 회원가입 화면 구성</h2>
+  <p>회원가입(시작) 화면에는 개인정보를 직접 입력하는 필드가 없으며, 아래 버튼 한 개만 노출됩니다.</p>
+  <ul>
+    <li>[ 카카오로 시작하기 ] 버튼 (탭 시 카카오 로그인 동의 화면으로 이동)</li>
+  </ul>
+  <p class="muted">이용자가 직접 이름·연락처 등을 입력하는 별도 가입 폼은 존재하지 않으며, 필요한 정보는 카카오 동의 화면을 통해서만 수집됩니다.</p>
+
+  <h2>3. 단계별 회원가입 시나리오</h2>
+  <ol class="flow">
+    <li><b>시작 화면 진입</b><br>이용자가 서비스에 접속하면 메인 화면 하단에 "카카오로 시작하기" 버튼이 표시됩니다.</li>
+    <li><b>카카오 로그인 버튼 클릭</b><br>이용자가 "카카오로 시작하기" 버튼을 누릅니다.</li>
+    <li><b>카카오 동의 화면 표시</b><br>카카오 로그인 동의 화면으로 이동하며, 아래 4항의 동의 항목(닉네임/프로필 사진/이메일)이 표시됩니다.</li>
+    <li><b>동의 및 인증 완료</b><br>이용자가 동의 항목을 확인하고 동의하면 카카오 인증이 완료됩니다. (선택 항목은 동의하지 않아도 가입 진행 가능)</li>
+    <li><b>회원가입 완료 및 서비스 이용 시작</b><br>인증이 완료되면 자동으로 회원이 생성되고, 예측 게임에 바로 참여할 수 있습니다.</li>
+  </ol>
+
+  <h2>4. 회원가입 시 수집하는 개인정보</h2>
+  <table>
+    <tr><th>항목</th><th>동의 유형</th><th>수집 목적</th></tr>
+    <tr><td>닉네임</td><td class="req">필수</td><td>서비스 내 닉네임 표시, 순위(리더보드) 표기, 회원 식별</td></tr>
+    <tr><td>프로필 사진</td><td class="opt">선택</td><td>프로필 및 순위 화면의 이미지 표시</td></tr>
+    <tr><td>카카오계정(이메일)</td><td class="opt">선택</td><td>서비스 오픈 알림, 경품 당첨 안내</td></tr>
+  </table>
+  <p class="muted">선택 항목(프로필 사진, 이메일)에 동의하지 않아도 회원가입 및 서비스 이용이 가능합니다.</p>
+
+  <h2>5. 경품 발송 시 추가 정보 수집</h2>
+  <p>경품(치킨 기프티콘 등) 당첨자에 한하여, 기프티콘 발송 및 본인 확인을 위해 필요한 정보(전화번호 등)를 별도 동의를 받아 수집할 수 있습니다. 해당 정보는 발송 목적 달성 후 지체 없이 파기합니다.</p>
+
+  <h2>6. 관련 약관</h2>
+  <ul>
+    <li>이용약관: <a href="https://wsmot.vercel.app/terms">wsmot.vercel.app/terms</a></li>
+    <li>개인정보 처리방침: <a href="https://wsmot.vercel.app/privacy">wsmot.vercel.app/privacy</a></li>
+  </ul>
+
+  <p class="muted" style="margin-top:28px;">인사이트브릿지 · 월승치못 · wsmot.vercel.app</p>
+</body>
+</html>
