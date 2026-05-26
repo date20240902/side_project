@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>월승치못 OG 이미지 생성기</title>
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
+<style>
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-display: swap;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#20242e; display:flex; flex-direction:column; align-items:center; gap:20px; padding:30px; font-family:-apple-system,sans-serif; }
+
+  /* ===== 1200x630 OG 이미지 (표준 OG 크기) ===== */
+  .og {
+    width:1200px; height:630px; position:relative; overflow:hidden;
+    background:#0f1430; flex:none;
+  }
+  .og svg.bg { position:absolute; inset:0; width:100%; height:100%; }
+  .og .scrim {
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(15,20,48,0.15) 0%, rgba(15,20,48,0.78) 55%, rgba(15,20,48,0.95) 100%);
+  }
+  .og .grid {
+    position:absolute; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.04) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.04) 2px,transparent 2px);
+    background-size:60px 60px;
+  }
+  .og .content {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:0 80px 64px;
+  }
+  .og .logo {
+    font-family:'DungGeunMo',monospace; font-size:96px; line-height:1;
+    color:#fff; text-shadow:6px 6px 0 #27235a;
+    margin-bottom:20px;
+  }
+  .og .logo .dot { color:#e23b2e; text-shadow:6px 6px 0 #7a1109; }
+  .og .tag {
+    font-family:'DungGeunMo',monospace; font-size:34px;
+    color:#e7ebf8; text-shadow:2px 2px 0 #27235a;
+    margin-bottom:36px; letter-spacing:0.5px;
+  }
+  .og .tag .hl { color:#ffd24a; }
+  .og .pills { display:flex; gap:16px; flex-wrap:wrap; }
+  .og .pill {
+    background:rgba(247,236,217,0.95); color:#27235a;
+    border:3px solid #27235a; box-shadow:4px 4px 0 rgba(39,35,90,0.35);
+    padding:12px 22px; font-family:'DungGeunMo',monospace; font-size:26px;
+  }
+  .og .pill.red { background:#e23b2e; color:#fff; }
+
+  .hint { color:#aab2c5; font-size:14px; text-align:center; line-height:1.8; }
+  .hint b { color:#fff; }
+  .dl-btn {
+    padding:14px 28px; background:#e23b2e; color:#fff;
+    border:4px solid #27235a; box-shadow:6px 6px 0 rgba(0,0,0,0.25);
+    font-family:'DungGeunMo',monospace; font-size:18px; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="og" id="og">
+  <!-- 히어로 배경 (index.html 동일) -->
+  <svg class="bg" viewBox="0 0 200 165" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="crowd" width="8" height="8" patternUnits="userSpaceOnUse">
+        <rect width="8" height="8" fill="#22356b"/>
+        <rect x="0" y="1" width="2" height="2" fill="#e0623f"/>
+        <rect x="4" y="0" width="2" height="2" fill="#e9e4d6"/>
+        <rect x="2" y="4" width="2" height="2" fill="#5aa0d8"/>
+        <rect x="6" y="5" width="2" height="2" fill="#e7b94a"/>
+        <rect x="5" y="3" width="1" height="1" fill="#ffffff"/>
+        <rect x="1" y="6" width="1" height="1" fill="#cfd6e6"/>
+      </pattern>
+      <pattern id="net" width="6" height="6" patternUnits="userSpaceOnUse">
+        <rect width="6" height="6" fill="none"/>
+        <rect x="0" y="0" width="6" height="1" fill="#ffffff"/>
+        <rect x="0" y="0" width="1" height="6" fill="#ffffff"/>
+      </pattern>
+    </defs>
+    <rect x="0" y="0" width="200" height="46" fill="url(#crowd)"/>
+    <rect x="0" y="46" width="200" height="9" fill="#e7e0d0"/>
+    <rect x="6" y="47" width="40" height="7" fill="#e23b2e"/>
+    <rect x="70" y="47" width="46" height="7" fill="#2f6fd0"/>
+    <rect x="140" y="47" width="40" height="7" fill="#e7913f"/>
+    <rect x="0" y="55" width="200" height="110" fill="#5fb457"/>
+    <rect x="0" y="55" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="83" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="111" width="200" height="14" fill="#67bd5e"/>
+    <rect x="0" y="139" width="200" height="14" fill="#67bd5e"/>
+    <rect x="64" y="56" width="74" height="38" fill="url(#net)" opacity="0.55"/>
+    <rect x="64" y="54" width="74" height="3" fill="#ffffff"/>
+    <rect x="64" y="54" width="3" height="40" fill="#ffffff"/>
+    <rect x="135" y="54" width="3" height="40" fill="#ffffff"/>
+    <ellipse cx="92" cy="135" rx="17" ry="4" fill="#1c5a1f" opacity="0.22"/>
+    <ellipse cx="129" cy="133" rx="9" ry="3" fill="#1c5a1f" opacity="0.22"/>
+    <!-- 선수 픽셀 캐릭터 -->
+    <g transform="translate(121,116)">
+      <rect x="1" y="1" width="14" height="14" rx="7" fill="#ffffff" stroke="#20264f" stroke-width="2"/>
+      <rect x="6" y="3" width="4" height="4" fill="#20264f"/>
+      <rect x="3" y="8" width="3" height="3" fill="#20264f"/>
+      <rect x="10" y="9" width="3" height="3" fill="#20264f"/>
+    </g>
+    <g transform="translate(74,72)">
+      <rect x="4" y="0" width="20" height="8" fill="#1f2a52"/>
+      <rect x="4" y="8" width="4" height="6" fill="#1f2a52"/>
+      <rect x="20" y="8" width="4" height="6" fill="#1f2a52"/>
+      <rect x="8" y="7" width="12" height="11" fill="#b56b39"/>
+      <rect x="10" y="12" width="2" height="2" fill="#20264f"/>
+      <rect x="16" y="12" width="2" height="2" fill="#20264f"/>
+      <rect x="4" y="18" width="20" height="15" fill="#e23b2e"/>
+      <rect x="0" y="19" width="5" height="7" fill="#e23b2e"/>
+      <rect x="23" y="19" width="5" height="7" fill="#e23b2e"/>
+      <rect x="0" y="26" width="5" height="7" fill="#b56b39"/>
+      <rect x="23" y="26" width="5" height="7" fill="#b56b39"/>
+      <rect x="4" y="33" width="9" height="9" fill="#1f2a52"/>
+      <rect x="15" y="33" width="9" height="9" fill="#1f2a52"/>
+      <rect x="5" y="42" width="7" height="9" fill="#b56b39"/>
+      <rect x="16" y="42" width="7" height="9" fill="#b56b39"/>
+      <rect x="5" y="51" width="7" height="5" fill="#e23b2e"/>
+      <rect x="16" y="51" width="7" height="5" fill="#e23b2e"/>
+      <rect x="3" y="56" width="10" height="5" fill="#20264f"/>
+      <rect x="16" y="56" width="10" height="5" fill="#20264f"/>
+    </g>
+  </svg>
+
+  <div class="grid"></div>
+  <div class="scrim"></div>
+
+  <div class="content">
+    <div class="logo">월승치못<span class="dot">!</span></div>
+    <div class="tag">
+      <span class="hl">월</span>드컵 <span class="hl">승</span>부 예측에 <span class="hl">치</span>킨? 이건 <span class="hl">못</span> 참지
+    </div>
+    <div class="pills">
+      <div class="pill red">🍗 치킨 기프티콘</div>
+      <div class="pill">⚽ 매일 5문제</div>
+      <div class="pill">💸 완전 무료</div>
+    </div>
+  </div>
+</div>
+
+<div class="hint">
+  위 이미지(1200×630)를 <b>다운로드</b>하고 <b>og-image.png</b>로 저장해서 Claude에게 전달해주세요.<br>
+  그러면 사전예약 페이지 공유 시 이 썸네일이 자동으로 나타납니다.
+</div>
+
+<button class="dl-btn" id="dl">⬇️ og-image.png 다운로드</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+document.getElementById('dl').addEventListener('click', () => {
+  const btn = document.getElementById('dl');
+  btn.textContent = '⏳ 생성 중...';
+  btn.disabled = true;
+  html2canvas(document.getElementById('og'), {
+    scale: 2, useCORS: true, backgroundColor: null,
+  }).then(canvas => {
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'og-image.png';
+    a.click();
+    btn.textContent = '⬇️ og-image.png 다운로드';
+    btn.disabled = false;
+  });
+});
+</script>
+</body>
+</html>
