@@ -58,7 +58,10 @@
 
   .mock-wrap { padding:8px 20px; }
   .phone { max-width:300px; margin:0 auto; border:3px solid var(--border); background:var(--bg); box-shadow:var(--shadow); overflow:hidden; }
-  .m-hero { background:var(--hero); color:#fff; text-align:center; padding:14px 8px; font-family:'DungGeunMo',monospace; font-size:18px; }
+  .m-hero { position:relative; overflow:hidden; min-height:88px; background:var(--hero); color:#fff; text-align:center; padding:30px 8px 16px; font-family:'DungGeunMo',monospace; font-size:18px; }
+  .m-hero-bg { position:absolute; inset:0; width:100%; height:100%; image-rendering:pixelated; z-index:0; }
+  .m-hero-scrim { position:absolute; inset:0; z-index:1; background:linear-gradient(180deg,rgba(15,20,48,0.32) 0%,rgba(15,20,48,0.7) 100%); }
+  .m-hero-logo { position:relative; z-index:2; text-shadow:2px 2px 0 var(--border); }
   .m-hero .dot { color:var(--accent); }
   .m-row { margin:8px; padding:9px 10px; border:2px solid var(--border); background:var(--bg-card); font-size:11px; }
   .m-ad { position:relative; border:3px solid var(--gold); background:#fff7da; }
@@ -68,7 +71,6 @@
   .m-q .opts { display:flex; gap:4px; margin-top:6px; }
   .m-q .opt { flex:1; text-align:center; border:2px solid var(--border); background:var(--bg-elev); padding:4px 0; font-size:10px; }
   .m-q .opt.on { background:var(--accent); color:#fff; }
-  .m-prize { background:#e7f7ec; border-color:var(--green); }
   .callout { font-size:11px; color:var(--text-dim); margin:4px 8px 0; }
   .callout b { color:var(--accent); }
 
@@ -89,7 +91,10 @@
   .cta a.btn { display:block; padding:15px; background:var(--accent); color:#fff; border:3px solid var(--border); box-shadow:var(--shadow); font-family:'DungGeunMo',monospace; font-size:16px; text-decoration:none; }
   .cta a.btn:active { transform:translate(4px,4px); box-shadow:none; }
   .cta .mail { display:block; margin-top:12px; font-size:12px; color:var(--text-dim); }
-  .foot { text-align:center; font-size:11px; color:var(--text-faint); margin-top:24px; }
+  .foot { text-align:center; font-size:11px; color:var(--text-faint); line-height:1.9; margin-top:24px; padding:0 20px; }
+  .foot .logo-mini { display:block; font-family:'DungGeunMo',monospace; font-size:14px; color:var(--text); margin-bottom:6px; }
+  .foot .logo-mini .dot { color:var(--accent); }
+  .foot a { color:var(--text-dim); text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -180,21 +185,87 @@
 <div class="sec"><span class="label">노출 위치</span><h2>어디에 노출되나요</h2><p class="lead">실제 서비스 화면 기준입니다. ⭐ 표시가 1호 후원사 전용 자리입니다.</p></div>
 <div class="mock-wrap">
   <div class="phone">
-    <div class="m-hero">월승치못<span class="dot">!</span></div>
+    <div class="m-hero">
+      <svg class="m-hero-bg" viewBox="0 0 200 165" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="m-crowd" width="8" height="8" patternUnits="userSpaceOnUse">
+            <rect width="8" height="8" fill="#22356b"/>
+            <rect x="0" y="1" width="2" height="2" fill="#e0623f"/>
+            <rect x="4" y="0" width="2" height="2" fill="#e9e4d6"/>
+            <rect x="2" y="4" width="2" height="2" fill="#5aa0d8"/>
+            <rect x="6" y="5" width="2" height="2" fill="#e7b94a"/>
+            <rect x="5" y="3" width="1" height="1" fill="#ffffff"/>
+            <rect x="1" y="6" width="1" height="1" fill="#cfd6e6"/>
+          </pattern>
+          <pattern id="m-net" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="none"/>
+            <rect x="0" y="0" width="6" height="1" fill="#ffffff"/>
+            <rect x="0" y="0" width="1" height="6" fill="#ffffff"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="200" height="46" fill="url(#m-crowd)"/>
+        <rect x="0" y="46" width="200" height="9" fill="#e7e0d0"/>
+        <rect x="6" y="47" width="40" height="7" fill="#e23b2e"/>
+        <rect x="70" y="47" width="46" height="7" fill="#2f6fd0"/>
+        <rect x="140" y="47" width="40" height="7" fill="#e7913f"/>
+        <rect x="0" y="55" width="200" height="110" fill="#5fb457"/>
+        <rect x="0" y="55" width="200" height="14" fill="#67bd5e"/>
+        <rect x="0" y="83" width="200" height="14" fill="#67bd5e"/>
+        <rect x="0" y="111" width="200" height="14" fill="#67bd5e"/>
+        <rect x="0" y="139" width="200" height="14" fill="#67bd5e"/>
+        <rect x="64" y="56" width="74" height="38" fill="url(#m-net)" opacity="0.55"/>
+        <rect x="64" y="54" width="74" height="3" fill="#ffffff"/>
+        <rect x="64" y="54" width="3" height="40" fill="#ffffff"/>
+        <rect x="135" y="54" width="3" height="40" fill="#ffffff"/>
+        <ellipse cx="92" cy="135" rx="17" ry="4" fill="#1c5a1f" opacity="0.22"/>
+        <ellipse cx="129" cy="133" rx="9" ry="3" fill="#1c5a1f" opacity="0.22"/>
+        <g transform="translate(121,116)">
+          <rect x="1" y="1" width="14" height="14" rx="7" fill="#ffffff" stroke="#20264f" stroke-width="2"/>
+          <rect x="6" y="3" width="4" height="4" fill="#20264f"/>
+          <rect x="3" y="8" width="3" height="3" fill="#20264f"/>
+          <rect x="10" y="9" width="3" height="3" fill="#20264f"/>
+        </g>
+        <g transform="translate(74,72)">
+          <rect x="4" y="0" width="20" height="8" fill="#1f2a52"/>
+          <rect x="4" y="8" width="4" height="6" fill="#1f2a52"/>
+          <rect x="20" y="8" width="4" height="6" fill="#1f2a52"/>
+          <rect x="8" y="7" width="12" height="11" fill="#b56b39"/>
+          <rect x="10" y="12" width="2" height="2" fill="#20264f"/>
+          <rect x="16" y="12" width="2" height="2" fill="#20264f"/>
+          <rect x="4" y="18" width="20" height="15" fill="#e23b2e"/>
+          <rect x="0" y="19" width="5" height="7" fill="#e23b2e"/>
+          <rect x="23" y="19" width="5" height="7" fill="#e23b2e"/>
+          <rect x="0" y="26" width="5" height="7" fill="#b56b39"/>
+          <rect x="23" y="26" width="5" height="7" fill="#b56b39"/>
+          <rect x="4" y="33" width="9" height="9" fill="#1f2a52"/>
+          <rect x="15" y="33" width="9" height="9" fill="#1f2a52"/>
+          <rect x="5" y="42" width="7" height="9" fill="#b56b39"/>
+          <rect x="16" y="42" width="7" height="9" fill="#b56b39"/>
+          <rect x="5" y="51" width="7" height="5" fill="#e23b2e"/>
+          <rect x="16" y="51" width="7" height="5" fill="#e23b2e"/>
+          <rect x="3" y="56" width="10" height="5" fill="#20264f"/>
+          <rect x="16" y="56" width="10" height="5" fill="#20264f"/>
+        </g>
+      </svg>
+      <div class="m-hero-scrim"></div>
+      <div class="m-hero-logo">월승치못<span class="dot">!</span></div>
+    </div>
     <div class="m-row m-ad"><span class="star">⭐ 1호 후원사</span>🍗 OO치킨 — 공식 후원사</div>
     <div class="callout">↑ 히어로 바로 아래 <b>최상단 배너</b> (화면 열면 가장 먼저 보임)</div>
     <div class="m-row m-pool"><span>오늘의 치킨 풀</span><span class="em">3마리 🍗</span></div>
     <div class="m-row m-q">한국 vs 브라질, 결과는?
       <div class="opts"><span class="opt on">승</span><span class="opt">무</span><span class="opt">패</span></div>
     </div>
-    <div class="m-row m-ad" style="border-color:var(--border-light);background:var(--bg-card-2);">🍕 인피드 배너 자리</div>
-    <div class="callout" style="color:var(--text-dim)">↑ 문제 목록 아래 <b style="color:var(--text-dim)">인피드 배너</b></div>
-    <div class="m-row m-prize">🎁 당첨자에게 <b style="color:var(--green)">OO치킨</b> 기프티콘 발송</div>
-    <div class="callout" style="color:var(--green)">↑ 상품 탭·당첨 안내에 노출 — <b style="color:var(--green)">상품이 곧 후원사 제품</b></div>
+    <div class="m-row m-q">손흥민 공격 포인트는?
+      <div class="opts"><span class="opt">0</span><span class="opt on">1</span><span class="opt">2+</span></div>
+    </div>
+    <div class="m-row m-q">오늘 경기 중 관중 난입?
+      <div class="opts"><span class="opt">있다</span><span class="opt on">없다</span></div>
+    </div>
   </div>
 </div>
 <ul class="pkg" style="margin-top:10px;">
-  <li><b>최상단 배너 + 인피드 배너</b>에 로고 노출</li>
+  <li><b>최상단 배너</b>에 로고 노출</li>
   <li>당첨 <b>치킨 기프티콘 = 후원사 제품</b> (당첨자가 직접 수령)</li>
   <li>결과 공유 카드·카카오톡 채널 알림 노출 (협의)</li>
 </ul>
@@ -203,7 +274,7 @@
 <div class="sec"><span class="label">얼리버드</span><h2>빠를수록 노출이<br>빨리 시작됩니다</h2></div>
 <div class="earlybird">
   <div class="t">⭐ 1호 후원사 혜택</div>
-  <div class="d">1호 후원사께는 <b>최상단 배너</b>를 대회 기간 단독으로 배정하고, 카테고리(치킨/피자/카페) 독점과 “공식 후원사” 표기를 제공합니다. 자리는 순서대로 배정됩니다.</div>
+  <div class="d">1호 후원사께는 <b>최상단 배너</b>를 대회 기간 단독으로 배정하고, <b>치킨 카테고리 독점</b>과 “공식 후원사” 표기를 제공합니다. 자리는 순서대로 배정됩니다.</div>
   <div class="d">또한 <b>사전 예약 기간 중 계약이 체결되면, 그 시점부터 사전 예약 페이지에 “공식 후원사”로 등록·노출</b>됩니다. 정식 오픈 전부터 사전 예약자들에게 브랜드가 먼저 노출됩니다.</div>
 </div>
 
@@ -222,7 +293,14 @@
   <a class="btn" href="/contact">후원 문의하기 →</a>
 </div>
 
-<div class="foot">월승치못 · wsmot.kr</div>
+<div class="foot">
+  <span class="logo-mini">월승치못<span class="dot">!</span></span>
+  월드컵 승부 예측에 치킨? 이건 못 참지<br>
+  운영: 인사이트브릿지 (대표 이재훈) · 사업자등록번호 533-40-01301<br>
+  문의: <a href="mailto:newsletter@techissue.xyz">newsletter@techissue.xyz</a><br><br>
+  <a href="/preview">사전 예약 페이지</a> · <a href="/">서비스 바로가기</a> · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보 처리방침</a><br><br>
+  © 2026 월승치못 · wsmot.vercel.app
+</div>
 
 </body>
 </html>
