@@ -772,11 +772,36 @@
     });
   }
 
+  // 카카오 전화번호 수집 (로그인 직후 provider_token 있을 때)
+  function normalizePhone(s) {
+    if (!s) return null;
+    let d = s.replace(/[^0-9+]/g, '');
+    if (d.startsWith('+82')) d = '0' + d.slice(3);
+    else if (d.startsWith('82')) d = '0' + d.slice(2);
+    return d || null;
+  }
+  async function captureKakaoPhone(session) {
+    try {
+      const token = session?.provider_token;
+      const uid = session?.user?.id;
+      if (!token || !uid) return; // 재방문(토큰 없음)이면 스킵
+      const res = await fetch('https://kapi.kakao.com/v2/user/me', {
+        headers: { Authorization: 'Bearer ' + token },
+      });
+      if (!res.ok) return;
+      const me = await res.json();
+      const phone = normalizePhone(me?.kakao_account?.phone_number);
+      if (!phone) return;
+      await sb.from('signups').update({ phone }).eq('id', uid);
+    } catch (_) { /* 조용히 넘김 */ }
+  }
+
   // 로그인 상태 감지(로드 시 + 카카오 로그인 후 복귀) → 가입완료 표시 + 모달
   let successShown = false;
   function handleSession(session) {
     if (!session) return;
     markRegistered();
+    captureKakaoPhone(session);
     if (!successShown && sessionStorage.getItem('wsmot_prereg')) {
       successShown = true;
       sessionStorage.removeItem('wsmot_prereg');
