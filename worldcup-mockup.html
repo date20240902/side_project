@@ -1,0 +1,1832 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>월승치못 — 월드컵 승부 예측에 치킨? 이건 못 참지 (목업)</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-elev: #131829;
+    --bg-card: #1a2138;
+    --bg-card-2: #222a45;
+    --border: #2a3354;
+    --border-light: #3a4570;
+    --text: #f0f3fb;
+    --text-dim: #8b95b5;
+    --text-faint: #5a6485;
+    --accent: #ff3d57;
+    --accent-2: #ffb84d;
+    --gold: #ffd54a;
+    --green: #2ecc71;
+    --purple: #b067ff;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: #06070d; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Pretendard", "Apple SD Gothic Neo", sans-serif; -webkit-font-smoothing: antialiased; }
+  body { max-width: 460px; margin: 0 auto; min-height: 100vh; background: var(--bg); position: relative; padding-bottom: 80px; }
+  button { font-family: inherit; }
+
+  /* ===== Common ===== */
+  .view { display: none; animation: fadeIn 0.2s ease; }
+  .view.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .app-header {
+    padding: 14px 18px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; cursor: pointer; }
+  .logo .dot { color: var(--accent); }
+  .profile-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-card); border: 1px solid var(--border);
+    display: grid; place-items: center; cursor: pointer;
+    font-size: 16px;
+  }
+  .back-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: transparent; border: none; color: var(--text);
+    font-size: 22px; cursor: pointer; display: grid; place-items: center;
+  }
+  .page-title {
+    font-size: 17px; font-weight: 800; flex: 1; text-align: center;
+    margin-right: 36px;
+  }
+
+  /* ===== Onboarding ===== */
+  #onboarding {
+    position: fixed; inset: 0; max-width: 460px; margin: 0 auto;
+    background: linear-gradient(180deg, #0a0e1a 0%, #1a0a14 100%);
+    display: none; flex-direction: column; padding: 40px 24px;
+    z-index: 100;
+  }
+  #onboarding.active { display: flex; }
+  .ob-logo {
+    font-size: 44px; font-weight: 900; letter-spacing: -1px;
+    margin-top: 40px; text-align: center;
+  }
+  .ob-logo .dot { color: var(--accent); }
+  .ob-sub {
+    text-align: center; color: var(--text-dim);
+    margin-top: 8px; font-size: 14px;
+  }
+  .ob-hero {
+    margin: 36px 0 28px;
+    padding: 24px; background: var(--bg-card);
+    border-radius: 16px; border: 1px solid var(--border);
+    text-align: center;
+  }
+  .ob-hero-emoji { font-size: 56px; margin-bottom: 8px; }
+  .ob-hero-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+  .ob-hero-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .ob-feat {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .ob-feat-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .ob-feat-ico { font-size: 22px; }
+  .ob-feat-txt { flex: 1; }
+  .ob-feat-t { font-size: 13px; font-weight: 700; }
+  .ob-feat-d { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .ob-input {
+    width: 100%; padding: 14px 16px;
+    background: var(--bg-card); border: 1.5px solid var(--border);
+    border-radius: 12px; color: var(--text); font-size: 15px;
+    margin-bottom: 12px; outline: none;
+  }
+  .ob-input:focus { border-color: var(--accent); }
+  .btn-primary {
+    width: 100%; padding: 15px; border: none;
+    background: var(--accent); color: white;
+    border-radius: 12px; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { background: var(--bg-card-2); color: var(--text-faint); cursor: not-allowed; }
+
+  /* Kakao login button */
+  .btn-kakao {
+    width: 100%; padding: 15px; border: none;
+    background: #FEE500; color: #181600;
+    border-radius: 12px; font-size: 15px; font-weight: 800;
+    cursor: pointer; transition: transform 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-kakao:active { transform: scale(0.98); }
+  .btn-kakao .ico {
+    width: 20px; height: 20px;
+    background: #181600; color: #FEE500;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 12px; font-weight: 900;
+    line-height: 1;
+  }
+  .ob-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 18px 0 14px;
+    color: var(--text-faint); font-size: 11px;
+  }
+  .ob-divider::before, .ob-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .ob-policy {
+    text-align: center; font-size: 11px;
+    color: var(--text-faint); margin-top: 14px; line-height: 1.6;
+  }
+  .ob-policy a { color: var(--text-dim); text-decoration: underline; }
+
+  /* Kakao loading overlay */
+  .kakao-loading {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+  }
+  .kakao-loading.active { display: flex; }
+  .kakao-loading-box {
+    background: white; color: #181600;
+    padding: 28px 36px; border-radius: 16px;
+    text-align: center; min-width: 240px;
+  }
+  .kakao-loading-box .ico-big {
+    width: 44px; height: 44px; margin: 0 auto 12px;
+    background: #FEE500; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 22px; font-weight: 900;
+    animation: kakaoPulse 1s ease-in-out infinite;
+  }
+  @keyframes kakaoPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .kakao-loading-box .t { font-size: 14px; font-weight: 700; }
+  .kakao-loading-box .d { font-size: 11px; color: #666; margin-top: 4px; }
+
+  /* Profile with Kakao linked */
+  .kakao-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #FEE500; color: #181600;
+    padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 800;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .kakao-badge::before {
+    content: 'K'; display: inline-grid; place-items: center;
+    width: 12px; height: 12px; background: #181600; color: #FEE500;
+    border-radius: 50%; font-size: 8px;
+  }
+
+  /* Kakao share preview in invite modal */
+  .kakao-share-preview {
+    background: white; color: #181600;
+    border-radius: 12px; overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid #ddd;
+  }
+  .ksp-img {
+    height: 130px;
+    background: linear-gradient(135deg, #ff3d57 0%, #ffb84d 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 56px;
+    position: relative;
+  }
+  .ksp-img::after {
+    content: '🍗 7마리 풀'; position: absolute; bottom: 10px; right: 12px;
+    background: rgba(0,0,0,0.5); color: white;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .ksp-body { padding: 12px 14px; }
+  .ksp-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+  .ksp-desc { font-size: 12px; color: #666; line-height: 1.4; }
+  .ksp-link {
+    border-top: 1px solid #eee;
+    padding: 8px 14px; font-size: 11px; color: #999;
+  }
+
+  /* Bonus explanation rows in invite modal */
+  .bonus-explain {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .be-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-dim); }
+  .be-ico { font-size: 14px; }
+  .be-txt b { color: var(--text); font-weight: 700; }
+
+  .kakao-bonus-badge {
+    margin-left: 4px;
+    background: #181600; color: #FEE500;
+    font-size: 10px; font-weight: 800;
+    padding: 3px 7px; border-radius: 10px;
+    letter-spacing: 0.2px;
+  }
+
+  /* Double-pick banner (shown when user has bonus picks available) */
+  .doublepick-banner {
+    margin: 16px 14px 0;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(255, 213, 74, 0.06));
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    border-radius: 12px;
+    align-items: center; gap: 10px;
+    display: none;
+  }
+  .doublepick-banner.show { display: flex; }
+  .dp-ico { font-size: 22px; }
+  .dp-text { flex: 1; font-size: 12px; line-height: 1.5; color: var(--text-dim); }
+  .dp-text b { color: var(--green); font-weight: 800; }
+  .dp-count {
+    background: var(--green); color: #0a0e1a;
+    padding: 4px 10px; border-radius: 14px;
+    font-size: 12px; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Mission-mini with second (bonus) pick */
+  .mission-mini { position: relative; }
+  .mm-opt.bonus {
+    background: rgba(46, 204, 113, 0.15);
+    border-color: var(--green);
+    color: var(--text);
+    position: relative;
+  }
+  .mm-opt.bonus::before {
+    content: '+';
+    position: absolute; top: -4px; right: -3px;
+    width: 13px; height: 13px;
+    background: var(--green); color: #0a0e1a;
+    border-radius: 50%;
+    font-size: 9px; font-weight: 900;
+    display: grid; place-items: center;
+    line-height: 1;
+  }
+  .mission-mini.doubled::after {
+    content: '🎯 더블 픽';
+    position: absolute; top: 8px; right: 10px;
+    font-size: 9px; font-weight: 800; color: var(--green);
+    background: rgba(46, 204, 113, 0.15);
+    padding: 2px 6px; border-radius: 6px;
+  }
+
+  /* ===== Ad Slot ===== */
+  .ad-slot {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .ad-tag {
+    position: absolute; top: 8px; right: 10px;
+    font-size: 9px; font-weight: 700;
+    color: var(--text-faint);
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px; border-radius: 4px;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+
+  /* Hero ad slot - large */
+  .ad-hero {
+    margin: 0 14px 16px;
+    padding: 18px;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 184, 77, 0.04),
+        rgba(255, 184, 77, 0.04) 8px,
+        rgba(255, 213, 74, 0.06) 8px,
+        rgba(255, 213, 74, 0.06) 16px
+      ),
+      var(--bg-card);
+    border: 1.5px dashed rgba(255, 213, 74, 0.4);
+    border-radius: 16px;
+  }
+  .ad-hero-emoji {
+    font-size: 36px; text-align: center; margin-bottom: 8px;
+    filter: grayscale(0.2);
+  }
+  .ad-hero-title {
+    font-size: 16px; font-weight: 800;
+    text-align: center;
+    margin-bottom: 4px;
+    color: var(--gold);
+  }
+  .ad-hero-sub {
+    font-size: 12px; color: var(--text-dim);
+    text-align: center; line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .ad-hero-sub b { color: var(--accent-2); }
+  .ad-hero-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .ad-stat { text-align: center; }
+  .ad-stat-v { font-size: 14px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+  .ad-stat-l { font-size: 9px; color: var(--text-faint); margin-top: 2px; }
+  .ad-cta {
+    width: 100%; padding: 10px;
+    background: rgba(255, 213, 74, 0.14);
+    color: var(--gold);
+    border: 1px solid rgba(255, 213, 74, 0.4);
+    border-radius: 10px;
+    font-size: 12px; font-weight: 800;
+    cursor: pointer;
+  }
+  .ad-cta:active { transform: scale(0.98); }
+
+  /* Inline ad slot - mid-content */
+  .ad-inline {
+    margin: 0;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-light);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ad-inline-emoji { font-size: 28px; }
+  .ad-inline-txt { flex: 1; }
+  .ad-inline-t { font-size: 13px; font-weight: 700; color: var(--text); }
+  .ad-inline-t .accent { color: var(--accent-2); }
+  .ad-inline-d { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .ad-inline-btn {
+    background: rgba(255, 184, 77, 0.14);
+    color: var(--accent-2);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 11px; font-weight: 800;
+    cursor: pointer; white-space: nowrap;
+  }
+
+  /* Footer ad - horizontal banner */
+  .ad-footer {
+    margin: 16px 14px 0;
+    padding: 14px 16px;
+    background: linear-gradient(90deg, rgba(255, 61, 87, 0.08) 0%, rgba(255, 213, 74, 0.08) 100%);
+    border: 1px dashed rgba(255, 184, 77, 0.3);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+  }
+  .ad-footer-emoji { font-size: 24px; }
+  .ad-footer-t { flex: 1; font-size: 12px; line-height: 1.4; color: var(--text-dim); }
+  .ad-footer-t b { color: var(--accent-2); font-weight: 800; }
+  .ad-footer-arrow { color: var(--accent-2); font-size: 16px; }
+
+  /* Ad inquiry form */
+  .ad-form { display: flex; flex-direction: column; gap: 12px; }
+  .ad-field { display: flex; flex-direction: column; gap: 5px; }
+  .ad-label { font-size: 12px; color: var(--text-dim); font-weight: 600; padding-left: 2px; }
+  .ad-label em { color: var(--accent); font-style: normal; }
+  .ad-field input,
+  .ad-field select,
+  .ad-field textarea {
+    width: 100%;
+    padding: 11px 12px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .ad-field input:focus,
+  .ad-field select:focus,
+  .ad-field textarea:focus { border-color: var(--accent); }
+  .ad-field textarea { resize: none; }
+  .ad-field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238b95b5' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 32px;
+  }
+  .ad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* ===== Tagline Strip ===== */
+  .tagline {
+    margin: 0 14px 16px;
+    padding: 12px 14px;
+    background: rgba(255, 213, 74, 0.06);
+    border: 1px solid rgba(255, 213, 74, 0.15);
+    border-radius: 12px;
+    font-size: 12px; color: var(--text-dim);
+    line-height: 1.55;
+    text-align: center;
+  }
+  .tagline b { color: var(--accent-2); font-weight: 700; }
+  .tagline .em { color: var(--text); font-weight: 700; }
+
+  /* ===== Mission group header ===== */
+  .mission-group-head {
+    padding: 12px 18px 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mgh-title { font-size: 13px; font-weight: 800; color: var(--text); }
+  .mgh-meta { font-size: 11px; color: var(--text-faint); margin-left: auto; }
+  .mgh-tag {
+    font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 5px;
+    letter-spacing: 0.3px;
+  }
+  .mgh-tag.easy { background: rgba(46, 204, 113, 0.14); color: var(--green); }
+  .mgh-tag.hard { background: rgba(255, 184, 77, 0.14); color: var(--accent-2); }
+  .mgh-tag.jackpot { background: rgba(255, 107, 157, 0.14); color: #ff6b9d; }
+
+  /* ===== Mini Mission Card (for 기본 미션) ===== */
+  .mission-mini {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    transition: opacity 0.3s;
+  }
+  .mission-mini.completed { opacity: 0.5; }
+  .mm-info { flex: 1; min-width: 0; }
+  .mm-title { font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .mm-meta { font-size: 10px; color: var(--text-faint); margin-top: 2px; }
+  .mm-opts { display: flex; gap: 4px; flex-shrink: 0; }
+  .mm-opt {
+    background: var(--bg-elev);
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 9px;
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; min-width: 30px; text-align: center;
+    transition: all 0.15s;
+  }
+  .mm-opt:active { transform: scale(0.95); }
+  .mm-opt.selected {
+    background: rgba(255, 61, 87, 0.14);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .mission-mini.completed .mm-opt { cursor: default; }
+
+  /* ===== Daily Prize Banner (above missions) ===== */
+  .prize-rule {
+    margin: 0 14px 16px;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(255, 213, 74, 0.08), rgba(255, 61, 87, 0.06));
+    border: 1px solid rgba(255, 213, 74, 0.25);
+    border-radius: 12px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .pr-emoji { font-size: 28px; }
+  .pr-txt { flex: 1; font-size: 12px; line-height: 1.5; color: var(--text-dim); }
+  .pr-txt b { color: var(--gold); font-weight: 800; }
+  .pr-txt .accent { color: var(--accent-2); font-weight: 700; }
+
+  /* ===== Chicken Gauge ===== */
+  .gauge-card {
+    margin: 8px 14px 16px;
+    padding: 18px;
+    background: linear-gradient(135deg, #2a1e0a 0%, #1a2138 100%);
+    border: 1px solid #4a3820;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+  .gauge-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .gauge-title { font-size: 13px; color: var(--text-dim); font-weight: 600; }
+  .gauge-sponsor { font-size: 11px; color: var(--text-faint); }
+  .gauge-sponsor b { color: var(--gold); font-weight: 700; }
+  .pool {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .pool-emoji { font-size: 32px; }
+  .pool-count {
+    font-size: 38px; font-weight: 900;
+    color: var(--gold); letter-spacing: -1px; line-height: 1;
+  }
+  .pool-unit { font-size: 16px; color: var(--text-dim); margin-left: -4px; align-self: flex-end; padding-bottom: 4px; }
+  .pool-plus {
+    margin-left: auto; font-size: 11px; color: var(--green);
+    background: rgba(46, 204, 113, 0.12);
+    padding: 4px 8px; border-radius: 6px; font-weight: 700;
+  }
+  .gauge-bar-wrap {
+    position: relative; height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px; overflow: hidden; margin-bottom: 10px;
+  }
+  .gauge-bar {
+    height: 100%; width: 62%;
+    background: linear-gradient(90deg, var(--accent-2) 0%, var(--gold) 100%);
+    box-shadow: 0 0 12px rgba(255, 213, 74, 0.4);
+    transition: width 0.5s;
+  }
+  .gauge-foot { display: flex; justify-content: space-between; font-size: 12px; }
+  .gauge-current { color: var(--text); }
+  .gauge-current b { color: var(--accent-2); font-weight: 800; }
+  .gauge-next { color: var(--text-dim); }
+  .gauge-next b { color: var(--text); font-weight: 700; }
+  .invite-btn {
+    margin-top: 14px; width: 100%; padding: 11px;
+    background: rgba(255, 213, 74, 0.12); color: var(--gold);
+    border: 1px solid rgba(255, 213, 74, 0.3);
+    border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .invite-btn:active { transform: scale(0.98); }
+
+  /* ===== Countdown ===== */
+  .countdown {
+    margin: 0 14px 16px; padding: 12px 16px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cd-icon {
+    width: 36px; height: 36px;
+    background: rgba(255, 61, 87, 0.12);
+    border-radius: 10px;
+    display: grid; place-items: center; font-size: 18px;
+  }
+  .cd-text { flex: 1; }
+  .cd-label { font-size: 11px; color: var(--text-dim); margin-bottom: 2px; }
+  .cd-time { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cd-time .num { color: var(--accent); }
+
+  /* ===== Section Title ===== */
+  .section-title {
+    padding: 4px 18px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-title h2 { margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
+  .section-title .progress { font-size: 12px; color: var(--text-dim); font-weight: 600; }
+  .section-title .progress b { color: var(--accent-2); }
+
+  /* ===== Mission Cards ===== */
+  .missions { padding: 0 14px; display: flex; flex-direction: column; gap: 12px; }
+  .mission {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    position: relative; overflow: hidden;
+    transition: opacity 0.3s;
+  }
+  .mission.completed { opacity: 0.55; }
+  .mission.jackpot {
+    background: linear-gradient(135deg, #2a1430 0%, #1a2138 100%);
+    border-color: #5e2675;
+  }
+  .mission.jackpot::after {
+    content: '+10정답';
+    position: absolute; top: 14px; right: 14px;
+    font-size: 10px; font-weight: 800;
+    background: linear-gradient(135deg, #ff3d57, #ff6b9d);
+    color: white; padding: 4px 8px; border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+  .m-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .m-badge { font-size: 10px; font-weight: 800; color: var(--text-faint); letter-spacing: 0.5px; }
+  .m-tag { font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 6px; }
+  .m-tag.easy { background: rgba(46, 204, 113, 0.14); color: var(--green); }
+  .m-tag.hard { background: rgba(255, 184, 77, 0.14); color: var(--accent-2); }
+  .m-tag.jackpot { background: rgba(255, 107, 157, 0.14); color: #ff6b9d; }
+
+  .m-title { font-size: 16px; font-weight: 700; margin: 2px 0 12px; line-height: 1.4; }
+  .m-meta { font-size: 12px; color: var(--text-dim); margin-bottom: 14px; }
+  .m-meta .team { color: var(--text); font-weight: 700; }
+
+  .options { display: grid; gap: 8px; }
+  .options.three { grid-template-columns: 1fr 1fr 1fr; }
+  .options.two { grid-template-columns: 1fr 1fr; }
+  .opt {
+    background: var(--bg-elev);
+    border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 12px 8px;
+    text-align: center; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt:active { transform: scale(0.96); }
+  .opt.selected {
+    background: rgba(255, 61, 87, 0.12);
+    border-color: var(--accent);
+  }
+  .opt-label { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .opt-rate { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .opt.selected .opt-rate { color: var(--accent); font-weight: 600; }
+  .mission.completed .opt { cursor: default; }
+
+  /* ===== Stats ===== */
+  .stats {
+    margin: 20px 14px 0; padding: 14px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+    cursor: pointer;
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .stat-val.streak { color: var(--accent-2); }
+  .stat-val.streak::after { content: '🔥'; font-size: 14px; margin-left: 2px; }
+  .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+  .stat-divider { width: 1px; background: var(--border); margin: 4px 0; }
+
+  /* ===== Bottom Nav ===== */
+  .nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 460px;
+    background: rgba(10, 14, 26, 0.92);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    padding: 8px 0 14px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    z-index: 50;
+  }
+  .nav-item {
+    text-align: center; padding: 6px 4px;
+    color: var(--text-faint);
+    font-size: 10px; font-weight: 600; cursor: pointer;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-ico { font-size: 18px; margin-bottom: 2px; display: block; }
+
+  /* ===== Leaderboard ===== */
+  .lb-tabs { display: flex; padding: 4px; margin: 8px 14px 16px; background: var(--bg-card); border-radius: 12px; gap: 4px; }
+  .lb-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 700; color: var(--text-dim); border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+  .lb-tab.active { background: var(--accent); color: white; }
+
+  .my-rank {
+    margin: 0 14px 14px; padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(255, 61, 87, 0.12), rgba(255, 184, 77, 0.06));
+    border: 1px solid rgba(255, 61, 87, 0.3);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .my-rank-num { font-size: 24px; font-weight: 900; color: var(--accent); min-width: 60px; }
+  .my-rank-info { flex: 1; }
+  .my-rank-name { font-size: 14px; font-weight: 700; }
+  .my-rank-stats { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .my-rank-trend { font-size: 12px; font-weight: 700; color: var(--green); }
+
+  .lb-list { padding: 0 14px; display: flex; flex-direction: column; gap: 4px; }
+  .lb-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .lb-row.top { background: linear-gradient(135deg, rgba(255, 213, 74, 0.1), var(--bg-card)); border-color: rgba(255, 213, 74, 0.3); }
+  .lb-rank { font-size: 16px; font-weight: 800; min-width: 38px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .lb-rank.gold { color: var(--gold); }
+  .lb-rank.silver { color: #c0c8dc; }
+  .lb-rank.bronze { color: #d18d5a; }
+  .lb-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-card-2); display: grid; place-items: center; font-size: 14px; }
+  .lb-name { flex: 1; font-size: 13px; font-weight: 600; }
+  .lb-correct { font-size: 13px; font-weight: 800; color: var(--accent-2); font-variant-numeric: tabular-nums; }
+  .lb-correct .lbl { font-size: 10px; color: var(--text-faint); font-weight: 600; margin-left: 2px; }
+
+  /* ===== My Records ===== */
+  .profile-card {
+    margin: 8px 14px 16px; padding: 20px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; text-align: center;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    margin: 0 auto 10px;
+    display: grid; place-items: center; font-size: 32px;
+  }
+  .profile-name { font-size: 18px; font-weight: 800; }
+  .profile-since { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .big-stats {
+    margin: 0 14px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .big-stat {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px;
+  }
+  .big-stat .v { font-size: 24px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .big-stat .v.gold { color: var(--gold); }
+  .big-stat .v.accent { color: var(--accent-2); }
+  .big-stat .l { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .history-title { padding: 4px 18px 10px; font-size: 14px; font-weight: 800; }
+  .history { padding: 0 14px; display: flex; flex-direction: column; gap: 6px; }
+  .hist-day {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hist-date { font-size: 12px; color: var(--text-dim); min-width: 56px; font-variant-numeric: tabular-nums; }
+  .hist-results { display: flex; gap: 5px; flex: 1; }
+  .hist-dot {
+    width: 13px; height: 13px; border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .hist-dot.win { background: var(--green); }
+  .hist-dot.lose { background: var(--accent); opacity: 0.7; }
+  .hist-dot.jackpot { background: linear-gradient(135deg, #ff3d57, #ff6b9d); box-shadow: 0 0 6px rgba(255, 61, 87, 0.5); }
+  .hist-dot.pending { background: var(--bg-elev); border: 1px solid var(--border); }
+  .hist-score { font-size: 12px; font-weight: 800; color: var(--accent-2); min-width: 36px; text-align: center; font-variant-numeric: tabular-nums; }
+  .hist-sum { font-size: 11px; font-weight: 700; color: var(--text); min-width: 32px; text-align: right; }
+
+  /* ===== Prizes ===== */
+  .prize-hero {
+    margin: 8px 14px 16px; padding: 20px;
+    background: linear-gradient(135deg, #2a1e0a, #1a2138);
+    border: 1px solid #4a3820;
+    border-radius: 16px; text-align: center;
+  }
+  .prize-hero-big { font-size: 56px; }
+  .prize-hero-c { font-size: 36px; font-weight: 900; color: var(--gold); }
+  .prize-hero-l { color: var(--text-dim); font-size: 12px; margin-top: 4px; }
+  .prize-section-title { padding: 8px 18px 10px; font-size: 14px; font-weight: 800; color: var(--text-dim); }
+  .prize-list { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
+  .prize-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .prize-emoji { font-size: 32px; }
+  .prize-info { flex: 1; }
+  .prize-name { font-size: 14px; font-weight: 700; }
+  .prize-sponsor { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .prize-qty { font-size: 18px; font-weight: 900; color: var(--gold); }
+  .prize-qty .x { font-size: 12px; color: var(--text-dim); }
+
+  /* ===== Modal ===== */
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+    display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-bg.active { display: flex; animation: fadeIn 0.2s; }
+  .modal {
+    width: 100%; max-width: 460px;
+    background: var(--bg-elev);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 28px;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .modal-handle { width: 36px; height: 4px; background: var(--border-light); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 8px; }
+  .modal-desc { font-size: 13px; color: var(--text-dim); text-align: center; margin-bottom: 18px; line-height: 1.5; }
+  .modal-actions { display: flex; flex-direction: column; gap: 8px; }
+  .btn-secondary {
+    width: 100%; padding: 13px; border: 1px solid var(--border);
+    background: transparent; color: var(--text);
+    border-radius: 10px; font-size: 14px; font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-secondary:active { transform: scale(0.98); }
+
+  /* ===== Share Card ===== */
+  .share-card-wrap { margin-bottom: 18px; }
+  .share-card {
+    background: linear-gradient(135deg, #1a0e22 0%, #2a1e0a 100%);
+    border: 1.5px solid var(--gold);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative; overflow: hidden;
+  }
+  .sc-brand { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .sc-logo { font-size: 14px; font-weight: 900; }
+  .sc-logo .dot { color: var(--accent); }
+  .sc-spon { font-size: 9px; color: var(--text-faint); }
+  .sc-spon b { color: var(--gold); }
+  .sc-hero { font-size: 14px; font-weight: 700; color: var(--text-dim); margin-bottom: 4px; }
+  .sc-name { font-size: 22px; font-weight: 900; margin-bottom: 14px; }
+  .sc-stats { display: flex; gap: 16px; margin-bottom: 16px; }
+  .sc-stat-v { font-size: 24px; font-weight: 900; line-height: 1; }
+  .sc-stat-v.gold { color: var(--gold); }
+  .sc-stat-v.accent { color: var(--accent-2); }
+  .sc-stat-l { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+  .sc-picks { display: flex; gap: 6px; margin-bottom: 6px; }
+  .sc-pick {
+    flex: 1; padding: 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px; text-align: center;
+  }
+  .sc-pick-t { font-size: 9px; color: var(--text-faint); margin-bottom: 3px; }
+  .sc-pick-v { font-size: 12px; font-weight: 700; }
+  .sc-foot { font-size: 9px; color: var(--text-faint); text-align: center; margin-top: 14px; }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 100px; z-index: 300;
+    background: var(--bg-card-2); color: var(--text);
+    padding: 12px 18px; border-radius: 10px;
+    border: 1px solid var(--border-light);
+    font-size: 13px; font-weight: 600;
+    box-shadow: var(--shadow);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  /* ===== Action button (for mission submit) ===== */
+  .floating-cta {
+    position: sticky; bottom: 80px;
+    margin: 16px 14px 0;
+    padding: 14px;
+    background: var(--accent); color: white;
+    border: none; border-radius: 12px;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer; width: calc(100% - 28px);
+    display: block;
+    box-shadow: 0 4px 24px rgba(255, 61, 87, 0.35);
+  }
+  .floating-cta:disabled { background: var(--bg-card-2); color: var(--text-faint); box-shadow: none; cursor: not-allowed; }
+  .floating-cta:active:not(:disabled) { transform: scale(0.99); }
+
+</style>
+</head>
+<body>
+
+<!-- ============ ONBOARDING ============ -->
+<div id="onboarding" class="active">
+  <div class="ob-logo">월승치못<span class="dot">!</span></div>
+  <div class="ob-sub">월드컵 승부 예측에 치킨? 이건 못 참지</div>
+
+  <div class="ob-hero">
+    <div class="ob-hero-emoji">🍗⚽</div>
+    <div class="ob-hero-title">매일 5문제, 다 맞히면 추첨!</div>
+    <div class="ob-hero-desc">제가 판은 깔아드렸어요.<br>사람들만 모아주세요 — <b style="color:var(--accent-2)">사람이 모이면 치킨도 모입니다</b> 🍗</div>
+  </div>
+
+  <div class="ob-feat">
+    <div class="ob-feat-item">
+      <div class="ob-feat-ico">🎯</div>
+      <div class="ob-feat-txt">
+        <div class="ob-feat-t">매일 5문제, 한 번에 예측</div>
+        <div class="ob-feat-d">결과 · PK · 관중 난입까지</div>
+      </div>
+    </div>
+    <div class="ob-feat-item">
+      <div class="ob-feat-ico">🍗</div>
+      <div class="ob-feat-txt">
+        <div class="ob-feat-t">매일 치킨 1마리 · 주간 치킨 1마리</div>
+        <div class="ob-feat-d">5문제 다 맞힌 사람 중 추첨 + 주간 누적 1위</div>
+      </div>
+    </div>
+    <div class="ob-feat-item">
+      <div class="ob-feat-ico">📈</div>
+      <div class="ob-feat-txt">
+        <div class="ob-feat-t">참여자 모일수록 치킨도 늘어요</div>
+        <div class="ob-feat-d">500명마다 치킨 1마리씩 추가</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-kakao" id="kakao-login">
+    <span class="ico">K</span>
+    카카오로 3초 만에 시작하기
+  </button>
+
+  <div class="ob-policy">
+    가입 시 <a href="#">이용약관</a> 및 <a href="#">개인정보 처리방침</a>에 동의하게 됩니다.<br>
+    닉네임 · 전화번호(필수), 프로필 · 이메일(선택)을 가져옵니다.
+  </div>
+</div>
+
+<!-- ============ KAKAO LOADING OVERLAY ============ -->
+<div class="kakao-loading" id="kakao-loading">
+  <div class="kakao-loading-box">
+    <div class="ico-big">K</div>
+    <div class="t">카카오 로그인 중...</div>
+    <div class="d">잠시만 기다려주세요</div>
+  </div>
+</div>
+
+<!-- ============ MAIN ============ -->
+<div id="view-main" class="view">
+  <header class="app-header">
+    <div class="logo">월승치못<span class="dot">!</span></div>
+    <div class="profile-btn" data-nav="records">👤</div>
+  </header>
+
+  <section class="gauge-card" data-nav="prizes">
+    <div class="gauge-head">
+      <span class="gauge-title">🍗 오늘의 치킨 풀 <span style="color:var(--text-faint); font-weight: 500;">· 사람 늘수록 ↑</span></span>
+      <span class="gauge-sponsor">후원 <b>또래오래</b></span>
+    </div>
+    <div class="pool">
+      <span class="pool-emoji">🍗</span>
+      <span class="pool-count" id="chicken-count">7</span>
+      <span class="pool-unit">마리</span>
+      <span class="pool-plus">+2 ↑</span>
+    </div>
+    <div class="gauge-bar-wrap">
+      <div class="gauge-bar" id="gauge-bar"></div>
+    </div>
+    <div class="gauge-foot">
+      <span class="gauge-current">현재 <b id="participant-count">1,247명</b> 참여 중</span>
+      <span class="gauge-next">다음 치킨까지 <b id="next-count">253명</b></span>
+    </div>
+    <button class="invite-btn" id="invite-btn">친구 초대하고 치킨 늘리기 →</button>
+  </section>
+
+  <div class="countdown">
+    <div class="cd-icon">⏰</div>
+    <div class="cd-text">
+      <div class="cd-label">투표 마감까지</div>
+      <div class="cd-time"><span class="num">02</span>시간 <span class="num">14</span>분 <span class="num">37</span>초</div>
+    </div>
+  </div>
+
+  <!-- Prize Rule -->
+  <div class="prize-rule">
+    <div class="pr-emoji">🏆</div>
+    <div class="pr-txt">
+      오늘 <b>5문제 모두 정답</b>이면 <span class="accent">치킨 1마리 추첨</span><br>
+      <span style="font-size: 11px;">아무도 다 못 맞히면 4정답자 → 3정답자 순으로 · 일요일엔 주간 누적 1위에게도</span>
+    </div>
+  </div>
+
+  <!-- Double-pick available banner -->
+  <div class="doublepick-banner" id="dp-banner">
+    <div class="dp-ico">🎯</div>
+    <div class="dp-text">
+      <b>더블 픽</b> 사용 가능! 한 문제에 답을 2개 고르세요
+    </div>
+    <div class="dp-count"><span id="dp-available">0</span>장</div>
+  </div>
+
+  <div class="section-title">
+    <h2>오늘의 예측</h2>
+    <span class="progress"><b id="done-count">0</b> / 5 완료</span>
+  </div>
+
+  <section class="missions" id="missions" style="gap: 8px;">
+    <div class="mission-mini" data-mission="1">
+      <div class="mm-info">
+        <div class="mm-title">한국 vs 우루과이</div>
+        <div class="mm-meta">22:00 · 결과는?</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">승</div>
+        <div class="mm-opt">무</div>
+        <div class="mm-opt">패</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="2">
+      <div class="mm-info">
+        <div class="mm-title">손흥민, 공격 포인트 기록할까?</div>
+        <div class="mm-meta">득점 또는 도움 1개 이상</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="3">
+      <div class="mm-info">
+        <div class="mm-title">오늘 첫 골은 언제 터질까?</div>
+        <div class="mm-meta">전 세계 모든 경기 기준</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">전반</div>
+        <div class="mm-opt">후반</div>
+      </div>
+    </div>
+
+    <!-- Inline Ad Slot -->
+    <div class="ad-slot ad-inline" data-ad="inline">
+      <span class="ad-tag">AD</span>
+      <div class="ad-inline-emoji">🍕</div>
+      <div class="ad-inline-txt">
+        <div class="ad-inline-t"><span class="accent">피느님</span>, 치킨 광고만 하게 두실거에요?</div>
+        <div class="ad-inline-d">월드컵 = 치맥? 아니죠. 월드컵 = 피맥도 됩니다 🍕🍺</div>
+      </div>
+      <button class="ad-inline-btn">제안 →</button>
+    </div>
+
+    <div class="mission-mini" data-mission="4">
+      <div class="mm-info">
+        <div class="mm-title">오늘 경기 중 PK가 선언될까?</div>
+        <div class="mm-meta">한국 vs 우루과이 · VAR 포함</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
+      </div>
+    </div>
+
+    <div class="mission-mini" data-mission="5">
+      <div class="mm-info">
+        <div class="mm-title">관중 난입이 발생할까? 🎰</div>
+        <div class="mm-meta">전 세계 모든 경기 · 적중 약 2%</div>
+      </div>
+      <div class="mm-opts">
+        <div class="mm-opt">YES</div>
+        <div class="mm-opt">NO</div>
+      </div>
+    </div>
+  </section>
+
+  <button class="floating-cta" id="submit-btn" disabled>5개 모두 선택해주세요</button>
+
+  <section class="stats" data-nav="records">
+    <div class="stat">
+      <div class="stat-val">23</div>
+      <div class="stat-label">이번 주 정답</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val">67%</div>
+      <div class="stat-label">정답률</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val">#142</div>
+      <div class="stat-label">주간 순위</div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ LEADERBOARD ============ -->
+<div id="view-leaderboard" class="view">
+  <header class="app-header">
+    <div class="page-title">🏆 순위표</div>
+    <button class="back-btn" id="lb-share">📤</button>
+  </header>
+
+  <div class="lb-tabs">
+    <div class="lb-tab active" data-period="week">이번 주</div>
+    <div class="lb-tab" data-period="day">오늘</div>
+    <div class="lb-tab" data-period="season">시즌 통합</div>
+  </div>
+
+  <div class="my-rank">
+    <div class="my-rank-num">#142</div>
+    <div class="my-rank-info">
+      <div class="my-rank-name" id="my-rank-name">나</div>
+      <div class="my-rank-stats">이번 주 23정답 · 정답률 67%</div>
+    </div>
+    <div class="my-rank-trend">▲ 8</div>
+  </div>
+
+  <div class="lb-list">
+    <div class="lb-row top">
+      <div class="lb-rank gold">🥇</div>
+      <div class="lb-avatar">⚽</div>
+      <div class="lb-name">박지성팬1985</div>
+      <div class="lb-correct">47<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row top">
+      <div class="lb-rank silver">🥈</div>
+      <div class="lb-avatar">🏆</div>
+      <div class="lb-name">치맥대장</div>
+      <div class="lb-correct">45<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row top">
+      <div class="lb-rank bronze">🥉</div>
+      <div class="lb-avatar">🔥</div>
+      <div class="lb-name">손흥민가즈아</div>
+      <div class="lb-correct">43<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">4</div>
+      <div class="lb-avatar">⚡</div>
+      <div class="lb-name">난입맞춘자</div>
+      <div class="lb-correct">42<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">5</div>
+      <div class="lb-avatar">🎯</div>
+      <div class="lb-name">예측의신</div>
+      <div class="lb-correct">40<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">6</div>
+      <div class="lb-avatar">⚽</div>
+      <div class="lb-name">붉은악마23</div>
+      <div class="lb-correct">38<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">7</div>
+      <div class="lb-avatar">🎲</div>
+      <div class="lb-name">행운의손가락</div>
+      <div class="lb-correct">36<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">8</div>
+      <div class="lb-avatar">⭐</div>
+      <div class="lb-name">월드컵매니아</div>
+      <div class="lb-correct">35<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">9</div>
+      <div class="lb-avatar">🔥</div>
+      <div class="lb-name">PK예언가</div>
+      <div class="lb-correct">34<span class="lbl">정답</span></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">10</div>
+      <div class="lb-avatar">⚽</div>
+      <div class="lb-name">스트라이커</div>
+      <div class="lb-correct">33<span class="lbl">정답</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ MY RECORDS ============ -->
+<div id="view-records" class="view">
+  <header class="app-header">
+    <div class="page-title">📊 내 기록</div>
+    <button class="back-btn">⚙️</button>
+  </header>
+
+  <div class="profile-card">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-name"><span id="profile-name">나</span><span class="kakao-badge">카카오</span></div>
+    <div class="profile-since">2026.05.16 가입 · 7일째 참여 중</div>
+  </div>
+
+  <div class="big-stats">
+    <div class="big-stat">
+      <div class="v gold">23</div>
+      <div class="l">이번 주 누적 정답</div>
+    </div>
+    <div class="big-stat">
+      <div class="v accent">#142</div>
+      <div class="l">주간 순위</div>
+    </div>
+    <div class="big-stat">
+      <div class="v">67%</div>
+      <div class="l">정답률</div>
+    </div>
+    <div class="big-stat">
+      <div class="v">47</div>
+      <div class="l">시즌 누적 정답</div>
+    </div>
+  </div>
+
+  <div style="margin: 0 14px 16px; padding: 10px 14px; background: rgba(46, 204, 113, 0.06); border: 1px solid rgba(46, 204, 113, 0.2); border-radius: 10px; font-size: 11px; color: var(--text-dim); text-align: center;">
+    📅 주간 누적은 매주 <b style="color: var(--green);">일요일 자정</b>에 리셋됩니다 · 이번 주 종료까지 <b style="color: var(--text);">2일</b>
+  </div>
+
+  <div class="history-title">최근 7일 기록 (5문제 / 일)</div>
+  <div class="history">
+    <div class="hist-day">
+      <div class="hist-date">오늘</div>
+      <div class="hist-results">
+        <div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div><div class="hist-dot pending"></div>
+      </div>
+      <div class="hist-score">-</div>
+      <div class="hist-sum">대기중</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.15</div>
+      <div class="hist-results">
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot lose"></div>
+      </div>
+      <div class="hist-score">3/5</div>
+      <div class="hist-sum">+3</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.14</div>
+      <div class="hist-results">
+        <div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div>
+      </div>
+      <div class="hist-score">3/5</div>
+      <div class="hist-sum">+3</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.13</div>
+      <div class="hist-results">
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot jackpot"></div>
+      </div>
+      <div class="hist-score">🏆 5/5</div>
+      <div class="hist-sum">+5</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.12</div>
+      <div class="hist-results">
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div>
+      </div>
+      <div class="hist-score">3/5</div>
+      <div class="hist-sum">+3</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.11</div>
+      <div class="hist-results">
+        <div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div><div class="hist-dot win"></div><div class="hist-dot win"></div>
+      </div>
+      <div class="hist-score">3/5</div>
+      <div class="hist-sum">+3</div>
+    </div>
+    <div class="hist-day">
+      <div class="hist-date">05.10</div>
+      <div class="hist-results">
+        <div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot win"></div><div class="hist-dot lose"></div>
+      </div>
+      <div class="hist-score">4/5</div>
+      <div class="hist-sum">+4</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PRIZES ============ -->
+<div id="view-prizes" class="view">
+  <header class="app-header">
+    <div class="page-title">🍗 오늘의 상품</div>
+    <button class="back-btn">ℹ️</button>
+  </header>
+
+  <div class="prize-hero">
+    <div class="prize-hero-big">🍗</div>
+    <div class="prize-hero-c">총 7마리</div>
+    <div class="prize-hero-l">현재 1,247명 참여 / 500명당 1마리 추가</div>
+  </div>
+
+  <div class="prize-section-title">🏆 어떻게 받나요?</div>
+  <div class="prize-list">
+    <div class="prize-item">
+      <div class="prize-emoji">🍗</div>
+      <div class="prize-info">
+        <div class="prize-name">매일 치킨 1마리</div>
+        <div class="prize-sponsor">5문제 모두 정답자 중 추첨 1명<br>없으면 4정답자 → 3정답자 순으로</div>
+      </div>
+      <div class="prize-qty">1<span class="x">/일</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">📅</div>
+      <div class="prize-info">
+        <div class="prize-name">주간 누적 1위 치킨</div>
+        <div class="prize-sponsor">매주 일요일 자정 기준<br>일주일 누적 정답 1위에게</div>
+      </div>
+      <div class="prize-qty">1<span class="x">/주</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">📈</div>
+      <div class="prize-info">
+        <div class="prize-name">참여자 보너스 치킨</div>
+        <div class="prize-sponsor">참여자 500명당 +1마리<br>오늘의 추첨에 합쳐서 지급</div>
+      </div>
+      <div class="prize-qty">+N<span class="x">마리</span></div>
+    </div>
+  </div>
+
+  <div class="prize-section-title" style="margin-top: 8px;">💎 후원사</div>
+  <div class="prize-list">
+    <div class="prize-item">
+      <div class="prize-emoji">🍗</div>
+      <div class="prize-info">
+        <div class="prize-name">또래오래 후라이드</div>
+        <div class="prize-sponsor">메인 치킨 후원</div>
+      </div>
+      <div class="prize-qty">공식</div>
+    </div>
+  </div>
+
+  <div class="prize-section-title" style="margin-top: 8px;">🎰 시즌 끝 보너스</div>
+  <div class="prize-list">
+    <div class="prize-item">
+      <div class="prize-emoji">🏆</div>
+      <div class="prize-info">
+        <div class="prize-name">대회 통합 1등</div>
+        <div class="prize-sponsor">월드컵 종료 시 · 치킨 30마리 쿠폰</div>
+      </div>
+      <div class="prize-qty">1<span class="x">명</span></div>
+    </div>
+    <div class="prize-item">
+      <div class="prize-emoji">🎲</div>
+      <div class="prize-info">
+        <div class="prize-name">잭팟 적중자 추첨</div>
+        <div class="prize-sponsor">관중 난입 적중자 중 · 5만원 기프티콘</div>
+      </div>
+      <div class="prize-qty">3<span class="x">명</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="nav-item active" data-nav="main">
+    <span class="nav-ico">⚽</span>오늘의 픽
+  </div>
+  <div class="nav-item" data-nav="leaderboard">
+    <span class="nav-ico">🏆</span>순위표
+  </div>
+  <div class="nav-item" data-nav="records">
+    <span class="nav-ico">📊</span>내 기록
+  </div>
+  <div class="nav-item" data-nav="prizes">
+    <span class="nav-ico">🍗</span>상품
+  </div>
+</nav>
+
+<!-- ============ MODAL: Invite ============ -->
+<div class="modal-bg" id="modal-invite">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">친구한테 기회도 주고, 치킨도 늘리고 🍗</div>
+    <div class="modal-desc">친구가 들어오면 <b style="color: var(--accent-2);">치킨이 늘고</b>,<br>나에겐 <b style="color: var(--green);">더블 픽 기회</b>가 생겨요</div>
+
+    <div class="kakao-share-preview">
+      <div class="ksp-img">🍗⚽</div>
+      <div class="ksp-body">
+        <div class="ksp-title" id="ksp-title">나의 픽에 도전해볼래?</div>
+        <div class="ksp-desc">월드컵 매일 5문제 예측. 친구가 들어올수록 치킨이 늘어나요. 🍗</div>
+      </div>
+      <div class="ksp-link">wsmot.kr</div>
+    </div>
+
+    <div class="bonus-explain">
+      <div class="be-row">
+        <span class="be-ico">🎯</span>
+        <span class="be-txt">공유 1회당 <b>더블 픽 +1</b> · 한 문제에 답을 2개 고를 수 있어요</span>
+      </div>
+      <div class="be-row">
+        <span class="be-ico">🍗</span>
+        <span class="be-txt">친구 가입 시 <b>치킨 풀 +1</b> (500명마다)</span>
+      </div>
+      <div class="be-row" style="color: var(--text-faint); font-size: 11px;">
+        <span class="be-ico" style="font-size: 12px;">⓵</span>
+        <span class="be-txt">일일 최대 3장</span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-kakao" id="share-kakao">
+        <span class="ico">K</span>
+        카카오톡으로 공유
+        <span class="kakao-bonus-badge">+1 더블 픽</span>
+      </button>
+      <button class="btn-secondary" id="copy-link">🔗 초대 링크 복사</button>
+      <button class="btn-secondary" data-close>닫기</button>
+    </div>
+
+    <div style="text-align:center; font-size: 10px; color: var(--text-faint); margin-top: 12px;">
+      내 초대 코드 · <b style="color:var(--accent-2)" id="invite-code">U-XYZ7M2</b>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Submit Success ============ -->
+<div class="modal-bg" id="modal-submit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="font-size: 56px; text-align: center; margin-bottom: 8px;">✅</div>
+    <div class="modal-title">오늘의 픽 완료!</div>
+    <div class="modal-desc">결과는 마지막 경기 종료 후 자동 정산돼요.<br>친구들에게도 자랑해볼까요?</div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="open-share">📤 결과 공유하기</button>
+      <button class="btn-secondary" data-close>확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Share Card ============ -->
+<div class="modal-bg" id="modal-share">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">내 픽 공유</div>
+    <div class="modal-desc">이미지로 저장하거나 친구들에게 공유하세요</div>
+
+    <div class="share-card-wrap">
+      <div class="share-card">
+        <div class="sc-brand">
+          <div class="sc-logo">월승치못<span class="dot">!</span></div>
+          <div class="sc-spon">후원 <b>또래오래</b></div>
+        </div>
+        <div class="sc-hero">오늘의 픽</div>
+        <div class="sc-name" id="share-name">나의 픽</div>
+        <div class="sc-stats">
+          <div>
+            <div class="sc-stat-v gold">23</div>
+            <div class="sc-stat-l">이번 주 정답</div>
+          </div>
+          <div>
+            <div class="sc-stat-v accent">67%</div>
+            <div class="sc-stat-l">정답률</div>
+          </div>
+          <div>
+            <div class="sc-stat-v">#142</div>
+            <div class="sc-stat-l">주간 순위</div>
+          </div>
+        </div>
+        <div class="sc-picks">
+          <div class="sc-pick">
+            <div class="sc-pick-t">오늘의 픽</div>
+            <div class="sc-pick-v">5/5 도전 🔥</div>
+          </div>
+          <div class="sc-pick">
+            <div class="sc-pick-t">🎰 잭팟</div>
+            <div class="sc-pick-v">관중 난입 GO</div>
+          </div>
+        </div>
+        <div class="sc-foot">wsmot.kr · 1,247명 참여 중 · 🍗 7마리 풀 · 너도 들어와</div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-kakao" id="share-kakao-2">
+        <span class="ico">K</span>
+        카카오톡으로 공유
+      </button>
+      <button class="btn-secondary" id="share-instagram">📸 인스타 스토리</button>
+      <button class="btn-secondary" id="save-image">💾 이미지 저장</button>
+      <button class="btn-secondary" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Ad Inquiry Form ============ -->
+<div class="modal-bg" id="modal-ad">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">광고 문의</div>
+    <div class="modal-desc">간단히 남겨주시면 영업일 기준 1일 내 회신드릴게요.</div>
+
+    <form id="ad-form" class="ad-form">
+      <label class="ad-field">
+        <span class="ad-label">브랜드/회사명 <em>*</em></span>
+        <input type="text" name="brand" required placeholder="예) 또래오래" maxlength="40">
+      </label>
+
+      <label class="ad-field">
+        <span class="ad-label">담당자명 <em>*</em></span>
+        <input type="text" name="name" required placeholder="홍길동" maxlength="20">
+      </label>
+
+      <div class="ad-row">
+        <label class="ad-field">
+          <span class="ad-label">이메일 <em>*</em></span>
+          <input type="email" name="email" required placeholder="you@brand.com">
+        </label>
+        <label class="ad-field">
+          <span class="ad-label">연락처</span>
+          <input type="tel" name="phone" placeholder="010-0000-0000">
+        </label>
+      </div>
+
+      <label class="ad-field">
+        <span class="ad-label">관심 슬롯</span>
+        <select name="slot">
+          <option value="banner">메인 배너 (4주)</option>
+          <option value="winner">1등 시상 굿즈 협찬</option>
+          <option value="watermark">공유 카드 워터마크</option>
+          <option value="package">전체 패키지 협의</option>
+          <option value="other">기타 / 협의 필요</option>
+        </select>
+      </label>
+
+      <label class="ad-field">
+        <span class="ad-label">예상 예산</span>
+        <select name="budget">
+          <option value="">선택 안 함</option>
+          <option value="under-50">50만원 미만</option>
+          <option value="50-200">50~200만원</option>
+          <option value="200-500">200~500만원</option>
+          <option value="over-500">500만원 이상</option>
+          <option value="negotiable">협의</option>
+        </select>
+      </label>
+
+      <label class="ad-field">
+        <span class="ad-label">문의 내용</span>
+        <textarea name="message" rows="3" placeholder="원하시는 노출 형태나 일정을 자유롭게 적어주세요" maxlength="500"></textarea>
+      </label>
+
+      <div class="modal-actions" style="margin-top: 4px;">
+        <button type="submit" class="btn-primary">문의 보내기</button>
+        <button type="button" class="btn-secondary" data-close>다음에</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ Toast ============ -->
+<div class="toast" id="toast">완료</div>
+
+<script>
+(() => {
+  // ===== State =====
+  const state = {
+    nickname: '나',
+    // selections: each mission can have 1 or 2 picks (set of option indices)
+    selections: { 1:[], 2:[], 3:[], 4:[], 5:[] },
+    submitted: false,
+    participants: 1247,
+    chickens: 7,
+    doublePickAvailable: 0,
+    doublePickMaxPerDay: 3,
+    doublePickUsedToday: 0,
+  };
+  const TOTAL_MISSIONS = 5;
+
+  // ===== Helpers =====
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+
+  function showToast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  function openModal(id) { $('#' + id).classList.add('active'); }
+  function closeAllModals() { $$('.modal-bg').forEach(m => m.classList.remove('active')); }
+
+  // ===== Onboarding: Kakao Login =====
+  // Mocked Kakao profile pool (실제 구현 시 Kakao SDK 사용)
+  const mockKakaoProfiles = [
+    { nickname: '축구러버', avatar: '⚽' },
+    { nickname: '치맥조아', avatar: '🍗' },
+    { nickname: '월드컵2026', avatar: '🏆' },
+    { nickname: '응원단장', avatar: '📣' },
+  ];
+
+  $('#kakao-login').addEventListener('click', () => {
+    // 1) Show Kakao loading overlay (실제론 Kakao OAuth 팝업/리다이렉트)
+    $('#kakao-loading').classList.add('active');
+
+    // 2) Simulate OAuth roundtrip
+    setTimeout(() => {
+      // 3) Receive user profile from Kakao API
+      const profile = mockKakaoProfiles[Math.floor(Math.random() * mockKakaoProfiles.length)];
+      state.nickname = profile.nickname;
+      state.avatar = profile.avatar;
+
+      // 4) Update UI with Kakao profile
+      $('#profile-name').textContent = profile.nickname;
+      $('#my-rank-name').textContent = profile.nickname;
+      $('#share-name').textContent = profile.nickname;
+      $('#ksp-title').textContent = `${profile.nickname}님의 픽에 도전해볼래?`;
+      document.querySelector('.profile-avatar').textContent = profile.avatar;
+
+      // 5) Hide loading and go to main
+      $('#kakao-loading').classList.remove('active');
+      $('#onboarding').classList.remove('active');
+      showView('main');
+      setTimeout(() => showToast(`환영해요, ${profile.nickname}님! 🎉`), 300);
+    }, 1200);
+  });
+
+  // ===== View Switching =====
+  function showView(name) {
+    $$('.view').forEach(v => v.classList.remove('active'));
+    $('#view-' + name).classList.add('active');
+    $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === name));
+    window.scrollTo(0, 0);
+  }
+
+  $$('[data-nav]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showView(el.dataset.nav);
+    });
+  });
+
+  $('.logo').addEventListener('click', () => showView('main'));
+
+  // ===== Mission Selection =====
+  // Rules:
+  // - Each mission has 1 pick by default
+  // - If user has double-pick credits, clicking a second (different) option adds it
+  // - Each mission can hold up to 2 picks (uses 1 double-pick credit)
+  // - Clicking an already-picked option deselects it (returns credit if it was a 2nd pick)
+  function bindMissionOptions(mission, optsSelector) {
+    const mid = mission.dataset.mission;
+    const opts = mission.querySelectorAll(optsSelector);
+    opts.forEach((opt, idx) => {
+      opt.addEventListener('click', () => {
+        if (state.submitted) return;
+        const picks = state.selections[mid];
+        const has = picks.includes(idx);
+
+        if (has) {
+          // Deselect — if this was the 2nd pick, return double-pick credit
+          if (picks.length === 2) {
+            state.doublePickAvailable += 1;
+          }
+          state.selections[mid] = picks.filter(p => p !== idx);
+        } else {
+          if (picks.length === 0) {
+            state.selections[mid] = [idx];
+          } else if (picks.length === 1) {
+            // Want to add a 2nd pick → requires available double-pick
+            if (state.doublePickAvailable > 0) {
+              state.selections[mid] = [...picks, idx];
+              state.doublePickAvailable -= 1;
+            } else {
+              // No bonus — replace existing pick
+              state.selections[mid] = [idx];
+            }
+          } else {
+            // Already 2 picks; replace by removing the older one
+            state.selections[mid] = [picks[1], idx];
+          }
+        }
+
+        renderMission(mission);
+        updateMissionProgress();
+        updateDoublePickUI();
+      });
+    });
+  }
+
+  function renderMission(mission) {
+    const mid = mission.dataset.mission;
+    const picks = state.selections[mid];
+    const isMini = mission.classList.contains('mission-mini');
+    const opts = mission.querySelectorAll(isMini ? '.mm-opt' : '.opt');
+    opts.forEach((opt, idx) => {
+      opt.classList.remove('selected', 'bonus');
+      if (picks[0] === idx) opt.classList.add('selected');
+      if (picks[1] === idx) opt.classList.add('selected', 'bonus');
+    });
+    mission.classList.toggle('doubled', picks.length === 2);
+  }
+
+  $$('.mission').forEach(m => bindMissionOptions(m, '.opt'));
+  $$('.mission-mini').forEach(m => bindMissionOptions(m, '.mm-opt'));
+
+  function updateMissionProgress() {
+    const done = Object.values(state.selections).filter(v => v.length > 0).length;
+    $('#done-count').textContent = done;
+    const btn = $('#submit-btn');
+    if (state.submitted) {
+      btn.disabled = true;
+      btn.textContent = '✓ 투표 완료 — 결과 정산 대기 중';
+    } else if (done === TOTAL_MISSIONS) {
+      btn.disabled = false;
+      btn.textContent = '✊ 오늘의 픽 제출하기';
+    } else {
+      btn.disabled = true;
+      btn.textContent = `${TOTAL_MISSIONS - done}개 더 선택해주세요`;
+    }
+  }
+
+  function updateDoublePickUI() {
+    const banner = $('#dp-banner');
+    $('#dp-available').textContent = state.doublePickAvailable;
+    if (state.doublePickAvailable > 0) {
+      banner.classList.add('show');
+    } else {
+      banner.classList.remove('show');
+    }
+  }
+
+  // ===== Submit =====
+  $('#submit-btn').addEventListener('click', () => {
+    if (state.submitted) return;
+    state.submitted = true;
+    $$('.mission, .mission-mini').forEach(m => m.classList.add('completed'));
+    updateMissionProgress();
+    openModal('modal-submit');
+  });
+
+  // ===== Invite =====
+  $('#invite-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    openModal('modal-invite');
+  });
+  $('#copy-link').addEventListener('click', () => {
+    const link = `wsmot.kr/invite/${$('#invite-code').textContent}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(link).catch(() => {});
+    }
+    showToast('초대 링크가 복사됐어요 ✓');
+    closeAllModals();
+    // simulate growth
+    setTimeout(simulateGrowth, 600);
+  });
+  $('#share-kakao').addEventListener('click', () => {
+    // 실제 구현 시: Kakao.Share.sendDefault({ objectType: 'feed', ... })
+    closeAllModals();
+    setTimeout(() => {
+      // Award double-pick (capped at daily max)
+      if (state.doublePickUsedToday < state.doublePickMaxPerDay) {
+        state.doublePickAvailable += 1;
+        state.doublePickUsedToday += 1;
+        updateDoublePickUI();
+        showToast(`🎯 더블 픽 +1! 한 문제에 답 2개 고를 수 있어요 (${state.doublePickUsedToday}/${state.doublePickMaxPerDay})`);
+      } else {
+        showToast('💬 공유 완료! 오늘의 더블 픽 한도 도달');
+      }
+      setTimeout(simulateGrowth, 800);
+    }, 200);
+  });
+
+  function simulateGrowth() {
+    state.participants += Math.floor(Math.random() * 120) + 40;
+    const remainder = state.participants % 500;
+    const nextNeeded = 500 - remainder;
+    const newChickens = Math.floor(state.participants / 500) + 5; // base 5 + bonus
+    const gained = newChickens - state.chickens;
+
+    state.chickens = newChickens;
+    $('#participant-count').textContent = state.participants.toLocaleString() + '명';
+    $('#chicken-count').textContent = newChickens;
+    $('#next-count').textContent = nextNeeded + '명';
+    $('#gauge-bar').style.width = ((500 - nextNeeded) / 500 * 100) + '%';
+
+    if (gained > 0) {
+      showToast(`🎉 친구가 가입했어요! 치킨 +${gained}마리`);
+    } else {
+      showToast(`👥 참여자가 늘었어요`);
+    }
+  }
+
+  // ===== Share Flow =====
+  $('#open-share').addEventListener('click', () => {
+    closeAllModals();
+    setTimeout(() => openModal('modal-share'), 200);
+  });
+  $('#share-instagram').addEventListener('click', () => { showToast('📸 인스타 스토리로 공유'); closeAllModals(); });
+  $('#share-kakao-2').addEventListener('click', () => {
+    closeAllModals();
+    setTimeout(() => {
+      if (state.doublePickUsedToday < state.doublePickMaxPerDay) {
+        state.doublePickAvailable += 1;
+        state.doublePickUsedToday += 1;
+        updateDoublePickUI();
+        showToast(`🎯 더블 픽 +1! (${state.doublePickUsedToday}/${state.doublePickMaxPerDay})`);
+      } else {
+        showToast('💬 공유 완료! 오늘의 더블 픽 한도 도달');
+      }
+    }, 200);
+  });
+  $('#save-image').addEventListener('click', () => { showToast('이미지로 저장 (목업)'); });
+  $('#lb-share').addEventListener('click', () => { showToast('순위표 공유 (목업)'); });
+
+  // ===== Modal Close =====
+  $$('[data-close]').forEach(b => b.addEventListener('click', closeAllModals));
+  $$('.modal-bg').forEach(bg => bg.addEventListener('click', (e) => {
+    if (e.target === bg) closeAllModals();
+  }));
+
+  // ===== Ad Slot Click =====
+  $$('.ad-slot').forEach(slot => {
+    slot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModal('modal-ad');
+    });
+  });
+  $('#ad-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    if (!data.brand || !data.name || !data.email) return;
+    showToast('📨 문의가 접수됐어요. 1일 내 회신드릴게요!');
+    e.target.reset();
+    closeAllModals();
+  });
+
+  // ===== Leaderboard Tabs =====
+  $$('.lb-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $$('.lb-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      showToast(`${tab.textContent} 순위 (목업)`);
+    });
+  });
+
+  // ===== Countdown =====
+  let h = 2, m = 14, s = 37;
+  const numEls = $$('.cd-time .num');
+  setInterval(() => {
+    s--;
+    if (s < 0) { s = 59; m--; }
+    if (m < 0) { m = 59; h--; }
+    if (h < 0) { h = 0; m = 0; s = 0; }
+    numEls[0].textContent = String(h).padStart(2, '0');
+    numEls[1].textContent = String(m).padStart(2, '0');
+    numEls[2].textContent = String(s).padStart(2, '0');
+  }, 1000);
+
+  // ===== Init =====
+  updateMissionProgress();
+
+})();
+</script>
+
+</body>
+</html>

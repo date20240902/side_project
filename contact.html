@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>광고 · 후원 문의 · 월승치못</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
+<style>
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-display: swap;
+  }
+  :root {
+    --bg:#d7e3f7; --bg-elev:#fbf3e3; --bg-card:#f7ecd9; --bg-card-2:#efe0c8;
+    --border:#27235a; --border-light:#6a64a0; --text:#27235a; --text-dim:#6a6494; --text-faint:#9c96bd;
+    --accent:#e23b2e; --accent-2:#e7913f; --gold:#d39412; --green:#2f9e54; --kakao:#FEE500;
+    --shadow:4px 4px 0 rgba(39,35,90,0.26);
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { background:#b9c8e8; }
+  body {
+    margin:0 auto; max-width:460px; min-height:100vh; padding:0 0 40px;
+    background-color:var(--bg);
+    background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);
+    background-size:26px 26px;
+    color:var(--text); font-family:'DungGeunMo','Galmuri11',monospace; -webkit-font-smoothing:none;
+  }
+  button, input, textarea, select { font-family:inherit; }
+  b { font-weight:normal; }
+
+  .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#0f1430; color:#fff; border-bottom:3px solid var(--border); }
+  .topbar .logo { font-family:'DungGeunMo',monospace; font-size:20px; }
+  .topbar .logo .dot { color:var(--accent); }
+  .topbar a { color:#c7cdf0; font-size:12px; text-decoration:none; }
+
+  .wrap { padding:20px 16px; }
+  h1 { font-family:'DungGeunMo',monospace; font-size:22px; margin:6px 0 6px; }
+  .desc { font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:14px; }
+  .desc b { color:var(--accent); }
+  .why { background:var(--bg-card); border:3px solid var(--border); box-shadow:var(--shadow); padding:14px; margin-bottom:18px; }
+  .why-t { font-family:'DungGeunMo',monospace; font-size:14px; margin-bottom:10px; }
+  .why-row { display:flex; gap:9px; align-items:flex-start; font-size:12px; line-height:1.5; color:#3a3658; }
+  .why-row + .why-row { margin-top:8px; padding-top:8px; border-top:1px solid var(--bg-card-2); }
+  .why-row .e { font-size:17px; line-height:1.3; }
+  .why-row b { color:var(--accent); }
+
+  .card { background:var(--bg-card); border:3px solid var(--border); box-shadow:var(--shadow); padding:16px; }
+  .field { margin-bottom:14px; }
+  label { display:block; font-size:12px; margin-bottom:6px; }
+  label .req { color:var(--accent); }
+  input[type=text], input[type=email], textarea {
+    width:100%; padding:11px 12px; background:#fff; border:2px solid var(--border); color:var(--text); font-size:14px;
+  }
+  textarea { resize:vertical; min-height:96px; line-height:1.6; }
+  input:focus, textarea:focus { outline:none; border-color:var(--accent); }
+
+  .chips { display:flex; gap:8px; }
+  .chip { flex:1; text-align:center; padding:10px 6px; background:#fff; border:2px solid var(--border); font-size:13px; cursor:pointer; }
+  .chip.on { background:var(--accent); color:#fff; }
+
+  .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+
+  .submit { width:100%; margin-top:6px; padding:15px; background:var(--accent); color:#fff; border:3px solid var(--border); box-shadow:var(--shadow); font-family:'DungGeunMo',monospace; font-size:16px; cursor:pointer; }
+  .submit:active { transform:translate(4px,4px); box-shadow:none; }
+  .submit:disabled { opacity:.6; cursor:default; }
+
+  .note { font-size:11px; color:var(--text-faint); margin-top:12px; line-height:1.6; }
+  .note a { color:var(--text-dim); }
+
+  .done { display:none; text-align:center; padding:30px 10px; }
+  .done.show { display:block; }
+  .done .emoji { font-size:54px; }
+  .done h2 { font-family:'DungGeunMo',monospace; font-size:20px; margin:10px 0 8px; }
+  .done p { font-size:13px; color:var(--text-dim); line-height:1.7; }
+  .done .home { display:inline-block; margin-top:18px; padding:12px 20px; background:var(--kakao); color:#2a2300; border:3px solid var(--border); box-shadow:var(--shadow); text-decoration:none; font-size:14px; }
+
+  .toast { position:fixed; left:50%; transform:translateX(-50%); bottom:30px; z-index:50; background:var(--border); color:#fff; padding:12px 18px; border:2px solid var(--gold); font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="logo">월승치못<span class="dot">!</span></span>
+  <a href="/preview">← 돌아가기</a>
+</div>
+
+<div class="wrap">
+  <h1>광고 · 후원 문의 🍗</h1>
+  <p class="desc">월승치못과 함께할 브랜드를 찾고 있어요. <b>광고·후원·제휴</b> 무엇이든 편하게 남겨주세요.</p>
+
+  <div class="why">
+    <div class="why-t">왜 함께하면 좋을까요?</div>
+    <div class="why-row"><span class="e">👀</span><div>월드컵 한 달간 <b>매일 들어오는 이용자</b>에게 브랜드 노출 — 예측하고 결과 확인하러 다시 들어와요.</div></div>
+    <div class="why-row"><span class="e">🔐</span><div>카카오 로그인 기반이라 봇·중복이 아닌 <b>실제 이용자</b> 지표. 숫자에 허수가 없어요.</div></div>
+    <div class="why-row"><span class="e">🎯</span><div>배너 노출·상품 협찬·제휴 등 <b>방식과 예산은 협의</b> — 꼭 외식·현물이 아니어도 괜찮아요.</div></div>
+  </div>
+
+  <form id="form" class="card" autocomplete="on">
+    <div class="field">
+      <label>문의 유형 <span class="req">*</span></label>
+      <div class="chips" id="kind-chips">
+        <div class="chip on" data-kind="광고">광고</div>
+        <div class="chip" data-kind="후원">후원</div>
+        <div class="chip" data-kind="제휴/기타">제휴/기타</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="company">회사 / 브랜드명 <span class="req">*</span></label>
+      <input type="text" id="company" maxlength="80" placeholder="예: 월승치킨">
+    </div>
+
+    <div class="field">
+      <label for="contact">담당자명 <span class="req">*</span></label>
+      <input type="text" id="contact" maxlength="40" placeholder="예: 홍길동">
+    </div>
+
+    <div class="field">
+      <label for="email">이메일 <span class="req">*</span></label>
+      <input type="email" id="email" maxlength="120" placeholder="회신받을 이메일">
+    </div>
+
+    <div class="field">
+      <label for="phone">연락처 <span class="req">*</span></label>
+      <input type="text" id="phone" maxlength="40" placeholder="전화번호 등 회신받을 연락처">
+    </div>
+
+    <div class="field">
+      <label for="budget">예상 예산 (선택)</label>
+      <input type="text" id="budget" maxlength="60" placeholder="예: 협의 / 월 OO만원">
+    </div>
+
+    <div class="field">
+      <label for="message">문의 내용 <span class="req">*</span></label>
+      <textarea id="message" maxlength="2000" placeholder="제안/문의 내용을 자유롭게 적어주세요"></textarea>
+    </div>
+
+    <!-- honeypot (사람에겐 안 보임) -->
+    <div class="hp"><label>이 칸은 비워두세요<input type="text" id="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <button type="submit" class="submit" id="submit">문의 보내기</button>
+    <p class="note">보내주신 정보는 문의 응대 목적에만 사용돼요. 자세한 내용은 <a href="/privacy">개인정보 처리방침</a>을 확인하세요.</p>
+  </form>
+
+  <div class="done" id="done">
+    <div class="emoji">🍗</div>
+    <h2>문의가 접수됐어요!</h2>
+    <p>빠르게 확인하고 남겨주신 이메일로 회신드릴게요.<br>감사합니다 🙌</p>
+    <a class="home" href="/preview">월승치못으로 돌아가기</a>
+  </div>
+</div>
+
+<div class="toast" id="toast">완료</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const SUPABASE_URL = 'https://mgmaibrwapphvgafzdon.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_5EusOBrKORHh3NpUkRcXNA_ZAlyHg4k';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function showToast(msg, dur=2200) {
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), dur);
+  }
+
+  let kind = '광고';
+  $('#kind-chips').addEventListener('click', (e) => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    document.querySelectorAll('#kind-chips .chip').forEach(x => x.classList.remove('on'));
+    c.classList.add('on'); kind = c.dataset.kind;
+  });
+
+  function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  $('#form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if ($('#website').value) return; // honeypot에 값이 있으면 봇 → 조용히 무시
+    const company = $('#company').value.trim();
+    const contact = $('#contact').value.trim();
+    const email = $('#email').value.trim();
+    const phone = $('#phone').value.trim();
+    const message = $('#message').value.trim();
+    if (!company) { showToast('회사 / 브랜드명을 입력해주세요'); $('#company').focus(); return; }
+    if (!contact) { showToast('담당자명을 입력해주세요'); $('#contact').focus(); return; }
+    if (!validEmail(email)) { showToast('올바른 이메일을 입력해주세요'); $('#email').focus(); return; }
+    if (!phone) { showToast('연락처를 입력해주세요'); $('#phone').focus(); return; }
+    if (!message) { showToast('문의 내용을 입력해주세요'); $('#message').focus(); return; }
+
+    const budget = $('#budget').value.trim();
+    const btn = $('#submit'); btn.disabled = true; btn.textContent = '보내는 중...';
+    const { error } = await sb.rpc('submit_inquiry', {
+      p_kind: kind,
+      p_company: company,
+      p_contact_name: contact,
+      p_email: email,
+      p_phone: phone,
+      p_budget: budget,
+      p_message: message,
+    });
+    if (error) {
+      btn.disabled = false; btn.textContent = '문의 보내기';
+      showToast('전송에 실패했어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    // 이메일 알림(jhjh126@gmail.com). 실패해도 문의는 이미 저장됐으니 접수 완료 처리.
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '8c9d11bf-83d5-4002-9c38-30a1b9894358',
+          subject: `[월승치못 문의] ${kind} · ${company}`,
+          from_name: '월승치못 문의폼',
+          replyto: email,
+          문의유형: kind,
+          '회사/브랜드': company,
+          담당자: contact,
+          이메일: email,
+          연락처: phone,
+          예산: budget || '(미입력)',
+          문의내용: message,
+        }),
+      });
+    } catch (_) { /* 이메일 발송 실패는 무시 */ }
+    $('#form').style.display = 'none';
+    $('#done').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>

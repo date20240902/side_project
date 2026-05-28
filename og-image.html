@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>월승치못 OG 이미지 미리보기</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#20242e; display:flex; flex-direction:column; align-items:center; gap:20px; padding:30px; font-family:-apple-system,"Apple SD Gothic Neo",sans-serif; }
+  img { width:min(1200px,100%); height:auto; border:4px solid #27235a; box-shadow:8px 8px 0 rgba(0,0,0,0.3); image-rendering:pixelated; }
+  .hint { color:#aab2c5; font-size:14px; text-align:center; line-height:1.8; max-width:760px; }
+  .hint b { color:#fff; }
+  .hint code { color:#ffd24a; }
+</style>
+</head>
+<body>
+  <img src="/og-image.png?v=2" alt="월승치못 OG 이미지 (1200x630)">
+  <div class="hint">
+    링크 공유 시 표시되는 <b>실제 썸네일(1200×630)</b>이에요.<br>
+    이미지를 바꾸려면 <code>render-og.mjs</code>로 다시 생성한 뒤 <code>og-image.png</code>를 교체하면 됩니다.<br>
+    카카오는 썸네일을 캐싱하므로, 변경 후엔 메타태그의 <code>?v=</code> 숫자를 올려 새 채팅방에서 확인하세요.
+  </div>
+</body>
+</html>

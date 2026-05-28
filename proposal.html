@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>후원사 제안서 · 월승치못</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri.css">
+<style>
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-display: swap;
+  }
+  :root {
+    --bg:#d7e3f7; --bg-elev:#fbf3e3; --bg-card:#f7ecd9; --bg-card-2:#efe0c8;
+    --border:#27235a; --border-light:#6a64a0; --text:#27235a; --text-dim:#6a6494; --text-faint:#9c96bd;
+    --accent:#e23b2e; --accent-2:#e7913f; --gold:#d39412; --green:#2f9e54; --hero:#0f1430; --kakao:#FEE500;
+    --shadow:4px 4px 0 rgba(39,35,90,0.26);
+  }
+  * { box-sizing:border-box; }
+  html { background:#b9c8e8; }
+  body {
+    margin:0 auto; max-width:680px; padding:0 0 60px;
+    background-color:var(--bg);
+    background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);
+    background-size:28px 28px;
+    color:var(--text); font-family:'DungGeunMo','Galmuri11',monospace; -webkit-font-smoothing:none;
+    line-height:1.7;
+  }
+  b { font-weight:normal; color:var(--accent); }
+
+  .hero { background:var(--hero); color:#fff; text-align:center; padding:40px 20px 34px; border-bottom:4px solid var(--border); }
+  .hero .emblem svg { height:54px; image-rendering:pixelated; }
+  .hero .logo { font-family:'DungGeunMo',monospace; font-size:40px; letter-spacing:1px; margin-top:8px; text-shadow:3px 3px 0 var(--border); }
+  .hero .logo .dot { color:var(--accent); }
+  .hero .badge { display:inline-block; margin-top:14px; background:var(--accent); border:2px solid #fff; padding:5px 14px; font-size:14px; }
+  .hero .tag { font-size:12px; color:#c7cdf0; margin-top:12px; }
+
+  .sec { padding:30px 20px 6px; }
+  .label { display:inline-block; font-size:11px; color:#fff; background:var(--accent); border:2px solid var(--border); padding:3px 9px; margin-bottom:10px; }
+  h2 { font-family:'DungGeunMo',monospace; font-size:21px; margin:0 0 6px; line-height:1.35; }
+  .lead { font-size:13px; color:var(--text-dim); margin:0 0 4px; }
+
+  .cards { padding:6px 20px; display:flex; flex-direction:column; gap:12px; }
+  .card { background:var(--bg-card); border:3px solid var(--border); box-shadow:var(--shadow); padding:16px; }
+  .card .ico { font-size:30px; }
+  .card .t { font-family:'DungGeunMo',monospace; font-size:16px; margin:6px 0 6px; }
+  .card .d { font-size:13px; color:#3a3658; }
+  .card .d b { color:var(--accent); }
+  .card .cap { margin-top:10px; padding:9px 11px; background:var(--bg-elev); border:2px dashed var(--border-light); font-size:12px; color:var(--text-dim); }
+
+  table { width:calc(100% - 40px); margin:10px 20px; border-collapse:collapse; font-size:13px; background:var(--bg-card); }
+  th, td { border:2px solid var(--border); padding:9px 8px; text-align:center; }
+  th { background:var(--hero); color:#fff; }
+  td b { color:var(--accent); }
+  .note { font-size:11px; color:var(--text-faint); margin:0 20px; }
+
+  .mock-wrap { padding:8px 20px; }
+  .phone { max-width:300px; margin:0 auto; border:3px solid var(--border); background:var(--bg); box-shadow:var(--shadow); overflow:hidden; }
+  .m-hero { position:relative; overflow:hidden; min-height:88px; background:var(--hero); color:#fff; text-align:center; padding:30px 8px 16px; font-family:'DungGeunMo',monospace; font-size:18px; }
+  .m-hero-bg { position:absolute; inset:0; width:100%; height:100%; image-rendering:pixelated; z-index:0; }
+  .m-hero-scrim { position:absolute; inset:0; z-index:1; background:linear-gradient(180deg,rgba(15,20,48,0.32) 0%,rgba(15,20,48,0.7) 100%); }
+  .m-hero-logo { position:relative; z-index:2; text-shadow:2px 2px 0 var(--border); }
+  .m-hero .dot { color:var(--accent); }
+  .m-row { margin:8px; padding:9px 10px; border:2px solid var(--border); background:var(--bg-card); font-size:11px; }
+  .m-ad { position:relative; border:3px solid var(--gold); background:#fff7da; }
+  .m-ad .star { position:absolute; top:-11px; right:8px; background:var(--gold); color:#fff; border:2px solid var(--border); font-size:9px; padding:1px 6px; }
+  .m-pool { display:flex; justify-content:space-between; }
+  .m-pool .em { color:var(--accent); font-family:'DungGeunMo',monospace; }
+  .m-q .opts { display:flex; gap:4px; margin-top:6px; }
+  .m-q .opt { flex:1; text-align:center; border:2px solid var(--border); background:var(--bg-elev); padding:4px 0; font-size:10px; }
+  .m-q .opt.on { background:var(--accent); color:#fff; }
+  .callout { font-size:11px; color:var(--text-dim); margin:4px 8px 0; }
+  .callout b { color:var(--accent); }
+
+  .earlybird { margin:14px 20px; padding:18px; background:#fff7da; border:3px solid var(--gold); box-shadow:var(--shadow); }
+  .earlybird .t { font-family:'DungGeunMo',monospace; font-size:16px; margin-bottom:8px; }
+  .earlybird .d { font-size:13px; color:#3a3658; margin-bottom:10px; }
+  .earlybird .d:last-child { margin-bottom:0; }
+  .earlybird .d b { color:var(--accent); }
+
+  .pkg { margin:6px 20px; padding:0; }
+  .pkg li { font-size:13px; margin:7px 0; list-style:none; padding-left:22px; position:relative; color:#3a3658; }
+  .pkg li::before { content:'🍗'; position:absolute; left:0; }
+  .pkg li b { color:var(--accent); }
+
+  .cta { margin:26px 20px 10px; padding:24px 20px; background:var(--bg-card); border:3px solid var(--border); box-shadow:var(--shadow); text-align:center; }
+  .cta .t { font-family:'DungGeunMo',monospace; font-size:18px; margin-bottom:6px; }
+  .cta .d { font-size:12px; color:var(--text-dim); margin-bottom:16px; }
+  .cta a.btn { display:block; padding:15px; background:var(--accent); color:#fff; border:3px solid var(--border); box-shadow:var(--shadow); font-family:'DungGeunMo',monospace; font-size:16px; text-decoration:none; }
+  .cta a.btn:active { transform:translate(4px,4px); box-shadow:none; }
+  .cta .mail { display:block; margin-top:12px; font-size:12px; color:var(--text-dim); }
+  .foot { text-align:center; font-size:11px; color:var(--text-faint); line-height:1.9; margin-top:24px; padding:0 20px; }
+  .foot .logo-mini { display:block; font-family:'DungGeunMo',monospace; font-size:14px; color:var(--text); margin-bottom:6px; }
+  .foot .logo-mini .dot { color:var(--accent); }
+  .foot a { color:var(--text-dim); text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="emblem">
+    <svg viewBox="0 0 62 30" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(1,1)">
+        <g transform="rotate(-30 10 7)">
+          <rect x="7" y="2" width="6" height="11" rx="3" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+          <circle cx="7.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+          <circle cx="12.5" cy="3" r="2.6" fill="#f4ecd6" stroke="#5a3411" stroke-width="1.6"/>
+        </g>
+        <ellipse cx="14" cy="18" rx="10" ry="9" fill="#d8893a" stroke="#5a3411" stroke-width="2"/>
+        <circle cx="10" cy="16" r="1.1" fill="#a85e1f"/><circle cx="16" cy="19" r="1.1" fill="#a85e1f"/><circle cx="12" cy="21" r="1.1" fill="#a85e1f"/>
+      </g>
+      <g transform="translate(36,2)">
+        <circle cx="12" cy="12" r="11" fill="#fff" stroke="#27235a" stroke-width="2"/>
+        <polygon points="12,7.4 16.4,10.6 14.7,15.8 9.3,15.8 7.6,10.6" fill="#27235a"/>
+      </g>
+    </svg>
+  </div>
+  <div class="logo">월승치못<span class="dot">!</span></div>
+  <div class="badge">치킨 브랜드 후원 제안서</div>
+  <div class="tag">월드컵 승부 예측에 치킨? 이건 못 참지</div>
+</div>
+
+<!-- ===== 무엇인가 (먼저) ===== -->
+<div class="sec">
+  <span class="label">ABOUT</span>
+  <h2>월승치못이란</h2>
+  <p class="lead">월드컵 기간 매일 5문제를 예측하고, 많이 맞힌 참여자에게 치킨 기프티콘을 드리는 게임입니다. 친구에게 공유하면 한 번 더 도전할 수 있어 자연스럽게 퍼집니다.</p>
+</div>
+
+<!-- ===== 후원사 혜택 ===== -->
+<div class="sec">
+  <span class="label">후원사 혜택</span>
+  <h2>월드컵 한 달, 매일 '치킨'이<br>화제의 보상이 됩니다</h2>
+  <p class="lead">월드컵은 한국에서 치킨 주문이 가장 몰리는 시즌입니다. 그 한 달 동안 매일 ‘오늘의 치킨’이 예측 게임의 보상이 되고, 그 치킨은 후원사 브랜드의 제품입니다.</p>
+</div>
+<div class="cards">
+  <div class="card">
+    <div class="ico">🎁</div>
+    <div class="t">노출을 넘어 ‘샘플링’으로</div>
+    <div class="d">당첨자는 후원사 브랜드의 <b>치킨 기프티콘을 직접 받아 먹습니다.</b> 단순 화면 노출이 아니라 실제 제품 경험으로 이어집니다.</div>
+  </div>
+  <div class="card">
+    <div class="ico">📣</div>
+    <div class="t">인증샷·공유로 번지는 노출</div>
+    <div class="d">결과 자랑과 당첨 공유가 게임 안에 들어 있어, 브랜드가 <b>이용자 콘텐츠를 통해</b> 자연스럽게 퍼집니다.</div>
+  </div>
+  <div class="card">
+    <div class="ico">🗓️</div>
+    <div class="t">시즌 내내 매일 접점</div>
+    <div class="d">대회 기간 동안 매일 새 문제가 열려, 같은 이용자에게 브랜드가 <b>반복해서</b> 닿습니다.</div>
+  </div>
+</div>
+
+<!-- ===== 비용 구조 ===== -->
+<div class="sec"><span class="label">비용</span><h2>지출은 예측 가능하게</h2></div>
+<div class="cards">
+  <div class="card">
+    <div class="ico">🧮</div>
+    <div class="t">참여 규모에 비례한 상품비</div>
+    <div class="d">상품은 <b>“참여자 500명당 치킨 1마리”</b> 기준으로 산정됩니다. 참여가 적으면 상품 비용도 적고, 많으면 그만큼 더 많은 사람에게 노출됩니다.</div>
+    <div class="cap">📌 무한정 늘어나는 것이 부담되시면, 협의 하에 <b style="color:var(--text)">‘하루 최대 N마리’</b>(예: 일 최대 10마리)로 상한을 둘 수 있습니다.</div>
+  </div>
+  <div class="card">
+    <div class="ico">👀</div>
+    <div class="t">노출에는 비참여 방문자도 포함</div>
+    <div class="d">‘참여자’는 예측을 제출한 사람만 센 수치입니다. 들어와서 둘러보고 나간 방문자는 여기에 포함되지 않으므로, 실제 방문·노출 수는 참여자 수보다 큽니다.</div>
+  </div>
+  <div class="card">
+    <div class="ico">🔐</div>
+    <div class="t">참여자 수에 허수가 없습니다</div>
+    <div class="d">예측 참여에는 <b>카카오 로그인</b>이 필요합니다. 그래서 참여자 수는 봇·중복·자동 트래픽이 아니라 <b>실제 이용자(1인 1계정)</b> 기준이에요. 협찬 규모를 산정하는 기준 숫자에 부풀림이 없습니다.</div>
+  </div>
+</div>
+<table>
+  <tr><th>그날 참여자</th><th>협찬 치킨</th><th>방문(노출) 참고</th></tr>
+  <tr><td>500명</td><td><b>1마리</b></td><td>1,000+</td></tr>
+  <tr><td>1,000명</td><td><b>2마리</b></td><td>2,000+</td></tr>
+  <tr><td>3,000명</td><td><b>6마리</b></td><td>6,000+</td></tr>
+</table>
+<p class="note">* 방문(노출) 참고치 = 참여자 × 2회 방문(예측+결과 확인) 기준의 추정. 둘러보고 나간 방문은 별도입니다. 상한 설정 시 협찬 치킨은 그 한도까지만 늘어납니다.</p>
+
+<!-- ===== 노출 위치 ===== -->
+<div class="sec"><span class="label">노출 위치</span><h2>어디에 노출되나요</h2><p class="lead">실제 서비스 화면 기준입니다. ⭐ 표시가 1호 후원사 전용 자리입니다.</p></div>
+<div class="mock-wrap">
+  <div class="phone">
+    <div class="m-hero">
+      <svg class="m-hero-bg" viewBox="0 0 200 165" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="m-crowd" width="8" height="8" patternUnits="userSpaceOnUse">
+            <rect width="8" height="8" fill="#22356b"/>
+            <rect x="0" y="1" width="2" height="2" fill="#e0623f"/>
+            <rect x="4" y="0" width="2" height="2" fill="#e9e4d6"/>
+            <rect x="2" y="4" width="2" height="2" fill="#5aa0d8"/>
+            <rect x="6" y="5" width="2" height="2" fill="#e7b94a"/>
+            <rect x="5" y="3" width="1" height="1" fill="#ffffff"/>
+            <rect x="1" y="6" width="1" height="1" fill="#cfd6e6"/>
+          </pattern>
+          <pattern id="m-net" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="none"/>
+            <rect x="0" y="0" width="6" height="1" fill="#ffffff"/>
+            <rect x="0" y="0" width="1" height="6" fill="#ffffff"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="200" height="46" fill="url(#m-crowd)"/>
+        <rect x="0" y="46" width="200" height="9" fill="#e7e0d0"/>
+        <rect x="6" y="47" width="40" height="7" fill="#e23b2e"/>
+        <rect x="70" y="47" width="46" height="7" fill="#2f6fd0"/>
+        <rect x="140" y="47" width="40" height="7" fill="#e7913f"/>
+        <rect x="0" y="55" width="200" height="110" fill="#5fb457"/>
+        <rect x="0" y="55" width="200" height="14" fill="#67bd5e"/>
+        <rect x="0" y="83" width="200" height="14" fill="#67bd5e"/>
+        <rect x="0" y="111" width="200" height="14" fill="#67bd5e"/>
+        <rect x="0" y="139" width="200" height="14" fill="#67bd5e"/>
+        <rect x="64" y="56" width="74" height="38" fill="url(#m-net)" opacity="0.55"/>
+        <rect x="64" y="54" width="74" height="3" fill="#ffffff"/>
+        <rect x="64" y="54" width="3" height="40" fill="#ffffff"/>
+        <rect x="135" y="54" width="3" height="40" fill="#ffffff"/>
+        <ellipse cx="92" cy="135" rx="17" ry="4" fill="#1c5a1f" opacity="0.22"/>
+        <ellipse cx="129" cy="133" rx="9" ry="3" fill="#1c5a1f" opacity="0.22"/>
+        <g transform="translate(121,116)">
+          <rect x="1" y="1" width="14" height="14" rx="7" fill="#ffffff" stroke="#20264f" stroke-width="2"/>
+          <rect x="6" y="3" width="4" height="4" fill="#20264f"/>
+          <rect x="3" y="8" width="3" height="3" fill="#20264f"/>
+          <rect x="10" y="9" width="3" height="3" fill="#20264f"/>
+        </g>
+        <g transform="translate(74,72)">
+          <rect x="4" y="0" width="20" height="8" fill="#1f2a52"/>
+          <rect x="4" y="8" width="4" height="6" fill="#1f2a52"/>
+          <rect x="20" y="8" width="4" height="6" fill="#1f2a52"/>
+          <rect x="8" y="7" width="12" height="11" fill="#b56b39"/>
+          <rect x="10" y="12" width="2" height="2" fill="#20264f"/>
+          <rect x="16" y="12" width="2" height="2" fill="#20264f"/>
+          <rect x="4" y="18" width="20" height="15" fill="#e23b2e"/>
+          <rect x="0" y="19" width="5" height="7" fill="#e23b2e"/>
+          <rect x="23" y="19" width="5" height="7" fill="#e23b2e"/>
+          <rect x="0" y="26" width="5" height="7" fill="#b56b39"/>
+          <rect x="23" y="26" width="5" height="7" fill="#b56b39"/>
+          <rect x="4" y="33" width="9" height="9" fill="#1f2a52"/>
+          <rect x="15" y="33" width="9" height="9" fill="#1f2a52"/>
+          <rect x="5" y="42" width="7" height="9" fill="#b56b39"/>
+          <rect x="16" y="42" width="7" height="9" fill="#b56b39"/>
+          <rect x="5" y="51" width="7" height="5" fill="#e23b2e"/>
+          <rect x="16" y="51" width="7" height="5" fill="#e23b2e"/>
+          <rect x="3" y="56" width="10" height="5" fill="#20264f"/>
+          <rect x="16" y="56" width="10" height="5" fill="#20264f"/>
+        </g>
+      </svg>
+      <div class="m-hero-scrim"></div>
+      <div class="m-hero-logo">월승치못<span class="dot">!</span></div>
+    </div>
+    <div class="m-row m-ad"><span class="star">⭐ 1호 후원사</span>🍗 OO치킨 — 공식 후원사</div>
+    <div class="callout">↑ 히어로 바로 아래 <b>최상단 배너</b> (화면 열면 가장 먼저 보임)</div>
+    <div class="m-row m-pool"><span>오늘의 치킨 풀</span><span class="em">3마리 🍗</span></div>
+    <div class="m-row m-q">한국 vs 브라질, 결과는?
+      <div class="opts"><span class="opt on">승</span><span class="opt">무</span><span class="opt">패</span></div>
+    </div>
+    <div class="m-row m-q">손흥민 공격 포인트는?
+      <div class="opts"><span class="opt">0</span><span class="opt on">1</span><span class="opt">2+</span></div>
+    </div>
+    <div class="m-row m-q">오늘 경기 중 관중 난입?
+      <div class="opts"><span class="opt">있다</span><span class="opt on">없다</span></div>
+    </div>
+  </div>
+</div>
+<ul class="pkg" style="margin-top:10px;">
+  <li><b>최상단 배너</b>에 로고 노출</li>
+  <li>당첨 <b>치킨 기프티콘 = 후원사 제품</b> (당첨자가 직접 수령)</li>
+  <li>결과 공유 카드·카카오톡 채널 알림 노출 (협의)</li>
+</ul>
+
+<!-- ===== 얼리버드 ===== -->
+<div class="sec"><span class="label">얼리버드</span><h2>빠를수록 노출이<br>빨리 시작됩니다</h2></div>
+<div class="earlybird">
+  <div class="t">⭐ 1호 후원사 혜택</div>
+  <div class="d">1호 후원사께는 <b>최상단 배너</b>를 대회 기간 단독으로 배정하고, <b>치킨 카테고리 독점</b>과 “공식 후원사” 표기를 제공합니다. 자리는 순서대로 배정됩니다.</div>
+  <div class="d">또한 <b>사전 예약 기간 중 계약이 체결되면, 그 시점부터 사전 예약 페이지에 “공식 후원사”로 등록·노출</b>됩니다. 정식 오픈 전부터 사전 예약자들에게 브랜드가 먼저 노출됩니다.</div>
+</div>
+
+<!-- ===== 구성 ===== -->
+<div class="sec"><span class="label">구성</span><h2>후원 구성</h2><p class="lead">현물(치킨 기프티콘) 협찬 기준이며, 규모·기간·상한은 협의합니다.</p></div>
+<ul class="pkg">
+  <li><b>상품 협찬</b>: 치킨 기프티콘 (참여 규모에 따라 산정 · 상한 설정 가능)</li>
+  <li><b>브랜드 노출</b>: 배너 + 상품 + 공유 카드 패키지</li>
+  <li><b>독점/표기</b>: 카테고리 독점, “공식 후원사” 명기</li>
+  <li><b>리포트</b>: 참여자·노출 등 성과 데이터 공유</li>
+</ul>
+
+<div class="cta">
+  <div class="t">함께하실 브랜드를 찾습니다 🍗</div>
+  <div class="d">자리는 순서대로 배정됩니다. 문의 주시면 상세 조건을 안내드릴게요.</div>
+  <a class="btn" href="/contact">후원 문의하기 →</a>
+</div>
+
+<div class="foot">
+  <span class="logo-mini">월승치못<span class="dot">!</span></span>
+  월드컵 승부 예측에 치킨? 이건 못 참지<br>
+  운영: 인사이트브릿지 (대표 이재훈) · 사업자등록번호 533-40-01301<br>
+  문의: <a href="mailto:newsletter@techissue.xyz">newsletter@techissue.xyz</a><br><br>
+  <a href="/preview">사전 예약 페이지</a> · <a href="/">서비스 바로가기</a> · <a href="/terms">이용약관</a> · <a href="/privacy">개인정보 처리방침</a><br><br>
+  © 2026 월승치못 · wsmot.vercel.app
+</div>
+
+</body>
+</html>
